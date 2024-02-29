@@ -35,7 +35,7 @@ jobs:
       - name: Run tests
         run: |
           cd api/tests
-          pytest
+          python -m pytest
 
       
       
