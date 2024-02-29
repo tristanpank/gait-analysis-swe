@@ -4,3 +4,4 @@ pyvenv.cfg
 Include/
 __pycache__/
 share/
+.pytests_cache/
