@@ -6,3 +6,6 @@ __pycache__/
 share/
 .pytests_cache/
 temp_videos/
+bin/
+lib/
+include/
