@@ -2,7 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './components/home-page/home-page.js'
+import Home from './components/home-page/Home.js'
 import Login from './components/login-page/login-page.js'
 import './App.css'
 import { useEffect, useState } from 'react'
