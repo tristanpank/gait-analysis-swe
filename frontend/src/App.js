@@ -1,23 +1,24 @@
 import logo from './logo.svg';
 import './App.css';
 
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Home from './components/home-page/home-page.js'
+import Login from './components/login-page/login-page.js'
+import './App.css'
+import { useEffect, useState } from 'react'
+
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false)
+  const [email, setEmail] = useState('')
+
   return (
     <div className="App">
-      <header className="">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p className='bg-blue-950'>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className=""
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
