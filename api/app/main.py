@@ -4,6 +4,7 @@ from .gait_analysis import GaitAnalysis
 from moviepy.editor import VideoFileClip
 from fastapi.responses import JSONResponse
 
+
 app = FastAPI()
 
 @app.get("/")
