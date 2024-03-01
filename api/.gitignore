@@ -5,3 +5,4 @@ Include/
 __pycache__/
 share/
 .pytests_cache/
+temp_videos/
