@@ -12,7 +12,7 @@ test('renders login page', () => {
     </Router>
     );
 
-    const helloElement = screen.getByTestId('Signup Form');
+    const helloElement = screen.getByTestId('Signup Page');
     expect(helloElement).toBeInTheDocument();
     
     
