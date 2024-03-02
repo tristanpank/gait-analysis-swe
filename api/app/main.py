@@ -14,12 +14,12 @@ load_dotenv()
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 service_account_path = os.path.join(BASE_DIR, "firebase_admin/serviceAccountKey.json")
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = service_account_path
-
-cred = credentials.Certificate(service_account_path)
-firebase_admin.initialize_app(cred, {
-  "storageBucket": "gait-analysis-swe.appspot.com"
-})
-db = firestore.Client()
+if os.environ.get("TESTING") != "True":
+  cred = credentials.Certificate(service_account_path)
+  firebase_admin.initialize_app(cred, {
+    "storageBucket": "gait-analysis-swe.appspot.com"
+  })
+  db = firestore.Client()
 
 app = FastAPI()
 
@@ -81,9 +81,10 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     return JSONResponse(content={"error": "User not passed in"}, media_type="application/json", status_code=404)
 
   # Check if the user exists in the database
-  user_ref = db.collection("users").document(uid)
-  if not user_ref.get().exists and uid != "test":
-    return JSONResponse(content={"error": "User not found"}, media_type="application/json", status_code=404)
+  if os.environ.get("TESTING") != "True":
+    user_ref = db.collection("users").document(uid)
+    if not user_ref.get().exists:
+      return JSONResponse(content={"error": "User not found"}, media_type="application/json", status_code=404)
   
   # Save the video file to a file in the temp_videos directory
   file_path = os.path.join("temp_videos", video_file.filename)

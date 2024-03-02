@@ -1,11 +1,14 @@
 from fastapi.testclient import TestClient
-from app.main import app
 import os
+os.environ["TESTING"] = "True"
+from app.main import app
+
 from unittest.mock import patch
 
 static_dir = "/static"
 
 client = TestClient(app)
+
 
 
 def mock_upload_file_to_cloud_storage(file_path, destination_path):
@@ -26,7 +29,9 @@ def test_hello_world():
 
 @patch('app.main.upload_file_to_cloud_storage', side_effect=mock_upload_file_to_cloud_storage)
 @patch('app.main.firestore.Client', side_effect=mock_firestore_client)
-def test_detect_pose(upload_mock, firestore_mock):
+@patch('app.main.credentials.Certificate')
+@patch('app.main.firebase_admin.initialize_app')
+def test_detect_pose(upload_mock, firestore_mock, credentials_mock, mock_initialize_app):
   # Error if no video passed
   res = client.post("/pose/")
   assert res.status_code == 422
