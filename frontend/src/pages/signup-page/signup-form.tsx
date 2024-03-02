@@ -9,7 +9,7 @@ import {
   IconBrandOnlyfans,
 } from "@tabler/icons-react";
 import { NavLink, useNavigate } from 'react-router-dom';
-import {createAccountEmailPassword} from '../../firebase/auth.js'
+import {createAccountEmailPassword, signInWithGoogle} from '../../firebase/auth.js'
 
 
 
@@ -39,7 +39,6 @@ export function SignupForm(props) {
             }
         } else {
             setSignUpError('')
-            console.log(user)
             setUser(user);
             setLoggedIn(true);
             navigate('/dashboard');
@@ -61,6 +60,16 @@ export function SignupForm(props) {
   }
   function handleSetConfirmPassword (e) {
     setConfirmPassword(e.target.value)
+  }
+  async function handleGoogleClick(e) {
+    e.preventDefault();
+    const user = await signInWithGoogle();
+    if (user.uid === undefined) {
+      return
+    }
+    setUser(user);
+    setLoggedIn(true);
+    navigate('/dashboard')
   }
   return (
     <div className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
@@ -120,6 +129,7 @@ export function SignupForm(props) {
           <button
             className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
             type="submit"
+            onClick={handleGoogleClick}
           >
             <IconBrandGoogle className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
             <span className="text-neutral-700 dark:text-neutral-300 text-sm">
@@ -127,16 +137,7 @@ export function SignupForm(props) {
             </span>
             <BottomGradient />
           </button>
-          <button
-            className=" relative group/btn flex space-x-2 items-center justify-start px-4 w-full text-black rounded-md h-10 font-medium shadow-input bg-gray-50 dark:bg-zinc-900 dark:shadow-[0px_0px_1px_1px_var(--neutral-800)]"
-            type="submit"
-          >
-            <IconBrandOnlyfans className="h-4 w-4 text-neutral-800 dark:text-neutral-300" />
-            <span className="text-neutral-700 dark:text-neutral-300 text-sm">
-              OnlyFans
-            </span>
-            <BottomGradient />
-          </button>
+
         </div>
       </form>
     </div>
