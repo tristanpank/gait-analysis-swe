@@ -1,15 +1,12 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 
-const Home = (props) => {
-  const { loggedIn, email } = props
+const Home = () => {
   const navigate = useNavigate()
 
-  const onButtonClick = () => {
-    // You'll update this function later
-  }
-
+  //TODO Add handleClick Function for Button
   return (
+    //TODO Add Button component that redirects to login page
     <div>
       <div>
       <button>Sign In/Sign Up</button>
