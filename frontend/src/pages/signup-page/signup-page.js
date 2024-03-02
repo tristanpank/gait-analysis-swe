@@ -41,7 +41,7 @@ const Signup = (props) => {
   return (
         <div>                  
             <h1> Signup </h1>                                                                            
-            <form>                                                                                            
+            <form data-testid="Signup Form">                                                                                            
                 <div>
                     <label htmlFor="email-address">
                         Email address

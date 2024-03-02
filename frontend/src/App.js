@@ -15,7 +15,7 @@ function App() {
   const [user, setUser] = useState({});
 
   return (
-    <div className="App">
+    <div data-testid="App">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home/>} />

@@ -37,7 +37,7 @@ const Login = (props) => {
 
   return (
     <div>
-      <form onSubmit={onSubmit}>                                                                                            
+      <form onSubmit={onSubmit} data-testid="Login Form">                                                                                            
           <div>
               <label>
                   Email address
