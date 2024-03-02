@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import {createAccountWithEmailAndPassword} from '../../firebase/auth.js'
+import {createAccountEmailPassword} from '../../firebase/auth.js'
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -11,7 +11,7 @@ const Signup = () => {
     const onSubmit = async (e) => {
       e.preventDefault()
      
-      await createAccountWithEmailAndPassword(email, password)
+      await createAccountEmailPassword(email, password)
         .then((user) => {
             console.log(user);
             navigate("/login")

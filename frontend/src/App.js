@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react'
 function App() {
   const [loggedIn, setLoggedIn] = useState(false)
   const [email, setEmail] = useState('')
-
+  console.log("test");
   return (
     <div className="App">
       <BrowserRouter>
