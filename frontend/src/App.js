@@ -2,10 +2,10 @@ import logo from './logo.svg';
 import './App.css';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import Home from './components/home-page/home-page.js'
-import Login from './components/login-page/login-page.js'
-import Signup from './components/signup-page/signup-page.js';
-import Dashboard from './components/dashboard-page/dashboard-page.js';
+import Home from './pages/home-page/home-page.js'
+import Login from './pages/login-page/login-page.js'
+import Signup from './pages/signup-page/signup-page.js';
+import Dashboard from './pages/dashboard-page/dashboard-page.js';
 import './App.css'
 import { useEffect, useState } from 'react'
 
