@@ -16,6 +16,7 @@ const Login = (props) => {
     const user = await signInEmailPassword(email, password);
 
     if (user.uid === undefined) {
+      const error = user;
       setSignInError('Email and Password may not be correct, please try again.');
     } else {
       setSignInError('')
