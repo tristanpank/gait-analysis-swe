@@ -33,10 +33,15 @@ jobs:
           cd api
           pip install -r requirements.txt
       
-      - name: Run tests
+      - name: Run python tests
         run: |
           cd api/tests
           python -m pytest
+      
+      - name: Run frontend tests
+        run: |
+          cd frontend
+          npm test
 
       
       
