@@ -8,6 +8,7 @@ const Signup = (props) => {
     const navigate = useNavigate();
  
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [signUpError, setSignUpError] = useState('')
    
     const onSubmit = async (e) => {
@@ -68,7 +69,22 @@ const Signup = (props) => {
                         required                                 
                         placeholder="Password"              
                     />
-                </div>                                             
+                </div> 
+
+                <div>
+                    <label htmlFor="confirm-password">
+                        Confirm Password
+                    </label>
+                    <input
+                        type="password"
+                        label="Confirm password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required                                 
+                        placeholder="Confirm password"              
+                    />
+                </div>
+
                 <label>{signUpError}</label>
                 <button
                     type="submit" 
