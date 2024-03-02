@@ -45,7 +45,7 @@ const Signup = (props) => {
     // }
  
   return (
-        <div>                  
+        <div data-testid="Signup Page">                  
             <h1> Signup </h1>                                                                            
             {/* <form data-testid="Signup Form">                                                                                            
                 <div>
