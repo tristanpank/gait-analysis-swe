@@ -8,3 +8,5 @@ share/
 bin/
 lib/
 include/
+.env
+firebase_admin/
