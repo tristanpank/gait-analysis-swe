@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {createAccountEmailPassword} from '../../firebase/auth.js'
+import Button from '../../components/ui/button/button.js'
 
 const Signup = () => {
     const navigate = useNavigate();
@@ -25,6 +26,11 @@ const Signup = () => {
         });
  
    
+    }
+
+    function handleClick (e) {
+        e.preventDefault()
+        navigate('/login')
     }
  
   return (
@@ -69,9 +75,7 @@ const Signup = () => {
             </form>
             <p>
                 Already have an account?{' '}
-                <NavLink to="/login" >
-                    Sign in
-                </NavLink>
+                <Button text={'Log In'} handleClick={handleClick}></Button>
             </p>                   
         </div>
   )

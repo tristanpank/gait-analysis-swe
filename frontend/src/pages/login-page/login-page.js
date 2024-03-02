@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Button from '../../components/ui/button/button.js'
 
 const Login = (props) => {
   const [email, setEmail] = useState('')
@@ -9,9 +10,10 @@ const Login = (props) => {
 
   const navigate = useNavigate()
 
-  const onButtonClick = () => {
-    // You'll update this function later...
-  }
+  function handleClick (e) {
+    e.preventDefault()
+    navigate('/signup')
+}
 
   return (
     <div>
@@ -20,9 +22,7 @@ const Login = (props) => {
       </div>
       <p>
           Don't have an account?{' '}
-          <NavLink to="/signup" >
-              Sign Up
-          </NavLink>
+          <Button text={'Sign Up'} handleClick={handleClick}></Button>
       </p> 
     </div>
   )
