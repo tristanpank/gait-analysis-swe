@@ -9,9 +9,7 @@ const Signup = (props) => {
  
     const [password, setPassword] = useState('');
     const [signUpError, setSignUpError] = useState('')
-
-
- 
+   
     const onSubmit = async (e) => {
         e.preventDefault()
      
