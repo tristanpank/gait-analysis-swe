@@ -3,11 +3,12 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {createAccountEmailPassword} from '../../firebase/auth.js'
 import Button from '../../components/ui/button/button.js'
 
-const Signup = () => {
+const Signup = (props) => {
+    const {setLoggedIn, email, setEmail, setUser} = props
     const navigate = useNavigate();
  
-    const [email, setEmail] = useState('')
     const [password, setPassword] = useState('');
+
  
     const onSubmit = async (e) => {
       e.preventDefault()
@@ -15,14 +16,14 @@ const Signup = () => {
       await createAccountEmailPassword(email, password)
         .then((user) => {
             console.log(user);
-            navigate("/")
-            // ...
+            setUser(user);
+            setLoggedIn(true);
+            navigate("/dashboard");
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorMessage = error.message;
             console.log(errorCode, errorMessage);
-            // ..
         });
  
    

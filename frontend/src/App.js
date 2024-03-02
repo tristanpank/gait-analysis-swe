@@ -10,19 +10,19 @@ import './App.css'
 import { useEffect, useState } from 'react'
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false)
-  const [email, setEmail] = useState('')
-  const [user, setUser] = useState({})
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [email, setEmail] = useState('');
+  const [user, setUser] = useState({});
 
   console.log("test");
   return (
     <div className="App">
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} setEmail={setEmail} setUser={setUser}/>} />
-          <Route path="/signup" element={<Signup setLoggedIn={setLoggedIn} setEmail={setEmail} setUser={setUser}/>} />
-          <Route path="/dashboard" element={<Dashboard email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <Route path="/" element={<Home/>} />
+          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
+          <Route path="/signup" element={<Signup setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
+          <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
         </Routes>
       </BrowserRouter>
     </div>
