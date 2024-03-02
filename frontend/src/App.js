@@ -14,7 +14,6 @@ function App() {
   const [email, setEmail] = useState('');
   const [user, setUser] = useState({});
 
-  console.log("test");
   return (
     <div className="App">
       <BrowserRouter>

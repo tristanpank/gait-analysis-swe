@@ -5,8 +5,10 @@ const signInEmailPassword = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+    console.log("Logged in as:", user.email)
     return user;
   } catch (error) {
+    
     return error;
   }
 }
