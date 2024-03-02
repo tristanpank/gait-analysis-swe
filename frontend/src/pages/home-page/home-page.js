@@ -11,13 +11,13 @@ const Home = (props) => {
 
   return (
     <div>
-      <div class="top">
-      <button class="si-button">Sign In/Sign Up</button>
+      <div>
+      <button>Sign In/Sign Up</button>
       </div>
-      <div class="web-name">
+      <div>
       Gait Analysis for UF Athletes
       </div>
-      <div class="description">
+      <div>
       A platform that analyzes running form for student athletes at UF, 
       making the resources of expensive labs available for everyday runners
       </div>
