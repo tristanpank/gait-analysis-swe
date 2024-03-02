@@ -2,51 +2,52 @@ import React, {useState} from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {createAccountEmailPassword} from '../../firebase/auth.js'
 import Button from '../../components/ui/button/button.js'
+import { SignupForm } from './signup-form.tsx';
 
 const Signup = (props) => {
     const {setLoggedIn, email, setEmail, setUser} = props
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
  
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [signUpError, setSignUpError] = useState('')
+    // const [password, setPassword] = useState('');
+    // const [confirmPassword, setConfirmPassword] = useState('');
+    // const [signUpError, setSignUpError] = useState('')
    
-    const onSubmit = async (e) => {
-        e.preventDefault()
+    // const onSubmit = async (e) => {
+    //     e.preventDefault()
         
-        if (password != confirmPassword) {
-            setSignUpError('Passwords do not match.')
-        } else {
-            const user = await createAccountEmailPassword(email, password)
-            if (user.uid === undefined) {
-                const error = user;
-                if (error.code === 'auth/email-already-in-use') {
-                    setSignUpError('An account already exists with this email, please log in.');
-                } else if (error.code === 'auth/weak-password') {
-                    setSignUpError('Password should be at least 6 characters.');
-                } else {
-                    setSignUpError('Error while creating account.');
-                }
-            } else {
-                setSignUpError('')
-                console.log(user)
-                setUser(user);
-                setLoggedIn(true);
-                navigate('/dashboard');
-            }
-        }
+    //     if (password != confirmPassword) {
+    //         setSignUpError('Passwords do not match.')
+    //     } else {
+    //         const user = await createAccountEmailPassword(email, password)
+    //         if (user.uid === undefined) {
+    //             const error = user;
+    //             if (error.code === 'auth/email-already-in-use') {
+    //                 setSignUpError('An account already exists with this email, please log in.');
+    //             } else if (error.code === 'auth/weak-password') {
+    //                 setSignUpError('Password should be at least 6 characters.');
+    //             } else {
+    //                 setSignUpError('Error while creating account.');
+    //             }
+    //         } else {
+    //             setSignUpError('')
+    //             console.log(user)
+    //             setUser(user);
+    //             setLoggedIn(true);
+    //             navigate('/dashboard');
+    //         }
+    //     }
    
-    }
+    // }
 
-    function handleClick (e) {
-        e.preventDefault()
-        navigate('/login')
-    }
+    // function handleClick (e) {
+    //     e.preventDefault()
+    //     navigate('/login')
+    // }
  
   return (
         <div>                  
             <h1> Signup </h1>                                                                            
-            <form data-testid="Signup Form">                                                                                            
+            {/* <form data-testid="Signup Form">                                                                                            
                 <div>
                     <label htmlFor="email-address">
                         Email address
@@ -101,7 +102,8 @@ const Signup = (props) => {
             <p>
                 Already have an account?{' '}
                 <Button text={'Log In'} handleClick={handleClick}></Button>
-            </p>                   
+            </p> */}
+            <SignupForm setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}></SignupForm>                   
         </div>
   )
 }
