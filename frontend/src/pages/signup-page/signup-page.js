@@ -8,27 +8,32 @@ const Signup = (props) => {
     const navigate = useNavigate();
  
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [signUpError, setSignUpError] = useState('')
    
     const onSubmit = async (e) => {
         e.preventDefault()
-     
-        const user = await createAccountEmailPassword(email, password)
-        if (user.uid === undefined) {
-            const error = user;
-            if (error.code === 'auth/email-already-in-use') {
-                setSignUpError('An account already exists with this email, please log in.');
-            } else if (error.code === 'auth/weak-password') {
-                setSignUpError('Password should be at least 6 characters.');
-            } else {
-                setSignUpError('Error while creating account.');
-            }
+        
+        if (password != confirmPassword) {
+            setSignUpError('Passwords do not match.')
         } else {
-            setSignUpError('')
-            console.log(user)
-            setUser(user);
-            setLoggedIn(true);
-            navigate('/dashboard');
+            const user = await createAccountEmailPassword(email, password)
+            if (user.uid === undefined) {
+                const error = user;
+                if (error.code === 'auth/email-already-in-use') {
+                    setSignUpError('An account already exists with this email, please log in.');
+                } else if (error.code === 'auth/weak-password') {
+                    setSignUpError('Password should be at least 6 characters.');
+                } else {
+                    setSignUpError('Error while creating account.');
+                }
+            } else {
+                setSignUpError('')
+                console.log(user)
+                setUser(user);
+                setLoggedIn(true);
+                navigate('/dashboard');
+            }
         }
    
     }
@@ -68,7 +73,22 @@ const Signup = (props) => {
                         required                                 
                         placeholder="Password"              
                     />
-                </div>                                             
+                </div> 
+
+                <div>
+                    <label htmlFor="confirm-password">
+                        Confirm Password
+                    </label>
+                    <input
+                        type="password"
+                        label="Confirm password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        required                                 
+                        placeholder="Confirm password"              
+                    />
+                </div>
+
                 <label>{signUpError}</label>
                 <button
                     type="submit" 
