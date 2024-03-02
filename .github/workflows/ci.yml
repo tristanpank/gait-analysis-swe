@@ -31,7 +31,7 @@ jobs:
       - name: Install Python dependencies
         run: |
           cd api
-          pip install -r requirements-github.txt
+          pip install -r requirements.txt
       
       - name: Run tests
         run: |
