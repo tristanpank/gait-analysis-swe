@@ -169,3 +169,13 @@ class GaitAnalysis:
     cadence = cadence[cadence < 250]
     self.avg_cadence = np.mean(cadence)
     return cadence
+  
+  def calculate_graph(self, first, middle, last):
+    angle = 180 - self.smooth_data(self.get_angle(first, middle, last))
+    plt.plot(angle)
+    plt.xlabel("Frames")
+    plt.ylabel("Angle")
+    path = f'./temp_graphs/{first}-{middle}-{last}.png'
+    plt.savefig(path)
+    # Returns path
+    return path
