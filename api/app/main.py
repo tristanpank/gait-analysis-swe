@@ -1,6 +1,7 @@
 import os
 from fastapi import FastAPI, UploadFile, File
 from .gait_analysis import GaitAnalysis
+from .graphs import get_all_graphs
 from moviepy.editor import VideoFileClip
 from fastapi.responses import JSONResponse
 import firebase_admin
@@ -116,14 +117,21 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   # Upload the compressed video to cloud storage
   upload_file_to_cloud_storage(compressed_path, f"users/{uid}/videos/{video_ref[1].id}/pose.mp4")
 
+  # Calculate all graphs
+  graph_paths = get_all_graphs(gait_analysis)
+
+  # Upload graphs to cloud storage
+  for path in graph_paths:
+    graph_file = '/'.join(path.split('/')[2:])
+    upload_file_to_cloud_storage(path, f"users/{uid}/videos/{video_ref[1].id}/graphs/{graph_file}")
+    os.remove(path)
+
   # Update user document with pose data and upload status
   # if uid != "test":
   #   user_ref.update({
   #     f'pose_data_{view}': pose_data,
   #     f'{view}_uploaded': True,
   #   })
-  
-  
 
   os.remove(file_path)
   os.remove(pose_path)
