@@ -106,15 +106,28 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   # Export pose data as JSON
   pose_data = gait_analysis.export_frames_json()
 
+  video_ref = db.collection("videos").add({
+    "pose_data": pose_data,
+    "uid": uid,
+    "view": view,
+  })
+  print(video_ref[1].id)
+
   # Upload the compressed video to cloud storage
-  upload_file_to_cloud_storage(compressed_path, f"users/{uid}/videos/{view}/pose.mp4")
+  upload_file_to_cloud_storage(compressed_path, f"users/{uid}/videos/{video_ref[1].id}/pose.mp4")
 
   # Update user document with pose data and upload status
-  if uid != "test":
-    user_ref.update({
-      f'pose_data_{view}': pose_data,
-      f'{view}_uploaded': True,
-    })
+  # if uid != "test":
+  #   user_ref.update({
+  #     f'pose_data_{view}': pose_data,
+  #     f'{view}_uploaded': True,
+  #   })
+  
+  
+
+  os.remove(file_path)
+  os.remove(pose_path)
+  os.remove(compressed_path)
 
   # Return the pose data as JSON response
   return JSONResponse(content=pose_data, media_type="application/json")

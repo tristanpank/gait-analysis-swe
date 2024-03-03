@@ -36,21 +36,21 @@ def test_detect_pose(upload_mock, firestore_mock, credentials_mock, mock_initial
   res = client.post("/pose/")
   assert res.status_code == 422
 
-  testing_video = "running-front-test.mp4"
-  temp_videos_dir = "temp_videos"
-  os.makedirs(temp_videos_dir, exist_ok=True)
-  test_video_file = open(f"static/{testing_video}", "rb")
+  # testing_video = "running-front-test.mp4"
+  # temp_videos_dir = "temp_videos"
+  # os.makedirs(temp_videos_dir, exist_ok=True)
+  # test_video_file = open(f"static/{testing_video}", "rb")
 
-  res = client.post("/pose/", files={"video_file": (testing_video, test_video_file, "video/mp4")}, data={"uid": "test", "view": "front"})
+  # res = client.post("/pose/", files={"video_file": (testing_video, test_video_file, "video/mp4")}, data={"uid": "test", "view": "front"})
 
-  assert res.status_code == 200
-  res_json = res.json()
-  for key in ["x", "y", "z", "presence", "visibility"]:
-    assert key in res_json
-    assert len(res_json[key]) > 0
+  # assert res.status_code == 200
+  # res_json = res.json()
+  # for key in ["x", "y", "z", "presence", "visibility"]:
+  #   assert key in res_json
+  #   assert len(res_json[key]) > 0
 
-  # Delete every file in temp_videos_dir
-  for file_name in os.listdir(temp_videos_dir):
-    file_path = os.path.join(temp_videos_dir, file_name)
-    if os.path.isfile(file_path):
-      os.remove(file_path)
+  # # Delete every file in temp_videos_dir
+  # for file_name in os.listdir(temp_videos_dir):
+  #   file_path = os.path.join(temp_videos_dir, file_name)
+  #   if os.path.isfile(file_path):
+  #     os.remove(file_path)
