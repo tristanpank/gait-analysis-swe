@@ -177,5 +177,6 @@ class GaitAnalysis:
     plt.ylabel("Angle")
     path = f'./temp_graphs/{first}-{middle}-{last}.png'
     plt.savefig(path)
+    plt.clf()
     # Returns path
     return path
