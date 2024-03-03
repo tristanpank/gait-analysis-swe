@@ -77,7 +77,7 @@ export function SignupForm(props) {
         Welcome to Gait Analysis
       </h2>
       <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-        Already have an account? <a onClick={handleClick} >Login</a>
+        Already have an account? <a className="text-blue-500 hover:text-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" onClick={handleClick} >Login</a>
       </p>
 
       <form className="my-8" onSubmit={onSubmit}>
