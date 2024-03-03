@@ -118,3 +118,54 @@ class GaitAnalysis:
     self.time_between_frames = np.mean(np.diff(frame_times))
 
     return np.array(frame_positions)
+  
+  # Functions for converting mediapipe landmark data into frame by frame xy points
+  @staticmethod
+  def convert_to_points(frames):
+    x_vectorize = np.vectorize(lambda landmark: landmark.x)
+    y_vectorize = np.vectorize(lambda landmark: landmark.y)
+    return np.vstack((x_vectorize(frames), y_vectorize(frames))).T
+
+  def get_landmark_frames(self, point):
+    # return self.convert_to_points(self.frames[:, point])
+    return self.frames[:, point, :2]
+
+  # Uses the dot product to calculate the angle between 2 vectors
+  @staticmethod
+  def angle(u, v):
+    cos = np.sum(u*v, axis=1) / (np.linalg.norm(u, axis=1) * np.linalg.norm(v, axis=1))
+    return np.arccos(cos) * (180/np.pi)
+
+  # Gets angle between start-mid and mid-end vectors over all frames
+  def get_angle(self, start, mid, end):
+    start_frames = self.get_landmark_frames(start)
+    mid_frames = self.get_landmark_frames(mid)
+    end_frames = self.get_landmark_frames(end)
+
+    start_mid = mid_frames - start_frames
+    mid_end = end_frames - mid_frames
+    return self.angle(start_mid, mid_end)
+
+  def smooth_data(self, data, window_length=15, polyorder=3):
+    return savgol_filter(data, window_length=window_length, polyorder=polyorder)
+
+  def calculate_cadence(self, left=True):
+    if left:
+      heel = self.get_landmark_frames(29)
+    else:
+      heel = self.get_landmark_frames(30)
+    smooth_heel = self.smooth_data(heel[:, 1])
+
+    # Uses sklearn to find peaks
+    # Calculates periods as diff between minimum
+    valleys, _ = find_peaks(-smooth_heel)
+    periods = np.diff(valleys)
+
+    # Converts periods from frames to seconds
+    step_time = periods * (self.time_between_frames / 1000.)
+    # Calculates steps per min
+    # Filters spm > 300 due to mediapipe outliers
+    cadence = (2 * 60.) / step_time
+    cadence = cadence[cadence < 250]
+    self.avg_cadence = np.mean(cadence)
+    return cadence
