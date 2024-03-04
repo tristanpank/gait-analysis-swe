@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../API_URL";
+import { Input } from "../../shadcn/components/ui/input";
 
 export default function UploadPage(props) {
   const { user } = props;
@@ -57,6 +58,7 @@ export default function UploadPage(props) {
 
       {/* Submit button */}
       <button type="submit">Upload</button>
+      <Input />
     </form>
   );
 }
