@@ -33,4 +33,28 @@ async function setUserDB(user) {
   }
 }
 
-export { setUserDB };
+async function getAllVideos(user) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+    
+    if (docSnap.exists()) {
+      const data = await docSnap.data();
+      return data.videos;
+    } else {
+      return []
+    }
+  } catch (error) {
+    console.error(error);
+    return error
+  }
+}
+
+async function getUserVideo(user, vid) {
+  const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/pose.mp4`)
+  const url = await getDownloadURL(videoRef);
+  console.log(url);
+  return url;
+}
+
+export { setUserDB, getAllVideos, getUserVideo };
