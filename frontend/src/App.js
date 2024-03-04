@@ -7,6 +7,7 @@ import Login from './pages/login-page/login-page.js'
 import Signup from './pages/signup-page/signup-page.js';
 import Dashboard from './pages/dashboard-page/dashboard-page.js';
 import UploadPage from './pages/upload-page/upload-page.js';
+import VideoPage from './pages/video-page/video-page';
 import './App.css'
 import { useEffect, useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth';
@@ -38,6 +39,7 @@ function App() {
           <Route path="/signup" element={<Signup setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
           <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           <Route path="/upload" element={<UploadPage user={user} />} />
+          <Route path="/dashboard/:vid" element={<VideoPage user={user} />} />
         </Routes>
       </BrowserRouter>
     </div>

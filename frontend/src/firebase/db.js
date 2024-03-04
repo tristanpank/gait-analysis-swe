@@ -53,8 +53,22 @@ async function getAllVideos(user) {
 async function getUserVideo(user, vid) {
   const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/pose.mp4`)
   const url = await getDownloadURL(videoRef);
-  console.log(url);
   return url;
 }
 
-export { setUserDB, getAllVideos, getUserVideo };
+async function getVideoData(vid) {
+  const video = await getDoc(doc(db,"videos", vid))
+  try {
+    if (video.exists()) {
+      const data = await video.data();
+      return data;
+    } else {
+      return undefined;
+    }
+  } catch (error) {
+    console.error(error);
+    return error
+  }
+}
+
+export { setUserDB, getAllVideos, getUserVideo, getVideoData };

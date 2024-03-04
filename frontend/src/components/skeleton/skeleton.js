@@ -56,19 +56,19 @@ const Skeleton = ({ landmarks }) => {
         {connections.map(([start, end], index) => (
             <line
             key={index}
-            x1={landmarks[start].x * dimensions.width}
-            y1={landmarks[start].y * dimensions.height}
-            x2={landmarks[end].x * dimensions.width}
-            y2={landmarks[end].y * dimensions.height}
+            x1={landmarks[0][start] * dimensions.width}
+            y1={landmarks[1][start] * dimensions.height}
+            x2={landmarks[0][end] * dimensions.width}
+            y2={landmarks[1][end] * dimensions.height}
             stroke="gray"
             strokeWidth="2"
             />
         ))}
-        {landmarks.map((landmark, index) => (
+        {landmarks[0].map((x, index) => (
             <circle
             key={index}
-            cx={landmark.x * dimensions.width}
-            cy={landmark.y * dimensions.height}
+            cx={landmarks[0][index] * dimensions.width}
+            cy={landmarks[1][index] * dimensions.height}
             r='0.5%'
             fill="gray"
             {...(clickableLandmarks.includes(index) && { onClick: () => handleCircleClick(index), style: { cursor: 'pointer' }, fill:"cyan" })}
