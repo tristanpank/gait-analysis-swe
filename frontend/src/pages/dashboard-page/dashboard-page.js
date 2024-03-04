@@ -13,7 +13,7 @@ const Dashboard = (props) => {
   function handleClick (e) {
     navigate('/upload');
   }
-  
+
   useEffect(() => {
     getAllVideos(user).then((videosArray) => {
       console.log(videosArray);
@@ -21,6 +21,9 @@ const Dashboard = (props) => {
     })
   }, [])
   
+  const content = Array.isArray(videoArray) ? videoArray.map((vid, index) => (
+    <div key={index}><VideoCard user={user} vid={vid}></VideoCard></div>
+  )) : null;
 
   return (
     <div className="color-scheme: dark; bg-white dark:bg-black">
@@ -28,12 +31,7 @@ const Dashboard = (props) => {
       <div className="pt-20">
         <Button text="Upload a video" handleClick={handleClick}></Button>
         <div>
-          {videoArray.map((vid, index) => (
-            // Create a div for each element in the array
-            // Using index as key is generally not recommended for dynamic lists, consider using a unique identifier
-            
-            <VideoCard user={user} vid={vid}></VideoCard>
-          ))}
+          {content}
         </div>
         <h2>This is the Dashboard!</h2>
         <h2>This is the Dashboard!</h2>
