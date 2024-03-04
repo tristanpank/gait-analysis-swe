@@ -33,4 +33,22 @@ async function setUserDB(user) {
   }
 }
 
-export { setUserDB };
+async function getAllVideos(user) {
+  try {
+    console.log('1');
+    const userRef = doc(db, "users", user.uid);
+    console.log('2');
+    const docSnap = await getDoc(userRef);
+    
+    if (docSnap.exists()) {
+      return docSnap.data().videos;
+    } else {
+      return []
+    }
+  } catch (error) {
+    console.error(error);
+    return error
+  }
+}
+
+export { setUserDB, getUserVideo };

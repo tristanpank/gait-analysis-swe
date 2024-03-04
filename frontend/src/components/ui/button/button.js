@@ -1,9 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const Button = (props) => {
     const { text, handleClick } = props
-    const navigate = useNavigate();
 
     return (
         <button className="p-[3px] relative" onClick={handleClick}>
