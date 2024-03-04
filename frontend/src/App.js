@@ -9,11 +9,25 @@ import Dashboard from './pages/dashboard-page/dashboard-page.js';
 import UploadPage from './pages/upload-page/upload-page.js';
 import './App.css'
 import { useEffect, useState } from 'react'
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from "./firebase/firebaseConfig";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [user, setUser] = useState({});
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (currUser) => {
+      if (currUser) {
+        setLoggedIn(true);
+        setUser(currUser);
+      } else {
+        setLoggedIn(false);
+        setUser({});
+      }
+    });
+  }, []);
 
   return (
     <div data-testid="App">
