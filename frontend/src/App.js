@@ -6,6 +6,7 @@ import Home from './pages/home-page/home-page.js'
 import Login from './pages/login-page/login-page.js'
 import Signup from './pages/signup-page/signup-page.js';
 import Dashboard from './pages/dashboard-page/dashboard-page.js';
+import UploadPage from './pages/upload-page/upload-page.js';
 import './App.css'
 import { useEffect, useState } from 'react'
 
@@ -22,6 +23,7 @@ function App() {
           <Route path="/login" element={<Login setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
           <Route path="/signup" element={<Signup setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
           <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+          <Route path="/upload" element={<UploadPage user={user} />} />
         </Routes>
       </BrowserRouter>
     </div>
