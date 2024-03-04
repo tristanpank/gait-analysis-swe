@@ -57,4 +57,19 @@ async function getUserVideo(user, vid) {
   return url;
 }
 
+async function getVideoData(vid) {
+  const video = await getDoc(doc(db,"videos", vid))
+  try {
+    if (video.exists()) {
+      const data = await video.data();
+      return data;
+    } else {
+      return undefined;
+    }
+  } catch (error) {
+    console.error(error);
+    return error
+  }
+}
+
 export { setUserDB, getAllVideos, getUserVideo };
