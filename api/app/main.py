@@ -5,7 +5,7 @@ from .graphs import get_all_graphs
 from moviepy.editor import VideoFileClip
 from fastapi.responses import JSONResponse
 import firebase_admin
-from firebase_admin import credentials, storage
+from firebase_admin import credentials, storage, firestore
 from google.cloud import firestore
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
@@ -111,6 +111,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     "pose_data": pose_data,
     "uid": uid,
     "view": view,
+    "timestamp": firestore.SERVER_TIMESTAMP
   })
   print(video_ref[1].id)
 
@@ -126,10 +127,18 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   graph_paths = get_all_graphs(gait_analysis)
 
   # Upload graphs to cloud storage
+  graph_names = []
   for path in graph_paths:
     graph_file = '/'.join(path.split('/')[2:])
     upload_file_to_cloud_storage(path, f"users/{uid}/videos/{video_ref[1].id}/graphs/{graph_file}")
     os.remove(path)
+    graph_names.append(graph_file)
+  print(graph_names)
+
+  # Update video document with graph names
+  video_ref[1].update({
+    "graphs": graph_names
+  })
 
   # Update user document with pose data and upload status
   # if uid != "test":
