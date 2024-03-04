@@ -114,6 +114,11 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   })
   print(video_ref[1].id)
 
+  # Update user document with video id
+  user_ref.update({
+    "videos": firestore.ArrayUnion([video_ref[1].id])
+  })
+
   # Upload the compressed video to cloud storage
   upload_file_to_cloud_storage(compressed_path, f"users/{uid}/videos/{video_ref[1].id}/pose.mp4")
 
@@ -132,6 +137,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   #     f'pose_data_{view}': pose_data,
   #     f'{view}_uploaded': True,
   #   })
+  
 
   os.remove(file_path)
   os.remove(pose_path)
