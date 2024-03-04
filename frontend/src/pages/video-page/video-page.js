@@ -4,6 +4,7 @@ import { getUserVideo, getVideoData} from '../../firebase/db.js'
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Skeleton from 'src/components/skeleton/skeleton';
+import { getAllGraphs } from "../../firebase/db.js";
 
 function VideoPage(props) {
     const  { user } = props;
@@ -18,6 +19,7 @@ function VideoPage(props) {
     const [frames, setFrames] = useState(0);
     const [videoData, setvideoData] = useState(undefined);
     const [paused, setPaused] = useState(false);
+    const [graphs, setGraphs] = useState({});
     
     useEffect(() => {
         const video = document.getElementById('video');
@@ -65,7 +67,7 @@ function VideoPage(props) {
             setVideoExists(false);
             return;
         } else if (user.uid === undefined) {
-            navigate('/signup');
+            // navigate('/signup');
         } else {    
             const fetchVideo = async () => {
                 const url = await getUserVideo(user, vid);
@@ -73,9 +75,13 @@ function VideoPage(props) {
                 setVideoExists(true)
             };
             fetchVideo();
+            // const graphs = getAllGraphs(user, vid).then((graphs) => console.log(graphs));
 
             
-            getVideoData(vid).then((videoData) => setvideoData(videoData));
+            getVideoData(vid).then((videoData) => {
+              const graphs = getAllGraphs(user, vid, videoData).then((graphs) => setGraphs(graphs));
+              setvideoData(videoData)
+            });
         }
         
     }, [user, vid]);
@@ -113,7 +119,7 @@ function VideoPage(props) {
                     <source src={path} type="video/mp4"></source>
                 </video>
                 {skeletonExists && (
-                    <Skeleton landmarks={landmarks}></Skeleton>
+                    <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
                 )}
                 
             </div>

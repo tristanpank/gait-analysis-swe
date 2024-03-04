@@ -20,7 +20,7 @@ const Dashboard = (props) => {
       console.log(videosArray);
       setVideoArray(videosArray);
     })
-  }, [])
+  }, [user])
   
   const content = Array.isArray(videoArray) ? videoArray.map((vid, index) => (
     <div key={index}><VideoCard user={user} vid={vid}></VideoCard></div>
