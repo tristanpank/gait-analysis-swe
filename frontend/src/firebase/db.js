@@ -35,13 +35,12 @@ async function setUserDB(user) {
 
 async function getAllVideos(user) {
   try {
-    console.log('1');
     const userRef = doc(db, "users", user.uid);
-    console.log('2');
     const docSnap = await getDoc(userRef);
     
     if (docSnap.exists()) {
-      return docSnap.data().videos;
+      const data = await docSnap.data();
+      return data.videos;
     } else {
       return []
     }
@@ -51,4 +50,11 @@ async function getAllVideos(user) {
   }
 }
 
-export { setUserDB, getUserVideo };
+async function getUserVideo(user, vid) {
+  const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/pose.mp4`)
+  const url = await getDownloadURL(videoRef);
+  console.log(url);
+  return url;
+}
+
+export { setUserDB, getAllVideos, getUserVideo };
