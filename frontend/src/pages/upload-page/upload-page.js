@@ -3,19 +3,22 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../API_URL";
+import { Input } from "../../shadcn/components/ui/input";
+import { Card, CardHeader, CardTitle, CardContent } from "../../shadcn/components/ui/card";
+import { Label } from "../../shadcn/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shadcn/components/ui/select";
+import { Button } from "../../shadcn/components/ui/button";
 
 export default function UploadPage(props) {
   const { user } = props;
   const navigate = useNavigate();
+  const [view, setView] = useState("front");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const fileInput = document.getElementById("video");
     const file = fileInput.files[0];
     const formData = new FormData();
-    const viewInput = document.getElementById("view");
-    const view = viewInput.value;
-    console.log(user.uid);
     formData.append("video_file", file);
     formData.append("view", view);
     formData.append("uid", user.uid);
@@ -43,20 +46,34 @@ export default function UploadPage(props) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {/* Input for selecting a video file */}
-      <label htmlFor="video">Upload a video:</label>
-      <input id="video" type="file"></input>
-
-      {/* Select input for choosing a view */}
-      <label htmlFor="view">Select a view:</label>
-      <select id="view">
-        <option value="front">Front</option>
-        <option value="side">Side</option>
-      </select>
-
-      {/* Submit button */}
-      <button type="submit">Upload</button>
-    </form>
+  <div className="flex justify-center items-center min-h-screen bg-black">
+    <Card className="p-5">
+      <CardHeader>
+        <CardTitle>Upload a video</CardTitle>
+      </CardHeader>
+      <CardContent >
+        <form onSubmit={handleSubmit} className="">
+          <div className="mb-2 block">
+            <Label htmlFor="video" className="mb-2 block">Upload a video:</Label>
+            <Input type="file" id="video" className="cursor-pointer" />
+          </div>
+          <div className="mb-2 block">
+            <Label htmlFor="select" className="mb-2 block">Select a view:</Label>
+            <Select className="mb-2 block" id="select" onValueChange={(value) => setView(value)} >
+              <SelectTrigger >
+                <SelectValue placeholder="Front" />
+              </SelectTrigger>
+              <SelectContent id="view">
+                <SelectItem value="front"  >Front</SelectItem>
+                <SelectItem value="side" >Side</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <Button type="submit" variant="default">Submit</Button>
+        </form>
+      </CardContent>
+    </Card>
+  </div>
+    
   );
 }
