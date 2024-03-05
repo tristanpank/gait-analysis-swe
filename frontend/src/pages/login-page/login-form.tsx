@@ -9,7 +9,6 @@ import {createAccountEmailPassword, signInWithGoogle} from '../../firebase/auth.
 
 
 export function LoginForm(props) {
-    
     const {setLoggedIn, email, setEmail, setUser} = props
     const [password, setPassword] = useState('')
     const [loginError, setLoginError] = useState('')
@@ -30,10 +29,6 @@ export function LoginForm(props) {
         setLoggedIn(true);
         navigate('/dashboard');
       }
-        
-        
-  
-  
     };
   
     function handleClick (e) {
@@ -44,7 +39,7 @@ export function LoginForm(props) {
         setEmail(e.target.value)
     }
     function handleSetPassword (e) {
-    setPassword(e.target.value)
+        setPassword(e.target.value)
     }
     async function handleGoogleClick(e) {
         e.preventDefault();
@@ -60,7 +55,7 @@ export function LoginForm(props) {
     return (
         <div data-testid="Login Form" className="max-w-md w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black">
             <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
-            Welcome to Gait Analysis
+            Login
             </h2>
             <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
             Don't have an account? <a className="text-blue-500 hover:text-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" onClick={handleClick} >Sign Up</a>

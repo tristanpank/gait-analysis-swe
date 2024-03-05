@@ -75,7 +75,7 @@ const Login = (props) => {
           Don't have an account?{' '}
           <Button text={'Sign Up'} handleClick={handleClick}></Button>
       </p> 
-      <LoginForm />
+      <LoginForm setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>
     </div>
   )
 }
