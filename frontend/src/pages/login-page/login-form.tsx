@@ -5,7 +5,7 @@ import { Label } from "../../components/ui/label.tsx";
 import { Input } from "../../components/ui/input.tsx";
 import { cn } from "../../utils/cn.ts";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
-import {createAccountEmailPassword, signInWithGoogle} from '../../firebase/auth.js'
+import { signInWithGoogle } from '../../firebase/auth.js'
 
 
 export function LoginForm(props) {
