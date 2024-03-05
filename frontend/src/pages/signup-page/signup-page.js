@@ -4,6 +4,7 @@ import {createAccountEmailPassword} from '../../firebase/auth.js'
 import Button from '../../components/ui/button/button.js'
 import { SignupForm } from './signup-form.tsx';
 import {BackgroundGradientAnimation } from '../../components/ui/background-gradient-animation.tsx';
+import Header from "../../components/ui/header/header.js"
 
 const Signup = (props) => {
     const {setLoggedIn, email, setEmail, setUser} = props
@@ -47,8 +48,9 @@ const Signup = (props) => {
     return (
         <BackgroundGradientAnimation>
             <div class="override-styles">
-                <div className="visible h-full w-full absolute z-10 inset-0 md:flex md:items-center md:justify-center text-white font-bold md:px-4 text-3xl md:text-4xl lg:text-7xl">
-                    <div data-testid="Signup Page" className='h-full md:h-auto' >                  
+                <div className="visible h-full w-full absolute z-10 inset-0 md:flex md:items-center md:justify-center text-white font-bold md:px-4">
+                    <Header></Header>
+                    <div data-testid="Signup Page" className='mt-16 h-full md:h-auto' >                  
                         <SignupForm setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}></SignupForm>                   
                     </div>
                 </div>
