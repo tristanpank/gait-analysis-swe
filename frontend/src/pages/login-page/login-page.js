@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/button/button.js'
 import { signInEmailPassword } from '../../firebase/auth.js';
+import { LoginForm } from './login-form.tsx'
 
 const Login = (props) => {
   const {setLoggedIn, email, setEmail, setUser} = props
@@ -74,6 +75,7 @@ const Login = (props) => {
           Don't have an account?{' '}
           <Button text={'Sign Up'} handleClick={handleClick}></Button>
       </p> 
+      <LoginForm />
     </div>
   )
 }
