@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTrigger, DrawerTitle } from "../../shadcn/components/ui/drawer";
 
 const Skeleton = ({ landmarks, graphs }) => {
-    console.log(graphs);
     const [dimensions, setDimensions] = useState({
         width: window.innerWidth,
         height: window.innerHeight,

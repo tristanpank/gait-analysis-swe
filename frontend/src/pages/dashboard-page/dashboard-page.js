@@ -17,7 +17,7 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     getAllVideos(user).then((videosArray) => {
-      console.log(videosArray);
+      // console.log(videosArray);
       setVideoArray(videosArray);
     })
   }, [user])
