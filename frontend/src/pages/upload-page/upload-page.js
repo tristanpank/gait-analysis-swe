@@ -8,6 +8,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "../../shadcn/component
 import { Label } from "../../shadcn/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shadcn/components/ui/select";
 import { Button } from "../../shadcn/components/ui/button";
+import Header from "src/components/ui/header/header";
 
 export default function UploadPage(props) {
   const { user } = props;
@@ -47,6 +48,7 @@ export default function UploadPage(props) {
 
   return (
   <div className="flex justify-center items-center min-h-screen bg-black">
+    <Header user={user}></Header>
     <Card className="p-5">
       <CardHeader>
         <CardTitle>Upload a video</CardTitle>
