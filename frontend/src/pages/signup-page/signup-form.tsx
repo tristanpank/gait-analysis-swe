@@ -5,8 +5,7 @@ import { Input } from "../../components/ui/input.tsx";
 import { cn } from "../../utils/cn.ts";
 import {
   IconBrandGithub,
-  IconBrandGoogle,
-  IconBrandOnlyfans,
+  IconBrandGoogle
 } from "@tabler/icons-react";
 import { NavLink, useNavigate } from 'react-router-dom';
 import {createAccountEmailPassword, signInWithGoogle} from '../../firebase/auth.js'
