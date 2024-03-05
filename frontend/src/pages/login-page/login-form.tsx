@@ -57,7 +57,7 @@ export function LoginForm(props) {
             <h2 className="font-bold text-xl text-neutral-800 dark:text-neutral-200">
             Log In
             </h2>
-            <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
+            <p className="text-neutral-600 text-sm font-bold max-w-sm mt-2 dark:text-neutral-300">
             Don't have an account? <a className="text-blue-500 hover:text-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" onClick={handleClick} >Sign Up</a>
             </p>
 
