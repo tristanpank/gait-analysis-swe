@@ -4,10 +4,9 @@ import { signInEmailPassword } from '../../firebase/auth.js';
 import { Label } from "../../components/ui/label.tsx";
 import { Input } from "../../components/ui/input.tsx";
 import { cn } from "../../utils/cn.ts";
-import {
-    IconBrandGithub,
-    IconBrandGoogle
-  } from "@tabler/icons-react";
+import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
+import {createAccountEmailPassword, signInWithGoogle} from '../../firebase/auth.js'
+
 
 export function LoginForm(props) {
     
@@ -64,20 +63,10 @@ export function LoginForm(props) {
             Welcome to Gait Analysis
             </h2>
             <p className="text-neutral-600 text-sm max-w-sm mt-2 dark:text-neutral-300">
-            Already have an account? <a className="text-blue-500 hover:text-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" onClick={handleClick} >Login</a>
+            Don't have an account? <a className="text-blue-500 hover:text-blue-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50" onClick={handleClick} >Sign Up</a>
             </p>
 
             <form className="my-8" onSubmit={onSubmit}>
-            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-                <LabelInputContainer>
-                <Label htmlFor="firstname">First name</Label>
-                <Input id="firstname" placeholder="Tyler" type="text" />
-                </LabelInputContainer>
-                <LabelInputContainer>
-                <Label htmlFor="lastname">Last name</Label>
-                <Input id="lastname" placeholder="Durden" type="text" />
-                </LabelInputContainer>
-            </div>
             <LabelInputContainer className="mb-4">
                 <Label htmlFor="email">Email Address</Label>
                 <Input id="email" placeholder="projectmayhem@fc.com" type="email" onChange={handleSetEmail}/>
