@@ -3,6 +3,8 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {createAccountEmailPassword} from '../../firebase/auth.js'
 import Button from '../../components/ui/button/button.js'
 import { SignupForm } from './signup-form.tsx';
+import {BackgroundGradientAnimation } from '../../components/ui/background-gradient-animation.tsx';
+import Header from "../../components/ui/header/header.js"
 
 const Signup = (props) => {
     const {setLoggedIn, email, setEmail, setUser} = props
@@ -43,66 +45,21 @@ const Signup = (props) => {
     //     e.preventDefault()
     //     navigate('/login')
     // }
- 
+    return (
+        <BackgroundGradientAnimation>
+            <div class="override-styles">
+                <div className="visible h-full w-full absolute z-10 inset-0 md:flex md:items-center md:justify-center text-white font-bold md:px-4">
+                    <Header></Header>
+                    <div data-testid="Signup Page" className='mt-16 h-full md:h-auto' >                  
+                        <SignupForm setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}></SignupForm>                   
+                    </div>
+                </div>
+            </div>  
+        </BackgroundGradientAnimation>
+      );
   return (
         <div data-testid="Signup Page">                  
             <h1> Signup </h1>                                                                            
-            {/* <form data-testid="Signup Form">                                                                                            
-                <div>
-                    <label htmlFor="email-address">
-                        Email address
-                    </label>
-                    <input
-                        type="email"
-                        label="Email address"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}  
-                        required                                    
-                        placeholder="Email address"                                
-                    />
-                </div>
-
-                <div>
-                    <label htmlFor="password">
-                        Password
-                    </label>
-                    <input
-                        type="password"
-                        label="Create password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required                                 
-                        placeholder="Password"              
-                    />
-                </div> 
-
-                <div>
-                    <label htmlFor="confirm-password">
-                        Confirm Password
-                    </label>
-                    <input
-                        type="password"
-                        label="Confirm password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        required                                 
-                        placeholder="Confirm password"              
-                    />
-                </div>
-
-                <label>{signUpError}</label>
-                <button
-                    type="submit" 
-                    onClick={onSubmit}                        
-                >  
-                    Sign up                                
-                </button>
-                                                                
-            </form>
-            <p>
-                Already have an account?{' '}
-                <Button text={'Log In'} handleClick={handleClick}></Button>
-            </p> */}
             <SignupForm setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}></SignupForm>                   
         </div>
   )

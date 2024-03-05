@@ -1,53 +1,23 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom';
-import Button from '../../components/ui/button/button.js'
-import { signInEmailPassword } from '../../firebase/auth.js';
 import { LoginForm } from './login-form.tsx'
+import {BackgroundGradientAnimation } from '../../components/ui/background-gradient-animation.tsx';
+import Header from "../../components/ui/header/header.js"
 
 const Login = (props) => {
   const {setLoggedIn, email, setEmail, setUser} = props
 
   return (
-    <LoginForm setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>
-    // <div>
-    //   <form onSubmit={onSubmit} data-testid="Login Form">                                                                                            
-    //       <div>
-    //           <label>
-    //               Email address
-    //           </label>
-    //           <input
-    //               type="email"
-    //               label="Email address"
-    //               value={email}
-    //               onChange={(e) => setEmail(e.target.value)}  
-    //               required                                    
-    //               placeholder="Email address"                                
-    //           />
-    //       </div>
-    //       <div>
-    //           <label htmlFor="password">
-    //               Password
-    //           </label>
-    //           <input
-    //               type="password"
-    //               label="Create password"
-    //               value={password}
-    //               onChange={(e) => setPassword(e.target.value)} 
-    //               required                                 
-    //               placeholder="Password"              
-    //           />
-    //       </div>
-    //       <label>{signInError}</label>       
-    //       <button type="submit">  
-    //           Log In                                
-    //       </button>
-                                                          
-    //   </form>
-    //   <p>
-    //       Don't have an account?{' '}
-    //       <Button text={'Sign Up'} handleClick={handleClick}></Button>
-    //   </p> 
-    //   </div>
+    <BackgroundGradientAnimation>
+      <div class="override-styles">
+          <div className="visible h-full w-full absolute z-10 inset-0 md:flex md:items-center md:justify-center text-white font-bold md:px-4">
+            <Header></Header>
+            <div className='w-full md:w-2/5 md:w-[28rem] h-full md:h-auto' >              
+            <LoginForm setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>                   
+            </div>
+          </div>
+      </div>  
+    </BackgroundGradientAnimation>
+    
   )
 }
 
