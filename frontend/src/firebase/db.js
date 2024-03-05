@@ -2,6 +2,7 @@ import { db } from "./firebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { storage } from './firebaseConfig';
 import { ref, getDownloadURL} from 'firebase/storage';
+import { listAll } from 'firebase/storage';
 
 /**
  * Sets user data in the database.
@@ -50,6 +51,27 @@ async function getAllVideos(user) {
   }
 }
 
+async function getUserGraph(user, vid, graph) {
+  const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs/${graph}`);
+  const url = await getDownloadURL(graphRef);
+  return url;
+}
+
+async function getAllGraphs(user, vid, videoData) {
+  const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs`);
+  const urls = {};
+  // console.log(videoData);
+  const graphNames = videoData.graphs;
+  
+  // console.log(graphNames);
+  for (const graph of graphNames) {
+    const url = await getDownloadURL(ref(graphRef, graph));
+    urls[Number(graph.slice(3, 5))] = url;
+  }
+
+  return urls;
+}
+
 async function getUserVideo(user, vid) {
   const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/pose.mp4`)
   const url = await getDownloadURL(videoRef);
@@ -71,4 +93,4 @@ async function getVideoData(vid) {
   }
 }
 
-export { setUserDB, getAllVideos, getUserVideo, getVideoData };
+export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph};

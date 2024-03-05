@@ -1,9 +1,9 @@
 import { domAnimation } from 'framer-motion';
 import React from 'react';
 import { useState, useEffect } from 'react';
+import { Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTrigger, DrawerTitle } from "../../shadcn/components/ui/drawer";
 
-const Skeleton = ({ landmarks }) => {
-
+const Skeleton = ({ landmarks, graphs }) => {
     const [dimensions, setDimensions] = useState({
         width: window.innerWidth,
         height: window.innerHeight,
@@ -52,9 +52,9 @@ const Skeleton = ({ landmarks }) => {
     }
 
     return (
-        <svg className="relative w-full h-full" viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}>
+      <svg className="relative w-full h-full" viewBox={`0 0 ${dimensions.width} ${dimensions.height}`}>
         {connections.map(([start, end], index) => (
-            <line
+          <line
             key={index}
             x1={landmarks[0][start] * dimensions.width}
             y1={landmarks[1][start] * dimensions.height}
@@ -62,19 +62,32 @@ const Skeleton = ({ landmarks }) => {
             y2={landmarks[1][end] * dimensions.height}
             stroke="gray"
             strokeWidth="2"
-            />
+          />
         ))}
         {landmarks[0].map((x, index) => (
-            <circle
-            key={index}
-            cx={landmarks[0][index] * dimensions.width}
-            cy={landmarks[1][index] * dimensions.height}
-            r='0.5%'
-            fill="gray"
-            {...(clickableLandmarks.includes(index) && { onClick: () => handleCircleClick(index), style: { cursor: 'pointer' }, fill:"cyan" })}
-            />
+          <Drawer>
+            <DrawerTrigger asChild>
+              <circle
+                key={index}
+                cx={landmarks[0][index] * dimensions.width}
+                cy={landmarks[1][index] * dimensions.height}
+                r="0.5%"
+                fill="gray"
+                {...(clickableLandmarks.includes(index) && { onClick: () => handleCircleClick(index), style: { cursor: 'pointer' }, fill: "cyan" })}
+              />
+            </DrawerTrigger>
+            <DrawerContent>
+              <DrawerHeader>
+                <DrawerTitle className="text-center">Graph {index}</DrawerTitle>
+              </DrawerHeader>
+              <div className='flex justify-center items-center'>
+              {clickableLandmarks.includes(index) && <img src={graphs[index]} alt="graph" className="" />}
+              </div>
+              
+            </DrawerContent>
+          </Drawer>
         ))}
-        </svg>
+      </svg>
     );
 };
 
