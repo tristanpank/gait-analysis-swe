@@ -144,6 +144,14 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
       "injury_graphs": ["crossover.png"]
     })
 
+  # Calculates and adds cadence if video is side view
+  if view == "side":
+    gait_analysis.calculate_cadence()
+    video_ref[1].update({
+      "cadence": gait_analysis.avg_cadence
+    })
+
+
   # Update video document with graph names
   video_ref[1].update({
     "graphs": graph_names

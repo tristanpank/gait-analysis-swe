@@ -154,11 +154,13 @@ class GaitAnalysis:
       heel = self.get_landmark_frames(29)
     else:
       heel = self.get_landmark_frames(30)
-    smooth_heel = self.smooth_data(heel[:, 1])
+    # I felt like double smoothing helps
+    smooth_heel = self.smooth_data(self.smooth_data((heel[:, 1])))
 
     # Uses sklearn to find peaks
     # Calculates periods as diff between minimum
-    valleys, _ = find_peaks(-smooth_heel)
+    smooth_heel = 1 - smooth_heel
+    valleys, _ = find_peaks(-smooth_heel, prominence=0.05, distance=9)
     periods = np.diff(valleys)
 
     # Converts periods from frames to seconds
