@@ -27,7 +27,7 @@ const Dashboard = (props) => {
   )) : null;
 
   return (
-    <div className="color-scheme: dark; bg-white dark:bg-black">
+    <div className=" bg-gradient-to-r from-[#5392b5] to-[#2b5981e3]">
       <Header user={user}></Header>
       <div className="pt-20">
         <Button text="Upload a video" handleClick={handleClick}></Button>

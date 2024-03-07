@@ -35,8 +35,8 @@ const VideoCard = (props) => {
 
 
     return (
-        <div onClick={() => {navigate(`./${vid}`)}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="w-full md:w-auto h-auto md:mx-3 my-1 rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-zinc-900">
-            <video muted loop ref={videoRef} width="250" key={path}>
+        <div onClick={() => {navigate(`./${vid}`)}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="video-container overflow-hidden mx-3 my-1 rounded-2xl p-2 md:p-4 bg-white">
+            <video muted loop ref={videoRef} key={path} className='object-cover max-h-[10vh] rounded-xl'>
                 <source src={path} type="video/mp4"></source>
             </video>
         </div>
