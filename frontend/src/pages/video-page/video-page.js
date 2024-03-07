@@ -88,6 +88,9 @@ function VideoPage(props) {
 
     useEffect(() => {
         const getPoseLandmarks = (videoData) => {
+            if (videoData.pose_data.x.split(';')[count] === undefined) {
+                return;
+            }
             const x = videoData.pose_data.x.split(';')[count].split(',');
             const y = videoData.pose_data.y.split(';')[count].split(',');
             setLandmarks([x, y]);

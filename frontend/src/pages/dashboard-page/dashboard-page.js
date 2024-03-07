@@ -27,105 +27,20 @@ const Dashboard = (props) => {
   )) : null;
 
   return (
-    <div className="color-scheme: dark; bg-white dark:bg-black">
-      <Header user={user}></Header>
-      <div className="pt-20">
-        <Button text="Upload a video" handleClick={handleClick}></Button>
-        <div>
-          {content}
+    <div className=" bg-gradient-to-r from-[#5392b5] to-[#2b5981e3] min-h-[100dvh]">
+      <Header user={user} color={true}></Header>
+      <div className="mt-15 pt-20">
+        <button className="w-full h-20" onClick={handleClick}>
+          <div className='mx-5 py-7 h-full border'>Upload a video</div>
+        </button>
+        <div className='flex'>
+          <div className='bg-white md:max-w-[33%] my-5 p-5 divide-y-[1px]'>
+              {content}
+          </div>
+          <div className="hidden md:block w-0 bg-white md:my-5 md:p-5 md:w-full text-black">Heyyy</div>
         </div>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
-        <h2>This is the Dashboard!</h2>
+        
+        
       </div>
     </div>
   )

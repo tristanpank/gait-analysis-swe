@@ -2,8 +2,8 @@ import React, { useState, useEffect }from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Header = (props) => {
-    const { user } = props
-    const [isActive, setIsActive] = useState(true);
+    const { user, color } = props
+    const [isActive, setIsActive] = useState(false);
     const navigate = useNavigate();
 
     // Effect hook to add and remove the scroll event listener
@@ -14,7 +14,7 @@ const Header = (props) => {
         if (window.scrollY > 10) {
             setIsActive(true);
         } else {
-            setIsActive(true);
+            setIsActive(false);
         }
         };
 
@@ -26,9 +26,9 @@ const Header = (props) => {
     }, []); // Empty dependency array means this effect runs once on mount and cleanup on unmount
 
     return (
-        <header className={isActive ? "z-[10] fixed w-full top-0 border-b backdrop-blur-sm bg-white/[0.6] dark:bg-black/[0.6] border-neutral-200 dark:border-white/[0.1]" : "z-[10] fixed top-0 w-full bg-transparent border-b border-transparent"}>
-            <div className="container flex h-16">
-                <h1 className="px-3 py-5">Header</h1>
+        <header className={color ? "z-[10] fixed w-[100vw] top-0 bg-gradient-to-tr from-[#37e6ff] to-[#10cbfab6]" : "z-[10] fixed top-0 w-[100vw] bg-black border-b"}>
+            <div className="container flex">
+                <h1 className="px-2 py-4 text-2xl">Header</h1>
             </div>
         </header>
     )
