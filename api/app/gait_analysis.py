@@ -170,6 +170,36 @@ class GaitAnalysis:
     self.avg_cadence = np.mean(cadence)
     return cadence
   
+  def calculate_leg_crossover(self):
+    # Get the frames for the right hip, left hip, right ankle, and left ankle
+    right_hip = self.get_landmark_frames(24)
+    left_hip = self.get_landmark_frames(23)
+    right_ankle = self.get_landmark_frames(28)
+    left_ankle = self.get_landmark_frames(27)
+    
+    # Calculate the midpoint between the left hip and right hip
+    mid = (left_hip + right_hip) / 2
+    
+    # Calculate the distance between the midpoint and the left hip
+    left_mid_dist = mid[:, 0] - left_hip[:, 0]
+    
+    # Calculate the distance between the right hip and the midpoint
+    right_mid_dist = right_hip[:, 0] - mid[:, 0]
+
+    # Calculate the left crossover percentage
+    left_crossover = (left_ankle[:, 0] - left_hip[:, 0]) * (100. / left_mid_dist)
+    
+    # Calculate the right crossover percentage
+    right_crossover = (right_hip[:, 0] - right_ankle[:, 0]) * (100. / right_mid_dist)
+
+    # Set negative values to 0
+    left_crossover[left_crossover < 0] = 0
+    right_crossover[right_crossover < 0] = 0
+
+    # Return the left and right crossover percentages
+    return left_crossover, right_crossover
+
+
   def calculate_graph(self, first, middle, last):
     angle = 180 - self.smooth_data(self.get_angle(first, middle, last))
     plt.plot(angle)

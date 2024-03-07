@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI, UploadFile, File
 from .gait_analysis import GaitAnalysis
-from .graphs import get_all_graphs
+from .graphs import get_all_graphs, get_crossover_graph
 from moviepy.editor import VideoFileClip
 from fastapi.responses import JSONResponse
 import firebase_admin
@@ -134,6 +134,15 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     os.remove(path)
     graph_names.append(graph_file)
   print(graph_names)
+
+  # If the view is "front", calculate and upload the crossover graph
+  if view == "front":
+    crossover_path = get_crossover_graph(gait_analysis)
+    upload_file_to_cloud_storage(crossover_path, f"users/{uid}/videos/{video_ref[1].id}/graphs/crossover.png")
+    os.remove(crossover_path)
+    video_ref[1].update({
+      "injury_graphs": ["crossover.png"]
+    })
 
   # Update video document with graph names
   video_ref[1].update({
