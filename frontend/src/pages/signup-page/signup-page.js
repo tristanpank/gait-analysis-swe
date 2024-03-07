@@ -1,50 +1,21 @@
-import React, {useState} from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import {createAccountEmailPassword} from '../../firebase/auth.js'
-import Button from '../../components/ui/button/button.js'
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { SignupForm } from './signup-form.tsx';
 import {BackgroundGradientAnimation } from '../../components/ui/background-gradient-animation.tsx';
 import Header from "../../components/ui/header/header.js"
 
-const Signup = (props) => {
-    const {setLoggedIn, email, setEmail, setUser} = props
-    // const navigate = useNavigate();
- 
-    // const [password, setPassword] = useState('');
-    // const [confirmPassword, setConfirmPassword] = useState('');
-    // const [signUpError, setSignUpError] = useState('')
-   
-    // const onSubmit = async (e) => {
-    //     e.preventDefault()
-        
-    //     if (password != confirmPassword) {
-    //         setSignUpError('Passwords do not match.')
-    //     } else {
-    //         const user = await createAccountEmailPassword(email, password)
-    //         if (user.uid === undefined) {
-    //             const error = user;
-    //             if (error.code === 'auth/email-already-in-use') {
-    //                 setSignUpError('An account already exists with this email, please log in.');
-    //             } else if (error.code === 'auth/weak-password') {
-    //                 setSignUpError('Password should be at least 6 characters.');
-    //             } else {
-    //                 setSignUpError('Error while creating account.');
-    //             }
-    //         } else {
-    //             setSignUpError('')
-    //             console.log(user)
-    //             setUser(user);
-    //             setLoggedIn(true);
-    //             navigate('/dashboard');
-    //         }
-    //     }
-   
-    // }
 
-    // function handleClick (e) {
-    //     e.preventDefault()
-    //     navigate('/login')
-    // }
+const Signup = (props) => {
+    const {setLoggedIn, email, setEmail, setUser, user} = props
+
+    const navigate = useNavigate();
+  
+    useEffect(() => {
+        if (user) {
+        navigate('/dashboard');
+        }
+    }, [user])
+
     return (
         <BackgroundGradientAnimation>
             <div class="override-styles">

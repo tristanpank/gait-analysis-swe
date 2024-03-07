@@ -35,8 +35,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home/>} />
-          <Route path="/login" element={<Login setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
-          <Route path="/signup" element={<Signup setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
+          <Route path="/login" element={<Login user={user} setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
+          <Route path="/signup" element={<Signup user={user} setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
           <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           <Route path="/upload" element={<UploadPage user={user} />} />
           <Route path="/dashboard/:vid" element={<VideoPage user={user} />} />
