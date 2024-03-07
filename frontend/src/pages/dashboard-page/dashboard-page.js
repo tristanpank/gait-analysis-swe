@@ -33,9 +33,14 @@ const Dashboard = (props) => {
         <button className="w-full h-20" onClick={handleClick}>
           <div className='mx-5 py-7 h-full border'>Upload a video</div>
         </button>
-        <div className='my-5'>
-          {content}
+        <div className='flex'>
+          <div className='bg-white md:max-w-[33%] my-5 p-5 divide-y-[1px]'>
+              {content}
+          </div>
+          <div className="hidden md:block w-0 bg-white md:my-5 md:p-5 md:w-full text-black">Heyyy</div>
         </div>
+        
+        
       </div>
     </div>
   )
