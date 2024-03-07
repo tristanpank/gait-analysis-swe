@@ -48,7 +48,7 @@ export default function UploadPage(props) {
 
   return (
   <div className="flex justify-center items-center min-h-screen bg-black">
-    <Header user={user}></Header>
+    <Header user={user} color={false}></Header>
     <Card className="p-5">
       <CardHeader>
         <CardTitle>Upload a video</CardTitle>

@@ -2,7 +2,7 @@ import React, { useState, useEffect }from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Header = (props) => {
-    const { user } = props
+    const { user, color } = props
     const [isActive, setIsActive] = useState(false);
     const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ const Header = (props) => {
     }, []); // Empty dependency array means this effect runs once on mount and cleanup on unmount
 
     return (
-        <header className={isActive ? "z-[10] fixed w-full top-0 bg-gradient-to-tr from-[#37e6ff] to-[#10cbfab6]" : "z-[10] fixed top-0 w-full bg-gradient-to-tr from-[#37e6ff] to-[#10cbfab6] border-white"}>
+        <header className={color ? "z-[10] fixed w-full top-0 bg-gradient-to-tr from-[#37e6ff] to-[#10cbfab6]" : "z-[10] fixed top-0 w-full bg-transparent border-b"}>
             <div className="container flex">
                 <h1 className="px-2 py-4 text-2xl">Header</h1>
             </div>
