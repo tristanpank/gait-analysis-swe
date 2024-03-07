@@ -190,7 +190,7 @@ class GaitAnalysis:
     left_crossover = (left_ankle[:, 0] - left_hip[:, 0]) * (100. / left_mid_dist)
     
     # Calculate the right crossover percentage
-    right_crossover = (right_ankle[:, 0] - right_hip[:, 0]) * (100. / right_mid_dist)
+    right_crossover = (right_hip[:, 0] - right_ankle[:, 0]) * (100. / right_mid_dist)
 
     # Set negative values to 0
     left_crossover[left_crossover < 0] = 0
