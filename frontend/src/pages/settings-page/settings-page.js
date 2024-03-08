@@ -16,6 +16,8 @@ import {
 
 const SettingPage = (props) => {
   const { user, setUser } = props
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,11 +27,17 @@ const SettingPage = (props) => {
     if (file) {
       try {
         await setUserPFP(user, file);
+        setUploadError(false);
+        setUploadSuccess(true);
       } catch (error) {
         console.error(error);
+        setUploadSuccess(false);
+        setUploadError(true);
       }
     } else {
       console.error("No file selected");
+      setUploadSuccess(false);
+      setUploadError(true);
     }
   }
 
@@ -54,6 +62,14 @@ const SettingPage = (props) => {
                 <div className="mt-5 mb-5 block">
                   <Label htmlFor="image" className="mb-2 block">Upload an image:</Label>
                   <Input type="file" id="image" className="cursor-pointer" />
+                </div>
+                <div>
+                  {uploadSuccess && 
+                    <div className="mb-5 text-green-500">Upload successful!</div>
+                  }
+                  {uploadError && 
+                    <div className="mb-5 text-red-500">Upload failed. Please try again.</div>
+                  }
                 </div>
                 <Button type="submit" variant="default">Submit</Button>
               </form>
