@@ -3,6 +3,7 @@ import React, { useState, useEffect }from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOutUser } from 'src/firebase/auth';
 import { GlobalStateContext } from 'src/components/react/GlobalStateProvider';
+import ProfileIcon from './ProfileIcon';
 
 const Header = (props) => {
     const { user, setUser, color } = props
@@ -37,11 +38,14 @@ const Header = (props) => {
       });
     }
 
+    const headerColor = color ? "bg-gradient-to-tr from-[#37e6ff] to-[#10cbfab6]" : "bg-black border-b"
+
     return (
-        <header className={color ? "z-[10] fixed w-[100vw] top-0 bg-gradient-to-tr from-[#37e6ff] to-[#10cbfab6]" : "z-[10] fixed top-0 w-[100vw] bg-black border-b"}>
-            <div className="container flex">
+        <header className={"z-[10] fixed top-0 w-screen p-0 m-0 border-box " + headerColor}>
+            <div className="flex justify-between items-center w-full ">
                 <h1 className="px-2 py-4 text-2xl">Header</h1>
                 <button onClick={handleSignOut} >Sign Out</button>
+                <ProfileIcon user={user} />
             </div>
         </header>
     )
