@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import Header from '../../components/ui/header/header';
-import Button from '../../components/ui/button/button';
+import { Input } from "../../shadcn/components/ui/input";
+import { Label } from "../../shadcn/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shadcn/components/ui/select";
+import { Button } from "../../shadcn/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -13,8 +16,8 @@ import {
 const SettingPage = (props) => {
   const { user, setUser, email, loggedIn, setLoggedIn } = props
   const text = "Add profile picture";
-  const handleAddPFP = () => {
-
+  function handleSubmit() {
+    console.log("Add profile picture");
   }
   return (
     <div>
@@ -31,10 +34,15 @@ const SettingPage = (props) => {
         </button>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Are you absolutely sure?</DialogTitle>
+            <DialogTitle>Upload Profile Picture</DialogTitle>
             <DialogDescription>
-              This action cannot be undone. This will permanently delete your account
-              and remove your data from our servers.
+              <form onSubmit={handleSubmit} className="">
+                <div className="mt-5 mb-5 block">
+                  <Label htmlFor="image" className="mb-2 block">Upload an image:</Label>
+                  <Input type="file" id="image" className="cursor-pointer" />
+                </div>
+                <Button type="submit" variant="default">Submit</Button>
+              </form>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
