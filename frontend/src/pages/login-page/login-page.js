@@ -1,10 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { LoginForm } from './login-form.tsx'
 import {BackgroundGradientAnimation } from '../../components/ui/background-gradient-animation.tsx';
 import Header from "../../components/ui/header/header.js"
+import { useNavigate } from 'react-router-dom'
 
 const Login = (props) => {
-  const {setLoggedIn, email, setEmail, setUser} = props
+  const {setLoggedIn, email, setEmail, setUser, user} = props
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user])
 
   return (
     <BackgroundGradientAnimation>
