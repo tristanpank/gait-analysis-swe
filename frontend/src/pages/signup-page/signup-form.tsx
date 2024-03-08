@@ -17,6 +17,8 @@ export function SignupForm(props) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [signUpError, setSignUpError] = useState('')
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
   const onSubmit = async (e) => {
     e.preventDefault()
@@ -25,7 +27,8 @@ export function SignupForm(props) {
     if (password != confirmPassword) {
         setSignUpError('Passwords do not match.')
     } else {
-        const user = await createAccountEmailPassword(email, password)
+        const displayName = firstName + ' ' + lastName;
+        const user = await createAccountEmailPassword(email, password, displayName)
         if (user.uid === undefined) {
             const error = user;
             console.log(error);
@@ -53,6 +56,12 @@ export function SignupForm(props) {
   }
   function handleSetEmail (e) {
     setEmail(e.target.value)
+  }
+  function handleSetFirstName (e) {
+    setFirstName(e.target.value)
+  }
+  function handleSetLastName (e) {
+    setLastName(e.target.value)
   }
   function handleSetPassword (e) {
     setPassword(e.target.value)
@@ -83,11 +92,11 @@ export function SignupForm(props) {
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
             <Label htmlFor="firstname">First name</Label>
-            <Input id="firstname" placeholder="Tyler" type="text" />
+            <Input id="firstname" placeholder="Eliud" type="text" onChange={handleSetFirstName} />
           </LabelInputContainer>
           <LabelInputContainer>
             <Label htmlFor="lastname">Last name</Label>
-            <Input id="lastname" placeholder="Durden" type="text" />
+            <Input id="lastname" placeholder="Kipchoge" type="text" onChange={handleSetLastName} />
           </LabelInputContainer>
         </div>
         <LabelInputContainer className="mb-4">

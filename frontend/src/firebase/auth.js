@@ -27,10 +27,16 @@ const signInEmailPassword = async (email, password) => {
  * @param {string} password - The password for the new user.
  * @returns {Promise<Object>} - A promise that resolves to the user object if the account creation is successful, or rejects with an error if there's an error.
  */
-const createAccountEmailPassword = async (email, password) => {
+const createAccountEmailPassword = async (email, password, displayName=null, photoURL=null) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    let user = userCredential.user;
+    console.log(user);
+    user = {
+      ...user, 
+      displayName: displayName,
+      photoURL: photoURL
+    }
     await setUserDB(user);
     console.log(user);
     return user;
