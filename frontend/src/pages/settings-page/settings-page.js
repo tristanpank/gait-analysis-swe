@@ -4,6 +4,7 @@ import { Input } from "../../shadcn/components/ui/input";
 import { Label } from "../../shadcn/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shadcn/components/ui/select";
 import { Button } from "../../shadcn/components/ui/button";
+import { setUserPFP } from "../../firebase/db";
 import {
   Dialog,
   DialogContent,
@@ -14,11 +15,24 @@ import {
 } from "../../shadcn/components/ui/dialog"
 
 const SettingPage = (props) => {
-  const { user, setUser, email, loggedIn, setLoggedIn } = props
-  const text = "Add profile picture";
-  function handleSubmit() {
-    console.log("Add profile picture");
+  const { user, setUser } = props
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const fileInput = document.getElementById("image");
+    const file = fileInput.files[0];
+    
+    if (file) {
+      try {
+        await setUserPFP(user, file);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      console.error("No file selected");
+    }
   }
+
   return (
     <div>
       <Header user={user} setUser={setUser} />
@@ -47,6 +61,7 @@ const SettingPage = (props) => {
           </DialogHeader>
         </DialogContent>
       </Dialog>
+      <img src={user.photoURL} />
     </div>
   )
 }
