@@ -43,9 +43,8 @@ const Header = (props) => {
     return (
         <header className={"z-[10] fixed top-0 w-screen p-0 m-0 border-box " + headerColor}>
             <div className="flex justify-between items-center w-full ">
-                <h1 className="px-2 py-4 text-2xl">Header</h1>
-                <button onClick={handleSignOut} >Sign Out</button>
-                <ProfileIcon user={user} />
+                <h1 className="px-2 py-4 text-2xl">Gait Analysis</h1>
+                <ProfileIcon user={user} setUser={setUser} />
             </div>
         </header>
     )
