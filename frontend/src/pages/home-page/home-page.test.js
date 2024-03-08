@@ -12,7 +12,7 @@ test('renders home page', () => {
     </Router>
     );
 
-    const helloElement = screen.getByText('Gait Analysis for UF Athletes');
+    const helloElement = screen.getByText('UF Gait Analysis');
     expect(helloElement).toBeInTheDocument();
     
 });
