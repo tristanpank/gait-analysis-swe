@@ -1,5 +1,5 @@
 import {auth} from './firebaseConfig';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut } from 'firebase/auth';
 import { setUserDB } from './db';
 
 /**
@@ -59,5 +59,14 @@ const signInWithGoogle = async () => {
   }
 }
 
+const signOutUser = async () => {
+  try {
+    await signOut(auth);
+    return true;
+  } catch (error) {
+    return error;
+  }
+}
 
-export {signInEmailPassword, createAccountEmailPassword, signInWithGoogle}
+
+export {signInEmailPassword, createAccountEmailPassword, signInWithGoogle, signOutUser}

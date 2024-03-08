@@ -4,10 +4,11 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import Signup from './signup-page.js';
 
 test('renders login page', () => {
-    render(
+  const tempUser = {uid: undefined}  
+  render(
     <Router>
         <Routes>
-        <Route path="/" element={<Signup/>} />
+        <Route path="/" element={<Signup user={tempUser} />} />
         </Routes>
     </Router>
     );
