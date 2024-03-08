@@ -5,11 +5,13 @@ import Button from '../../components/ui/button/button.js'
 import VideoCard from './video-card.js'
 import { getAllVideos } from '../../firebase/db.js'
 import Skeleton from '../../components/skeleton/skeleton.js'
+import { GlobalStateContext } from '../../components/react/GlobalStateProvider.js'
 
 const Dashboard = (props) => {
   const { user, setUser, email, loggedIn, setLoggedIn} = props
   const navigate = useNavigate()
-  const [videoArray, setVideoArray] = useState([])
+  const [videoArray, setVideoArray] = useState([]);
+  const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
 
   function handleClick (e) {
     navigate('/upload');
@@ -19,8 +21,10 @@ const Dashboard = (props) => {
     getAllVideos(user).then((videosArray) => {
       // console.log(videosArray);
       setVideoArray(videosArray);
+      setVideoUploaded(false);
+      console.log("test");
     })
-  }, [user])
+  }, [user, videoUploaded])
   
   const content = Array.isArray(videoArray) ? videoArray.map((vid, index) => (
     <div key={index}><VideoCard user={user} vid={vid}></VideoCard></div>

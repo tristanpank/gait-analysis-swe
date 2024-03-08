@@ -9,11 +9,15 @@ import { Label } from "../../shadcn/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../shadcn/components/ui/select";
 import { Button } from "../../shadcn/components/ui/button";
 import Header from "src/components/ui/header/header";
+import { useToast } from "../../shadcn/components/ui/use-toast";
+import { GlobalStateContext } from "src/components/react/GlobalStateProvider";
 
 export default function UploadPage(props) {
   const { user } = props;
   const navigate = useNavigate();
   const [view, setView] = useState("front");
+  const { toast } = useToast();
+  const { setVideoUploaded } = React.useContext(GlobalStateContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -34,13 +38,23 @@ export default function UploadPage(props) {
       data: formData
     }
 
-    try {
-      const res = await axios(axios_config);
+    axios(axios_config).then((res) => {
       console.log(res);
-      navigate('/dashboard');
-    } catch (error) {
+      toast({
+        description: "Video uploaded successfully",
+      })
+      setVideoUploaded(true);
+    }).catch((error) => {
       console.error(error);
-    }
+      toast({
+        description: "Error uploading video",
+        variant: "destructive"
+      })
+    });
+    toast({
+      description: "Uploading video...",
+    });
+    navigate('/dashboard');
 
     // Reset the form
     fileInput.value = null;
