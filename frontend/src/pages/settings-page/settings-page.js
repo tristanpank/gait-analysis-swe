@@ -21,7 +21,7 @@ const SettingPage = (props) => {
     e.preventDefault();
     const fileInput = document.getElementById("image");
     const file = fileInput.files[0];
-    
+
     if (file) {
       try {
         await setUserPFP(user, file);
@@ -61,7 +61,6 @@ const SettingPage = (props) => {
           </DialogHeader>
         </DialogContent>
       </Dialog>
-      <img src={user.photoURL} />
     </div>
   )
 }
