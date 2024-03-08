@@ -46,7 +46,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
             <Route path="/upload" element={<UploadPage user={user} />} />
             <Route path="/dashboard/:vid" element={<VideoPage user={user} />} />
-            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/settings" element={<SettingsPage user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
           </Routes>
         </BrowserRouter>
         <Toaster />
