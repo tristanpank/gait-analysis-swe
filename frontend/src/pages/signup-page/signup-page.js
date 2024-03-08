@@ -11,7 +11,7 @@ const Signup = (props) => {
     const navigate = useNavigate();
   
     useEffect(() => {
-        if (user) {
+        if (user.uid) {
         navigate('/dashboard');
         }
     }, [user])

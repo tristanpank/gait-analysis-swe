@@ -32,7 +32,7 @@ const Dashboard = (props) => {
 
   return (
     <div className=" bg-gradient-to-r from-[#5392b5] to-[#2b5981e3] min-h-[100dvh]">
-      <Header user={user} color={true}></Header>
+      <Header user={user} setUser={setUser} color={true}></Header>
       <div className="mt-15 pt-20">
         <button className="w-full h-20" onClick={handleClick}>
           <div className='mx-5 py-7 h-full border'>Upload a video</div>

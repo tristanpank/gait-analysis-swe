@@ -9,12 +9,12 @@ import Dashboard from './pages/dashboard-page/dashboard-page.js';
 import UploadPage from './pages/upload-page/upload-page.js';
 import VideoPage from './pages/video-page/video-page';
 import './App.css'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from "./firebase/firebaseConfig";
 import { Toaster } from "./shadcn/components/ui/toaster";
 import { createContext } from 'react';
-import { GlobalStateProvider } from './components/react/GlobalStateProvider';
+import { GlobalStateProvider, GlobalStateContext } from './components/react/GlobalStateProvider';
 
 
 function App() {
@@ -40,8 +40,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Home/>} />
-            <Route path="/login" element={<Login setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
-            <Route path="/signup" element={<Signup setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
+            <Route path="/login" element={<Login setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser} user={user} />} />
+            <Route path="/signup" element={<Signup setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser} user={user} />} />
             <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
             <Route path="/upload" element={<UploadPage user={user} />} />
             <Route path="/dashboard/:vid" element={<VideoPage user={user} />} />
