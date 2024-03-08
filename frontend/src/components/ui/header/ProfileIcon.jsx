@@ -24,10 +24,10 @@ const ProfileIcon = (props) => {
     <DropdownMenu>
       <DropdownMenuTrigger>
         <div>
-          {user.photoURL === null && <div className="w-10 h-10 lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl">
+          {(user && user.photoURL === null) && <div className="w-10 h-10 lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl">
             {firstLetter}
             </div>}
-          {user.photoURL != null && <img className="w-10 h-10 lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl" 
+          {(user && user.photoURL != null) && <img className="w-10 h-10 lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl" 
             src={user.photoURL}/>}
         </div>
       </DropdownMenuTrigger>
