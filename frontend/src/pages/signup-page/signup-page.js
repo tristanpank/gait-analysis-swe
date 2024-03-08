@@ -20,7 +20,7 @@ const Signup = (props) => {
         <BackgroundGradientAnimation>
             <div class="override-styles">
                 <div className="visible h-full w-full absolute z-10 inset-0 md:flex md:items-center md:justify-center text-white font-bold md:px-4">
-                    <Header color={false}></Header>
+                    <Header user={user} setUser={setUser} color={false}></Header>
                     <div data-testid="Signup Page" className='mt-16 h-full md:h-auto' >                  
                         <SignupForm setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}></SignupForm>                   
                     </div>

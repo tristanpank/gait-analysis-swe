@@ -18,7 +18,7 @@ const Login = (props) => {
     <BackgroundGradientAnimation>
       <div class="override-styles">
           <div className="visible h-full w-full absolute z-10 inset-0 md:flex md:items-center md:justify-center text-white font-bold md:px-4">
-            <Header color={false}></Header>
+            <Header user={user} setUser={setUser} color={false}></Header>
             <div className='w-full md:w-2/5 md:w-[28rem] h-full md:h-auto' >              
             <LoginForm setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>                   
             </div>

@@ -1,8 +1,9 @@
 import { db } from "./firebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { storage } from './firebaseConfig';
-import { ref, getDownloadURL} from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 import { listAll } from 'firebase/storage';
+import { getAuth, updateProfile } from "firebase/auth";
 
 /**
  * Sets user data in the database.
@@ -93,4 +94,24 @@ async function getVideoData(vid) {
   }
 }
 
-export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph};
+async function setUserPFP(user, file) {
+  const pfpRef = ref(storage, `users/${user.uid}/pfp/pfp`);
+  
+  uploadBytes(pfpRef, file).then((snapshot) => {
+    console.log('Uploaded Profile Picture');
+  });
+
+  const pfpURL = await getDownloadURL(pfpRef);
+  const auth = getAuth();
+
+  updateProfile(auth.currentUser, {
+    photoURL: pfpURL
+  }).then(() => {
+    console.log("Profile Picture Updated");
+    return 
+  }).catch((error) => {
+    console.error(error);
+  });
+}
+
+export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP};
