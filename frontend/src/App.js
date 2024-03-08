@@ -12,6 +12,10 @@ import './App.css'
 import { useEffect, useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from "./firebase/firebaseConfig";
+import { Toaster } from "./shadcn/components/ui/toaster";
+import { createContext } from 'react';
+import { GlobalStateProvider } from './components/react/GlobalStateProvider';
+
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -32,16 +36,19 @@ function App() {
 
   return (
     <div data-testid="App">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home/>} />
-          <Route path="/login" element={<Login user={user} setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
-          <Route path="/signup" element={<Signup user={user} setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
-          <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-          <Route path="/upload" element={<UploadPage user={user} />} />
-          <Route path="/dashboard/:vid" element={<VideoPage user={user} />} />
-        </Routes>
-      </BrowserRouter>
+      <GlobalStateProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home/>} />
+            <Route path="/login" element={<Login setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
+            <Route path="/signup" element={<Signup setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser}/>} />
+            <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
+            <Route path="/upload" element={<UploadPage user={user} />} />
+            <Route path="/dashboard/:vid" element={<VideoPage user={user} />} />
+          </Routes>
+        </BrowserRouter>
+        <Toaster />
+      </GlobalStateProvider>
     </div>
   );
 }
