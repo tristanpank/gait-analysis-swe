@@ -4,10 +4,11 @@ import { Routes, Route } from 'react-router-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 test('renders login page', () => {
+    const tempUser = {uid: undefined}
     render(
     <Router>
         <Routes>
-        <Route path="/" element={<Login/>} />
+        <Route path="/" element={<Login user={tempUser} />}  />
         </Routes>
     </Router>
     );
