@@ -37,7 +37,7 @@
 // }
 
 const defaultTheme = require("tailwindcss/defaultTheme");
- 
+const { blackA, green, mauve, slate, violet } = require('@radix-ui/colors');
 const colors = require("tailwindcss/colors");
 const {
   default: flattenColorPalette,
@@ -54,6 +54,13 @@ module.exports = {
   theme: {
     // rest of the code
     extend: {
+      colors: {
+        ...blackA,
+        ...green,
+        ...mauve,
+        ...slate,
+        ...violet,
+      },
       boxShadow: {
         input: `0px 2px 3px -1px rgba(0,0,0,0.1), 0px 1px 0px 0px rgba(25,28,33,0.02), 0px 0px 0px 1px rgba(25,28,33,0.08)`,
       },
@@ -63,6 +70,9 @@ module.exports = {
         third: "moveInCircle 40s linear infinite",
         fourth: "moveHorizontal 40s ease infinite",
         fifth: "moveInCircle 20s ease infinite",
+        hide: 'hide 100ms ease-in',
+        slideIn: 'slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        swipeOut: 'swipeOut 100ms ease-out',
       },
       keyframes: {
         moveHorizontal: {
@@ -97,6 +107,18 @@ module.exports = {
           "100%": {
             transform: "translateY(-50%)",
           },
+        },
+        hide: {
+          from: { opacity: '1' },
+          to: { opacity: '0' },
+        },
+        slideIn: {
+          from: { transform: 'translateX(calc(100% + var(--viewport-padding)))' },
+          to: { transform: 'translateX(0)' },
+        },
+        swipeOut: {
+          from: { transform: 'translateX(var(--radix-toast-swipe-end-x))' },
+          to: { transform: 'translateX(calc(100% + var(--viewport-padding)))' },
         },
       },
     },
