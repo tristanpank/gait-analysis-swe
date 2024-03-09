@@ -16,9 +16,6 @@ const ProfileIcon = (props) => {
       console.error(error);
     });
   }
-  function handleSettings() {
-    navigate('/settings');
-  }
 
   return (
     <DropdownMenu>
@@ -32,9 +29,6 @@ const ProfileIcon = (props) => {
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
-        <DropdownMenuItem>
-          <button onClick={handleSettings} >Settings</button>
-        </DropdownMenuItem>
         <DropdownMenuItem>
           <button onClick={handleSignOut} >Sign Out</button>
         </DropdownMenuItem>
