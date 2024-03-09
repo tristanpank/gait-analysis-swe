@@ -42,6 +42,9 @@ const Header = (props) => {
             await setUserPFP(user, file);
             setUploadError(false);
             setUploadSuccess(true);
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         } catch (error) {
             console.error(error);
             setUploadSuccess(false);
@@ -106,7 +109,7 @@ const Header = (props) => {
                                                 <form onSubmit={handleSubmit} className="">
                                                     <div className="mt-5 mb-5 block">
                                                     <Label htmlFor="image" className="mb-2 block">Upload an image:</Label>
-                                                    <Input type="file" id="image" className="cursor-pointer" />
+                                                    <Input type="file" id="image" accept="image/*" className="cursor-pointer" />
                                                     </div>
                                                     <div>
                                                     {uploadSuccess && 
