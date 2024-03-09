@@ -2,12 +2,13 @@ import { signOut } from 'firebase/auth';
 import React, { useState, useEffect }from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOutUser } from 'src/firebase/auth';
-import { GlobalStateContext } from 'src/components/react/GlobalStateProvider';
 import ProfileIcon from './ProfileIcon';
 import { Input } from "../../../shadcn/components/ui/input";
 import { Label } from "../../../shadcn/components/ui/label";
 import { setUserPFP } from "../../../firebase/db";
 import { Button } from '../../../shadcn/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from "../../../shadcn/components/ui/dropdown-menu";
+
 import {
     Sheet,
     SheetContent,
@@ -100,9 +101,23 @@ const Header = (props) => {
             </div>
             <div className="flex mr-5">
                 <Sheet>
-                    <SheetTrigger>
-                        <ProfileIcon user={user} setUser={setUser} />
-                    </SheetTrigger>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>
+                                <ProfileIcon user={user} setUser={setUser} />
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="bg-white rounded-md shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade">
+                                <DropdownMenuItem>
+                                    <SheetTrigger>
+                                        <button >Settings</button>
+                                    </SheetTrigger>
+                                </DropdownMenuItem>
+                                <DropdownMenuItem>
+                                <button onClick={handleSignOut} >Sign Out</button>
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        
+                    
                     <SheetContent>
                         <SheetHeader>
                         <SheetTitle>Settings</SheetTitle>
