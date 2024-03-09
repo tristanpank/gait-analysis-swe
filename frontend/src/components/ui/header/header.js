@@ -48,12 +48,18 @@ const Header = (props) => {
 
         if (file) {
         try {
-            await setUserPFP(user, file);
-            setUploadError(false);
-            setUploadSuccess(true);
-            setTimeout(() => {
-                window.location.reload();
-            }, 500);
+            if (user.id != undefined) {
+                await setUserPFP(user, file);
+                setUploadError(false);
+                setUploadSuccess(true);
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                console.error("User not logged in");
+                setUploadSuccess(false);
+                setUploadError(true);
+            }
         } catch (error) {
             console.error(error);
             setUploadSuccess(false);
