@@ -105,9 +105,9 @@ export const Header = ({title, body}) => {
       <h1 className="text-2xl md:text-7xl font-bold dark:text-white">
         {title}
       </h1>
-      <p className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
+      <div className="max-w-2xl text-base md:text-xl mt-8 dark:text-neutral-200">
         {body}
-      </p>
+      </div>
     </div>
   );
 };

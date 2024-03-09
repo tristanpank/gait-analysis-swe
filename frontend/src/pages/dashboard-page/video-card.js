@@ -14,7 +14,10 @@ const VideoCard = (props) => {
             const url = await getUserVideo(user, vid);
             setPath(url);
         };
-        fetchVideo();
+        if (user){
+            fetchVideo();
+        };
+        
     }, [user, vid]);
 
     const handleMouseEnter = async () => {
