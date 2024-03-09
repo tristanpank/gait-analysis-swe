@@ -1,6 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
-
+import { act } from 'react-dom/test-utils';
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Home from './pages/home-page/home-page.js'
 import Login from './pages/login-page/login-page.js'
@@ -14,8 +13,7 @@ import React, { useEffect, useState } from 'react'
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from "./firebase/firebaseConfig";
 import { Toaster } from "./shadcn/components/ui/toaster";
-import { createContext } from 'react';
-import { GlobalStateProvider, GlobalStateContext } from './components/react/GlobalStateProvider';
+import { GlobalStateProvider } from './components/react/GlobalStateProvider';
 
 
 function App() {
@@ -25,13 +23,16 @@ function App() {
 
   useEffect(() => {
     onAuthStateChanged(auth, (currUser) => {
-      if (currUser) {
-        setLoggedIn(true);
-        setUser(currUser);
-      } else {
-        setLoggedIn(false);
-        setUser({});
-      }
+      act(() => {
+        if (currUser) {
+          setLoggedIn(true);
+          setUser(currUser);
+        } else {
+          setLoggedIn(false);
+          setUser({});
+        }
+      
+      })
     });
   }, []);
 
