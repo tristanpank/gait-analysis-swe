@@ -71,7 +71,7 @@ export default function UploadPage(props) {
         <form onSubmit={handleSubmit} className="">
           <div className="mb-2 block">
             <Label htmlFor="video" className="mb-2 block">Upload a video:</Label>
-            <Input type="file" id="video" className="cursor-pointer" />
+            <Input type="file" id="video" className="cursor-pointer" accept="video/*" />
           </div>
           <div className="mb-2 block">
             <Label htmlFor="select" className="mb-2 block">Select a view:</Label>

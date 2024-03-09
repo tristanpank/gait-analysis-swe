@@ -16,9 +16,6 @@ const ProfileIcon = (props) => {
       console.error(error);
     });
   }
-  function handleSettings() {
-    navigate('/settings');
-  }
 
   return (
     <DropdownMenu>
