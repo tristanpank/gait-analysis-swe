@@ -18,22 +18,13 @@ const ProfileIcon = (props) => {
   }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger>
-        <div>
-          {(user && user.photoURL === null) && <div className="w-10 h-10 lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl">
-            {firstLetter}
-            </div>}
-          {(user && user.photoURL != null) && <img className="w-10 h-10 lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl" 
-            src={user.photoURL}/>}
-        </div>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent>
-        <DropdownMenuItem>
-          <button onClick={handleSignOut} >Sign Out</button>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+      <div>
+        {(user && user.photoURL === null) && <div className="w-10 h-10 lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl">
+          {firstLetter}
+          </div>}
+        {(user && user.photoURL != null) && <img className="w-10 h-10 lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl" 
+          src={user.photoURL}/>}
+      </div>
   )
 }
 
