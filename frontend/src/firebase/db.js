@@ -114,4 +114,20 @@ async function setUserPFP(user, file) {
   });
 }
 
-export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP};
+async function setUserHeight(user, height) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, {
+      height: height
+    }, {merge: true});
+    return height;
+
+  } catch (error) {
+    // Handle the error here
+    console.error(error);
+    return error;
+  }
+  
+}
+
+export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP, setUserHeight};
