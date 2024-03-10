@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Skeleton from 'src/components/skeleton/skeleton';
 import { getAllGraphs } from "../../firebase/db.js";
 import { GlobalStateContext } from 'src/components/react/GlobalStateProvider.js';
+import DeleteButton from './DeleteButton.jsx';
 
 function VideoPage(props) {
     const  { user, setUser } = props;
@@ -133,6 +134,7 @@ function VideoPage(props) {
                     <source src={path} type="video/mp4"></source>
                 </video>
                 <button onClick={handleDelete}>Delete</button>
+                <DeleteButton user={user} vid={vid} />
                 {skeletonExists && (
                     <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
                 )}
