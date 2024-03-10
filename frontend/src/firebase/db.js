@@ -2,7 +2,6 @@ import { db } from "./firebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { storage } from './firebaseConfig';
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
-import { listAll } from 'firebase/storage';
 import { getAuth, updateProfile } from "firebase/auth";
 
 /**
@@ -114,4 +113,61 @@ async function setUserPFP(user, file) {
   });
 }
 
-export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP};
+async function setUserHeight(user, height) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, {
+      height: height
+    }, {merge: true});
+    return height;
+
+  } catch (error) {
+    // Handle the error here
+    console.error(error);
+    return error;
+  }
+  
+}
+
+async function getUserHeight(user) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+    
+    if (docSnap.exists()) {
+      const data = await docSnap.data();
+      return parseInt(data.height);
+    } else {
+      return 0;
+    }
+  } catch (error) {
+    console.error(error);
+    return error
+  }
+}
+
+async function setUserDisplayName(user, name) {
+  const auth = getAuth();
+  updateProfile(auth.currentUser, {
+    displayName: name
+  }).then(() => {
+    console.log("Name Updated");
+    return name;
+  }).catch((error) => {
+    console.error(error);
+    return error;
+  });
+  try {
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, {
+      displayName: name
+    }, {merge: true});
+    return name;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+  
+}
+
+export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP, setUserHeight, getUserHeight, setUserDisplayName};
