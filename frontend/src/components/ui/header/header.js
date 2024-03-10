@@ -88,7 +88,7 @@ const Header = (props) => {
 
         if (file) {
             try {
-                if (user.id !== undefined) {
+                if (user.uid !== undefined) {
                     await setUserPFP(user, file);
                     setUploadError(false);
                     setUploadSuccess(true);
