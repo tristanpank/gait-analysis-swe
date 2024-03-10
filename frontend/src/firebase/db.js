@@ -147,4 +147,28 @@ async function getUserHeight(user) {
   }
 }
 
-export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP, setUserHeight, getUserHeight};
+async function setUserDisplayName(user, name) {
+  const auth = getAuth();
+  updateProfile(auth.currentUser, {
+    displayName: name
+  }).then(() => {
+    console.log("Name Updated");
+    return name;
+  }).catch((error) => {
+    console.error(error);
+    return error;
+  });
+  try {
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, {
+      displayName: name
+    }, {merge: true});
+    return name;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+  
+}
+
+export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP, setUserHeight, getUserHeight, setUserDisplayName};

@@ -1,11 +1,10 @@
-import { signOut } from 'firebase/auth';
 import React, { useState, useEffect }from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signOutUser } from 'src/firebase/auth';
 import ProfileIcon from './ProfileIcon';
 import { Input } from "../../../shadcn/components/ui/input";
 import { Label } from "../../../shadcn/components/ui/label";
-import { setUserPFP, setUserHeight, getUserHeight} from "../../../firebase/db";
+import { setUserPFP, setUserHeight, getUserHeight, setUserDisplayName} from "../../../firebase/db";
 import { Button } from '../../../shadcn/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuItem } from "../../../shadcn/components/ui/dropdown-menu";
 
@@ -32,16 +31,23 @@ const Header = (props) => {
     const navigate = useNavigate();
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [uploadError, setUploadError] = useState(false);
-    const [isEditing, setIsEditing] = useState(false);
+    const [isEditingHeight, setIsEditingHeight] = useState(false);
     const [inputHeightFeet, setInputHeightFeet] = useState(null);
     const [inputHeightInches, setInputHeightInches] = useState(null);
     const [height, setHeight] = useState(null);
     const [update, setUpdate] = useState(false);
+    const [isEditingName, setIsEditingName] = useState(false);
+    const [inputName, setInputName] = useState(null);
+    const [name, setName] = useState(null);
+
 
     useEffect(() => {
-        getUserHeight(user).then((height) => {
-            setHeight(height);
-        });
+        if (user) {
+            getUserHeight(user).then((height) => {
+                setHeight(height);
+                setName(user.displayName);
+            });
+        }
     }, [user]);
 
     useEffect(() => {
@@ -51,8 +57,11 @@ const Header = (props) => {
                 setInputHeightFeet(Math.floor(height / 12));
                 setInputHeightInches(height % 12);
             });
+            setInputName(user.displayName);
+            setIsEditingName(false);
+            setIsEditingHeight(false);
         }
-    }, [isEditing, isActive, update]);
+    }, [update]);
 
 
     const handleSignOut = async () => {
@@ -131,7 +140,7 @@ const Header = (props) => {
                             <DropdownMenuContent className="bg-white rounded-md shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=top]:animate-slideDownAndFade data-[side=right]:animate-slideLeftAndFade data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade">
                                 <DropdownMenuItem>
                                     <SheetTrigger>
-                                        <button>Settings</button>
+                                        <button onClick={()=>setUpdate((prev)=>!prev)} >Settings</button>
                                     </SheetTrigger>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem>
@@ -176,19 +185,38 @@ const Header = (props) => {
                                     </Dialog>
                                 </div>
                                 <div className="text-black mb-2">
-                                    <button className="flex">
-                                        <div className='mr-3'>Name: {user && user.displayName}</div>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z"/></svg>
-                                    </button>
+                                    {isEditingName ? (
+                                        <form className="flex" onSubmit={(e) => {
+                                            e.preventDefault();
+                                            setUserDisplayName(user, inputName);
+                                            setName(inputName);
+                                            // Here you can handle the form submission, e.g., update the height in your database
+                                            setIsEditingName(false);
+                                        }}>
+                                            <span>Name: </span>
+                                            <input 
+                                                className='w-10 mx-2'
+                                                type="text" 
+                                                value={inputName} 
+                                                onChange={(e) => setInputName(e.target.value)} 
+                                            />
+                                            <button className="mx-2" type="submit">Save</button>
+                                        </form>
+                                    ) : (
+                                        <button onClick={() => setIsEditingName(true)} className="flex">
+                                            <div className='mr-3'>Name: {name}</div>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z"/></svg>
+                                        </button>
+                                    )}
                                 </div>
                                 <div className="text-black mb-2">
-                                    {isEditing ? (
+                                    {isEditingHeight ? (
                                         <form className="flex" onSubmit={(e) => {
                                             e.preventDefault();
                                             setUserHeight(user, inputHeightFeet * 12 + inputHeightInches);
                                             setHeight(inputHeightFeet * 12 + inputHeightInches);
                                             // Here you can handle the form submission, e.g., update the height in your database
-                                            setIsEditing(false);
+                                            setIsEditingHeight(false);
                                         }}>
                                             <span>Height: </span>
                                             <input 
@@ -209,7 +237,7 @@ const Header = (props) => {
                                         </form>
                                         
                                     ) : (
-                                        <button onClick={() => setIsEditing(true)} className="flex">
+                                        <button onClick={() => setIsEditingHeight(true)} className="flex">
                                             <div className='mr-3'>Height: {height ? (`${Math.floor(height / 12)} ft. ${height % 12} in.`) : ("Click to add your height")}</div>
                                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"><path d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z"/></svg>
                                         </button>
