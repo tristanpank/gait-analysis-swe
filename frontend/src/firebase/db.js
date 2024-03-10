@@ -130,4 +130,21 @@ async function setUserHeight(user, height) {
   
 }
 
-export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP, setUserHeight};
+async function getUserHeight(user) {
+  try {
+    const userRef = doc(db, "users", user.uid);
+    const docSnap = await getDoc(userRef);
+    
+    if (docSnap.exists()) {
+      const data = await docSnap.data();
+      return parseInt(data.height);
+    } else {
+      return 0;
+    }
+  } catch (error) {
+    console.error(error);
+    return error
+  }
+}
+
+export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP, setUserHeight, getUserHeight};
