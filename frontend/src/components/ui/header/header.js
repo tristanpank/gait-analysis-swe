@@ -88,7 +88,7 @@ const Header = (props) => {
 
         if (file) {
             try {
-                if (user.id !== undefined) {
+                if (user.uid !== undefined) {
                     await setUserPFP(user, file);
                     setUploadError(false);
                     setUploadSuccess(true);
@@ -116,6 +116,7 @@ const Header = (props) => {
         <header className={"flex z-[10] fixed top-0 w-screen p-0 m-0 border-box " + headerColor}>
             <div className="flex items-center w-full ">
                 <h1 className="px-2 py-4 mr-5 font-semibold text-2xl">Gait Analysis</h1>
+                { user && user.uid &&
                 <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
@@ -125,7 +126,7 @@ const Header = (props) => {
                             <NavigationMenuLink href='/upload' className="mr-5 font-semibold hover:text-blue-600">Upload Video</NavigationMenuLink>
                         </NavigationMenuItem>
                     </NavigationMenuList>
-                </NavigationMenu>
+                </NavigationMenu> }
             </div>
             {user && 
             <div className="flex mr-5">
