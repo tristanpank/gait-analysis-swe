@@ -2,7 +2,6 @@ import { db } from "./firebaseConfig";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { storage } from './firebaseConfig';
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
-import { listAll } from 'firebase/storage';
 import { getAuth, updateProfile } from "firebase/auth";
 
 /**
