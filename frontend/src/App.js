@@ -44,8 +44,8 @@ function App() {
             <Route path="/login" element={<Login setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser} user={user} />} />
             <Route path="/signup" element={<Signup setLoggedIn={setLoggedIn} email={email} setEmail={setEmail} setUser={setUser} user={user} />} />
             <Route path="/dashboard" element={<Dashboard user={user} setUser={setUser} email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />} />
-            <Route path="/upload" element={<UploadPage user={user} />} />
-            <Route path="/dashboard/:vid" element={<VideoPage user={user} />} />
+            <Route path="/upload" element={<UploadPage user={user} setUser={setUser} />} />
+            <Route path="/dashboard/:vid" element={<VideoPage user={user} setUser={setUser} />} />
           </Routes>
         </BrowserRouter>
         <Toaster />

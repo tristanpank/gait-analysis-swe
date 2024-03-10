@@ -13,7 +13,7 @@ import { useToast } from "../../shadcn/components/ui/use-toast";
 import { GlobalStateContext } from "src/components/react/GlobalStateProvider";
 
 export default function UploadPage(props) {
-  const { user } = props;
+  const { user, setUser } = props;
   const navigate = useNavigate();
   const [view, setView] = useState("front");
   const { toast } = useToast();
@@ -62,7 +62,7 @@ export default function UploadPage(props) {
 
   return (
   <div className="flex justify-center items-center min-h-screen bg-black">
-    <Header user={user} color={false}></Header>
+    <Header user={user} setUser={setUser}></Header>
     <Card className="p-5">
       <CardHeader>
         <CardTitle>Upload a video</CardTitle>

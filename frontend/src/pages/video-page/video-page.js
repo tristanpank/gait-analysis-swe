@@ -9,7 +9,7 @@ import { getAllGraphs } from "../../firebase/db.js";
 import { GlobalStateContext } from 'src/components/react/GlobalStateProvider.js';
 
 function VideoPage(props) {
-    const  { user } = props;
+    const  { user, setUser } = props;
     const [path, setPath] = useState("");
     const [videoExists, setVideoExists] = useState(false);
     const [skeletonExists, setSkeletonExists] = useState(false);
@@ -125,7 +125,7 @@ function VideoPage(props) {
   
   return (
     <div>
-        <Header user={user}></Header>
+        <Header user={user} setUser={setUser} ></Header>
         {videoExists && (
             <div>
                 
