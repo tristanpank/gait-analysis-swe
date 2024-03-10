@@ -1,9 +1,10 @@
 import { db } from "./firebaseConfig";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
 import { storage } from './firebaseConfig';
-import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytes, deleteObject } from 'firebase/storage';
 import { listAll } from 'firebase/storage';
 import { getAuth, updateProfile } from "firebase/auth";
+
 
 /**
  * Sets user data in the database.
@@ -114,21 +115,33 @@ async function setUserPFP(user, file) {
   });
 }
 
+async function deleteFilesRecursively(storageRef) {
+  const { items, prefixes } = await listAll(storageRef);
+  for (const itemRef of items) {
+    await deleteObject(itemRef);
+  }
+  for (const prefixRef of prefixes) {
+    await deleteFilesRecursively(prefixRef);
+  }
+}
+
 async function deleteVideo(user, vid) {
   const videoRef = ref(storage, `users/${user.uid}/videos/${vid}`);
   const videoDoc = doc(db, "videos", vid);
+  const userRef = doc(db, "users", user.uid);
   const video = await getDoc(videoDoc);
+  const userDoc = await getDoc(userRef);
   try {
     if (video.exists()) {
       if (video.data().uid !== user.uid) {
         console.error("User does not have permission to delete this video");
         return false;
       }
-      await videoDoc.delete();
+      await deleteDoc(videoDoc);
     }
-    const videoFiles = await listAll(videoRef);
-    videoFiles.items.forEach(async (item) => {
-      await item.delete();
+    await deleteFilesRecursively(videoRef);
+    await updateDoc(userRef, {
+      videos: userDoc.data().videos.filter((video) => video !== vid)
     });
     return true;
   } catch (error) {

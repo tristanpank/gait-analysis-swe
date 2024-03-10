@@ -1,10 +1,12 @@
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import Header from 'src/components/ui/header/header';
-import { getUserVideo, getVideoData} from '../../firebase/db.js'
+import { getUserVideo, getVideoData, deleteVideo } from '../../firebase/db.js'
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Skeleton from 'src/components/skeleton/skeleton';
 import { getAllGraphs } from "../../firebase/db.js";
+import { GlobalStateContext } from 'src/components/react/GlobalStateProvider.js';
 
 function VideoPage(props) {
     const  { user } = props;
@@ -20,6 +22,7 @@ function VideoPage(props) {
     const [videoData, setvideoData] = useState(undefined);
     const [paused, setPaused] = useState(false);
     const [graphs, setGraphs] = useState({});
+    const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
     
     useEffect(() => {
         const video = document.getElementById('video');
@@ -111,16 +114,25 @@ function VideoPage(props) {
         }
     }, [path]);
 
-    
+  async function handleDelete(e) {
+    e.preventDefault();
+    const response = await deleteVideo(user, vid);
+    if (response === true) {
+      setVideoUploaded(true);
+      navigate('/dashboard');
+    }
+  }  
   
   return (
     <div>
         <Header user={user}></Header>
         {videoExists && (
             <div>
+                
                 <video id='video' className="pt-20 w-11/12 m-auto" ref={videoRef} muted loop controls key={path}>
                     <source src={path} type="video/mp4"></source>
                 </video>
+                <button onClick={handleDelete}>Delete</button>
                 {skeletonExists && (
                     <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
                 )}
