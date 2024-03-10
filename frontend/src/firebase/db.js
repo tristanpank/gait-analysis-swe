@@ -114,4 +114,28 @@ async function setUserPFP(user, file) {
   });
 }
 
-export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP};
+async function deleteVideo(user, vid) {
+  const videoRef = ref(storage, `users/${user.uid}/videos/${vid}`);
+  const videoDoc = doc(db, "videos", vid);
+  const video = await getDoc(videoDoc);
+  try {
+    if (video.exists()) {
+      if (video.data().uid !== user.uid) {
+        console.error("User does not have permission to delete this video");
+        return false;
+      }
+      await videoDoc.delete();
+    }
+    const videoFiles = await listAll(videoRef);
+    videoFiles.items.forEach(async (item) => {
+      await item.delete();
+    });
+    return true;
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
+
+}
+
+export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP, deleteVideo};
