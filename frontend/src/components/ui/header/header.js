@@ -194,8 +194,11 @@ const Header = (props) => {
                                         }}>
                                             <span>Name: </span>
                                             <input 
-                                                className='w-10 mx-2'
+                                                className='w-25 mx-2'
                                                 type="text" 
+                                                pattern="[A-Za-z ]*"
+                                                autofocus required title="Only alphabetic characters and spaces are allowed."
+                                                maxLength="50"
                                                 value={inputName} 
                                                 onChange={(e) => setInputName(e.target.value)} 
                                             />
@@ -221,6 +224,8 @@ const Header = (props) => {
                                             <input 
                                                 className='w-10 mx-2'
                                                 type="number" 
+                                                max="9"
+                                                min="0"
                                                 value={inputHeightFeet} 
                                                 onChange={(e) => setInputHeightFeet(parseInt(e.target.value))} 
                                             />
@@ -228,6 +233,8 @@ const Header = (props) => {
                                             <input 
                                                 className='w-10 mx-2'
                                                 type="number" 
+                                                max="11"
+                                                min="0"
                                                 value={inputHeightInches} 
                                                 onChange={(e) => setInputHeightInches(parseInt(e.target.value))} 
                                             />
