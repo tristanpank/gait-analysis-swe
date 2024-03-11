@@ -196,6 +196,8 @@ const Header = (props) => {
                                             <input 
                                                 className='w-25 mx-2'
                                                 type="text" 
+                                                pattern="[A-Za-z ]*"
+                                                autofocus required title="Only alphabetic characters and spaces are allowed."
                                                 maxLength="50"
                                                 value={inputName} 
                                                 onChange={(e) => setInputName(e.target.value)} 
