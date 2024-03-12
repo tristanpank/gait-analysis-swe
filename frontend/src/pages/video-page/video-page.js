@@ -5,12 +5,13 @@ import { getUserVideo, getVideoData, deleteVideo } from '../../firebase/db.js'
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Skeleton from 'src/components/skeleton/skeleton';
-import { getAllGraphs } from "../../firebase/db.js";
+import { getAllGraphs, getInjuryGraphs } from "../../firebase/db.js";
 import { GlobalStateContext } from 'src/components/react/GlobalStateProvider.js';
+import DeleteButton from './DeleteButton.jsx';
 
 function VideoPage(props) {
-    const  { user, setUser } = props;
-    const [path, setPath] = useState("");
+    const { user, setUser } = props;
+    const [videoPath, setVideoPath] = useState("");
     const [videoExists, setVideoExists] = useState(false);
     const [skeletonExists, setSkeletonExists] = useState(false);
     let { vid } = useParams();
@@ -22,6 +23,7 @@ function VideoPage(props) {
     const [videoData, setvideoData] = useState(undefined);
     const [paused, setPaused] = useState(false);
     const [graphs, setGraphs] = useState({});
+    const [injuryGraphs, setInjuryGraphs] = useState({});
     const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
     
     useEffect(() => {
@@ -73,8 +75,8 @@ function VideoPage(props) {
             // navigate('/signup');
         } else {    
             const fetchVideo = async () => {
-                const url = await getUserVideo(user, vid);
-                setPath(url);
+                const videoUrl = await getUserVideo(user, vid);
+                setVideoPath(videoUrl);
                 setVideoExists(true)
             };
             fetchVideo();
@@ -83,6 +85,7 @@ function VideoPage(props) {
             
             getVideoData(vid).then((videoData) => {
               const graphs = getAllGraphs(user, vid, videoData).then((graphs) => setGraphs(graphs));
+              const injuryGraphs = getInjuryGraphs(user, vid, videoData).then((injuryGraphs) => setInjuryGraphs(injuryGraphs));
               setvideoData(videoData)
             });
         }
@@ -109,42 +112,49 @@ function VideoPage(props) {
 
     useEffect(() => {
         if (videoRef.current) {
-        videoRef.current.play().catch(error => console.error("Error attempting to play", error));
-        setCount(0);
+            videoRef.current.play().catch(error => console.error("Error attempting to play", error));
+            setCount(0);
         }
-    }, [path]);
+    }, [videoPath]);
 
-  async function handleDelete(e) {
-    e.preventDefault();
-    const response = await deleteVideo(user, vid);
-    if (response === true) {
-      setVideoUploaded(true);
-      navigate('/dashboard');
+    async function handleDelete(e) {
+        e.preventDefault();
+        const response = await deleteVideo(user, vid);
+        if (response === true) {
+            setVideoUploaded(true);
+            navigate('/dashboard');
+        }
     }
-  }  
-  
-  return (
-    <div>
-        <Header user={user} setUser={setUser} ></Header>
-        {videoExists && (
-            <div>
-                
-                <video id='video' className="pt-20 w-11/12 m-auto" ref={videoRef} muted loop controls key={path}>
-                    <source src={path} type="video/mp4"></source>
-                </video>
-                <button onClick={handleDelete}>Delete</button>
-                {skeletonExists && (
-                    <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
-                )}
-                
-            </div>
-        )}
-        {!videoExists && (
-            <h1>This Video doesn't exist</h1>
-        )}
-    </div>
-  )
-   
+
+    return (
+        <div>
+            <Header user={user} setUser={setUser} ></Header>
+            {videoExists && (
+                <div>
+
+                    <video id='video' className="pt-20 w-11/12 m-auto" ref={videoRef} muted loop controls key={videoPath}>
+                        <source src={videoPath} type="video/mp4"></source>
+                    </video>
+                    <button onClick={handleDelete}>Delete</button>
+                    <DeleteButton user={user} vid={vid} />
+                    {skeletonExists && (
+                        <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
+                    )}
+                    <div className='grid grid-cols-2'>
+                        <div className='flex flex-col text-center'>
+                            <div className='text-2xl'>Leg Crossover</div>
+                            <img src={injuryGraphs["crossover.png"]} />
+                        </div>
+                    </div>
+
+                </div>
+            )}
+            {!videoExists && (
+                <h1>This Video doesn't exist</h1>
+            )}
+        </div>
+    )
+
 }
 
 export default VideoPage;

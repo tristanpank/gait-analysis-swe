@@ -74,6 +74,17 @@ async function getAllGraphs(user, vid, videoData) {
   return urls;
 }
 
+async function getInjuryGraphs(user, vid, videoData) {
+  const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs`);
+  const urls = {};
+  const injuryGraphs = videoData.injury_graphs;
+  for (const graph of injuryGraphs) {
+    const url = await getDownloadURL(ref(graphRef, graph));
+    urls[graph] = url;
+  }
+  return urls;
+}
+
 async function getUserVideo(user, vid) {
   const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/pose.mp4`)
   const url = await getDownloadURL(videoRef);
@@ -207,5 +218,5 @@ async function setUserDisplayName(user, name) {
   
 }
 
-export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getUserGraph, setUserPFP, setUserHeight, getUserHeight, setUserDisplayName, deleteVideo};
+export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getInjuryGraphs, getUserGraph, setUserPFP, setUserHeight, getUserHeight, setUserDisplayName, deleteVideo};
 

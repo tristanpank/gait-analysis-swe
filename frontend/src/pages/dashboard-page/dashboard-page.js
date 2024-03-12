@@ -20,7 +20,7 @@ const Dashboard = (props) => {
   useEffect(() => {
     getAllVideos(user).then((videosArray) => {
       // console.log(videosArray);
-      setVideoArray(videosArray);
+      setVideoArray(videosArray.reverse());
       setVideoUploaded(false);
       console.log("test");
     })
