@@ -5,13 +5,12 @@ import { ref, getDownloadURL, uploadBytes, deleteObject } from 'firebase/storage
 import { listAll } from 'firebase/storage';
 import { getAuth, updateProfile } from "firebase/auth";
 
-
 /**
  * Sets user data in the database.
  * @param {Object} user - The user object containing user information.
  * @returns {Object|Error} - The user object if successful, otherwise an error object.
  */
-async function setUserDB(user) {
+export async function setUserDB(user) {
   try {
     // Check if the user already exists in the database
     const userRef = doc(db, "users", user.uid);
@@ -36,7 +35,7 @@ async function setUserDB(user) {
   }
 }
 
-async function getAllVideos(user) {
+export async function getAllVideos(user) {
   try {
     const userRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(userRef);
@@ -53,13 +52,13 @@ async function getAllVideos(user) {
   }
 }
 
-async function getUserGraph(user, vid, graph) {
+export async function getUserGraph(user, vid, graph) {
   const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs/${graph}`);
   const url = await getDownloadURL(graphRef);
   return url;
 }
 
-async function getAllGraphs(user, vid, videoData) {
+export async function getAllGraphs(user, vid, videoData) {
   const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs`);
   const urls = {};
   // console.log(videoData);
@@ -71,17 +70,6 @@ async function getAllGraphs(user, vid, videoData) {
     urls[Number(graph.slice(3, 5))] = url;
   }
 
-  return urls;
-}
-
-async function getInjuryGraphs(user, vid, videoData) {
-  const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs`);
-  const urls = {};
-  const injuryGraphs = videoData.injury_graphs;
-  for (const graph of injuryGraphs) {
-    const url = await getDownloadURL(ref(graphRef, graph));
-    urls[graph] = url;
-  }
   return urls;
 }
 
@@ -99,13 +87,13 @@ export async function getInjuryData(user, vid) {
   return injuries;
 }
 
-async function getUserVideo(user, vid) {
+export async function getUserVideo(user, vid) {
   const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/pose.mp4`)
   const url = await getDownloadURL(videoRef);
   return url;
 }
 
-async function getVideoData(vid) {
+export async function getVideoData(vid) {
   const video = await getDoc(doc(db,"videos", vid))
   try {
     if (video.exists()) {
@@ -120,7 +108,7 @@ async function getVideoData(vid) {
   }
 }
 
-async function setUserPFP(user, file) {
+export async function setUserPFP(user, file) {
   const pfpRef = ref(storage, `users/${user.uid}/pfp/pfp`);
   
   uploadBytes(pfpRef, file).then((snapshot) => {
@@ -140,7 +128,7 @@ async function setUserPFP(user, file) {
   });
 }
 
-async function deleteFilesRecursively(storageRef) {
+export async function deleteFilesRecursively(storageRef) {
   const { items, prefixes } = await listAll(storageRef);
   for (const itemRef of items) {
     await deleteObject(itemRef);
@@ -150,7 +138,7 @@ async function deleteFilesRecursively(storageRef) {
   }
 }
 
-async function deleteVideo(user, vid) {
+export async function deleteVideo(user, vid) {
   const videoRef = ref(storage, `users/${user.uid}/videos/${vid}`);
   const videoDoc = doc(db, "videos", vid);
   const userRef = doc(db, "users", user.uid);
@@ -175,7 +163,7 @@ async function deleteVideo(user, vid) {
   }
 
 }
-async function setUserHeight(user, height) {
+export async function setUserHeight(user, height) {
   try {
     const userRef = doc(db, "users", user.uid);
     await setDoc(userRef, {
@@ -191,7 +179,7 @@ async function setUserHeight(user, height) {
   
 }
 
-async function getUserHeight(user) {
+export async function getUserHeight(user) {
   try {
     const userRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(userRef);
@@ -208,7 +196,7 @@ async function getUserHeight(user) {
   }
 }
 
-async function setUserDisplayName(user, name) {
+export async function setUserDisplayName(user, name) {
   const auth = getAuth();
   updateProfile(auth.currentUser, {
     displayName: name
@@ -231,6 +219,3 @@ async function setUserDisplayName(user, name) {
   }
   
 }
-
-export { setUserDB, getAllVideos, getUserVideo, getVideoData, getAllGraphs, getInjuryGraphs, getUserGraph, setUserPFP, setUserHeight, getUserHeight, setUserDisplayName, deleteVideo};
-
