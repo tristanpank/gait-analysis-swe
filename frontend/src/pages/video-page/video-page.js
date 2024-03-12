@@ -5,7 +5,7 @@ import { getUserVideo, getVideoData, deleteVideo } from '../../firebase/db.js'
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Skeleton from 'src/components/skeleton/skeleton';
-import { getAllGraphs, getInjuryGraphs } from "../../firebase/db.js";
+import { getAllGraphs, getInjuryGraphs, getInjuryData } from "../../firebase/db.js";
 import { GlobalStateContext } from 'src/components/react/GlobalStateProvider.js';
 import DeleteButton from './DeleteButton.jsx';
 
@@ -23,7 +23,7 @@ function VideoPage(props) {
     const [videoData, setvideoData] = useState(undefined);
     const [paused, setPaused] = useState(false);
     const [graphs, setGraphs] = useState({});
-    const [injuryGraphs, setInjuryGraphs] = useState({});
+    const [injuryData, setInjuryData] = useState({});
     const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
     
     useEffect(() => {
@@ -85,8 +85,12 @@ function VideoPage(props) {
             
             getVideoData(vid).then((videoData) => {
               const graphs = getAllGraphs(user, vid, videoData).then((graphs) => setGraphs(graphs));
-              const injuryGraphs = getInjuryGraphs(user, vid, videoData).then((injuryGraphs) => setInjuryGraphs(injuryGraphs));
+            //   const injuryGraphs = getInjuryGraphs(user, vid, videoData).then((injuryGraphs) => setInjuryGraphs(injuryGraphs));
               setvideoData(videoData)
+              getInjuryData(user, vid).then((injuryData) => {
+                console.log(injuryData);
+                setInjuryData(injuryData);
+              });
             });
         }
         
@@ -143,7 +147,7 @@ function VideoPage(props) {
                     <div className='grid grid-cols-2'>
                         <div className='flex flex-col text-center'>
                             <div className='text-2xl'>Leg Crossover</div>
-                            <img src={injuryGraphs["crossover.png"]} />
+                            {(injuryData["crossover"]) &&  <img src={injuryData["crossover"].url} />}
                         </div>
                     </div>
 
