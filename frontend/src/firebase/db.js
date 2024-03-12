@@ -1,5 +1,5 @@
 import { db } from "./firebaseConfig";
-import { doc, setDoc, getDoc, deleteDoc, updateDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, deleteDoc, updateDoc, collection, getDocs } from "firebase/firestore";
 import { storage } from './firebaseConfig';
 import { ref, getDownloadURL, uploadBytes, deleteObject } from 'firebase/storage';
 import { listAll } from 'firebase/storage';
@@ -83,6 +83,20 @@ async function getInjuryGraphs(user, vid, videoData) {
     urls[graph] = url;
   }
   return urls;
+}
+
+export async function getInjuryData(user, vid) {
+  const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs`);
+  const injuryCollection = collection(db, "videos", vid, "injury_data");
+  const snapshot = await getDocs(injuryCollection);
+  let injuries = {}
+  snapshot.forEach(async (doc) => {
+    const docData = doc.data();
+    injuries[docData.name] = docData;
+    const url = await getDownloadURL(ref(graphRef, docData.graph));
+    injuries[docData.name].url = url;
+  });
+  return injuries;
 }
 
 async function getUserVideo(user, vid) {
