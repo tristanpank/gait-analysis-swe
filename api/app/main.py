@@ -11,16 +11,20 @@ from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Form
 
-load_dotenv()
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-service_account_path = os.path.join(BASE_DIR, "firebase_admin/serviceAccountKey.json")
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = service_account_path
-if os.environ.get("TESTING") != "True":
+def initialize_firebase():
+  load_dotenv()
+  BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+  service_account_path = os.path.join(BASE_DIR, "firebase_admin/serviceAccountKey.json")
+  os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = service_account_path
   cred = credentials.Certificate(service_account_path)
   firebase_admin.initialize_app(cred, {
     "storageBucket": "gait-analysis-swe.appspot.com"
   })
   db = firestore.Client()
+  return db
+
+db = initialize_firebase()
+
 
 app = FastAPI()
 
@@ -57,6 +61,39 @@ def upload_file_to_cloud_storage(file_path, destination_path):
   blob = bucket.blob(destination_path)
   blob.upload_from_filename(file_path)
 
+def create_video_doc(data):
+  data["timestamp"] = firestore.SERVER_TIMESTAMP
+  video_ref = db.collection("videos").add(data)
+  return video_ref[1]
+
+def update_doc(curr_doc, data):
+  curr_doc.update(data)
+  return curr_doc
+
+def add_video_to_user(user_ref, video_id):
+  user_ref.update({
+    "videos": firestore.ArrayUnion([video_id])
+  })
+
+def get_doc(collection, doc_id):
+  ref = db.collection(collection).document(doc_id)
+  if ref.get().exists:
+    return ref
+  else:
+    return None
+
+def make_injury_collection(video_ref):
+  return db.collection("videos").document(video_ref.id).collection("injury_data")
+
+def add_doc(collection, data):
+  ref = collection.add(data)
+  return ref[1]
+
+def compress_video(input_path, output_path):
+  clip = VideoFileClip(input_path)
+  clip.write_videofile(output_path)
+  clip.close()
+
 @app.post("/pose/")
 async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), view: str = Form("")):
   """
@@ -80,12 +117,10 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   # Check if the user ID is provided
   if uid == "":
     return JSONResponse(content={"error": "User not passed in"}, media_type="application/json", status_code=404)
-
-  # Check if the user exists in the database
-  if os.environ.get("TESTING") != "True":
-    user_ref = db.collection("users").document(uid)
-    if not user_ref.get().exists:
-      return JSONResponse(content={"error": "User not found"}, media_type="application/json", status_code=404)
+  
+  user_ref = get_doc("users", uid)
+  if not user_ref:
+    return JSONResponse(content={"error": "User not found"}, media_type="application/json", status_code=404)
   
   # Save the video file to a file in the temp_videos directory
   file_path = os.path.join("temp_videos", video_file.filename)
@@ -100,28 +135,23 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   gait_analysis = GaitAnalysis(input_path=file_path, output_path=pose_path, landmarker_path="./landmarkers/pose_landmarker.task")
   
   # Compress the pose video
-  clip = VideoFileClip(pose_path)
-  clip.write_videofile(compressed_path)
-  clip.close()
+  compress_video(pose_path, compressed_path)
 
   # Export pose data as JSON
   pose_data = gait_analysis.export_frames_json()
 
-  video_ref = db.collection("videos").add({
+  video_ref = create_video_doc({
     "pose_data": pose_data,
     "uid": uid,
     "view": view,
-    "timestamp": firestore.SERVER_TIMESTAMP
   })
-  print(video_ref[1].id)
+
 
   # Update user document with video id
-  user_ref.update({
-    "videos": firestore.ArrayUnion([video_ref[1].id])
-  })
+  add_video_to_user(user_ref, video_ref.id)
 
   # Upload the compressed video to cloud storage
-  upload_file_to_cloud_storage(compressed_path, f"users/{uid}/videos/{video_ref[1].id}/pose.mp4")
+  upload_file_to_cloud_storage(compressed_path, f"users/{uid}/videos/{video_ref.id}/pose.mp4")
 
   # Calculate all graphs
   graph_paths = get_all_graphs(gait_analysis)
@@ -130,33 +160,36 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   graph_names = []
   for path in graph_paths:
     graph_file = '/'.join(path.split('/')[2:])
-    upload_file_to_cloud_storage(path, f"users/{uid}/videos/{video_ref[1].id}/graphs/{graph_file}")
+    upload_file_to_cloud_storage(path, f"users/{uid}/videos/{video_ref.id}/graphs/{graph_file}")
     os.remove(path)
     graph_names.append(graph_file)
   print(graph_names)
 
-  injury_data = db.collection("videos").document(video_ref[1].id).collection("injury_data")
+  # injury_data = db.collection("videos").document(video_ref[1].id).collection("injury_data")
+
+  injury_data = make_injury_collection(video_ref)
 
   # If the view is "front", calculate and upload the crossover graph
   if view == "front":
     crossover_path = get_crossover_graph(gait_analysis)
-    upload_file_to_cloud_storage(crossover_path, f"users/{uid}/videos/{video_ref[1].id}/graphs/crossover.png")
+    upload_file_to_cloud_storage(crossover_path, f"users/{uid}/videos/{video_ref.id}/graphs/crossover.png")
     os.remove(crossover_path)
-    injury_data.add({
+    add_doc(injury_data, {
       "name": "crossover",
       "graph": "crossover.png",
+    
     })
 
   # Calculates and adds cadence if video is side view
   if view == "side":
     gait_analysis.calculate_cadence()
-    video_ref[1].update({
+    update_doc(video_ref, {
       "cadence": gait_analysis.avg_cadence
     })
 
 
   # Update video document with graph names
-  video_ref[1].update({
+  update_doc(video_ref, {
     "graphs": graph_names
   })
 
