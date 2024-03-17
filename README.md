@@ -29,6 +29,11 @@ Once all the virtual environment files are made and the command is finished runn
 pip install -r requirements.txt
 ```
 
+To run the live server
+```shell
+uvicorn main:app --reload
+```
+
 To run our API test cases enter the `tests/` directory and run pytest
 
 ```shell
