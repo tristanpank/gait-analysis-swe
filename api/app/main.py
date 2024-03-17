@@ -123,6 +123,10 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   if not user_ref:
     return JSONResponse(content={"error": "User not found"}, media_type="application/json", status_code=404)
   
+  temp_videos_dir = "temp_videos"
+  os.makedirs(temp_videos_dir, exist_ok=True)
+  temp_graphs_dir = "temp_graphs"
+  os.makedirs(temp_graphs_dir, exist_ok=True)
   # Save the video file to a file in the temp_videos directory
   file_path = os.path.join("temp_videos", video_file.filename)
   with open(file_path, "wb") as f:
