@@ -3,7 +3,8 @@ from unittest.mock import patch
 from app.main import app
 import os
 import matplotlib
-matplotlib.use('Agg')
+import os
+os.environ["TESTING"] = True
 
 
 client = TestClient(app)

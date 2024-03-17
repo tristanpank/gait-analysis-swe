@@ -23,7 +23,8 @@ def initialize_firebase():
   db = firestore.Client()
   return db
 
-db = initialize_firebase()
+if os.environ["TESTING"] == False:
+  db = initialize_firebase()
 
 
 app = FastAPI()
