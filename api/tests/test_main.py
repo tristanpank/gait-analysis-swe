@@ -1,56 +1,54 @@
 from fastapi.testclient import TestClient
+from unittest.mock import patch
 import os
+import matplotlib.pyplot as plt
+import os
+import pytest
 os.environ["TESTING"] = "True"
+
+
+
 from app.main import app
 
-from unittest.mock import patch
-
-static_dir = "/static"
 
 client = TestClient(app)
 
+@patch('app.main.create_video_doc')
+@patch('app.main.update_doc')
+@patch('app.main.add_video_to_user')
+@patch('app.main.get_doc')
+@patch('app.main.make_injury_collection')
+@patch('app.main.add_doc')
+@patch('app.main.upload_file_to_cloud_storage')
+# @patch('app.main.compress_video')
+def test_detect_pose_valid_request(upload_file_mock, add_doc_mock, make_injury_collection_mock, get_doc_mock, add_video_to_user_mock, update_doc_mock, create_video_doc_mock):
+    # Set up the mocks
+    get_doc_mock.return_value = True  # Simulate user exists
+    class MockFirestoreDocumentRef:
+      def __init__(self, id):
+          self.id = id
+
+    # In your test setup:
+    create_video_doc_mock.return_value = MockFirestoreDocumentRef("test_video_id")
+
+    # Path to the test video in the static folder
+    test_video_path = os.path.join("static", "running-front-test.mp4")
+
+    # Make the API request using the test video
+    with open(test_video_path, "rb") as video_file:
+        response = client.post("/pose/", files={"video_file": ("test_video.mp4", video_file, "video/mp4")}, data={"uid": "test_uid", "view": "front"})
+
+    # Check the response
+    assert response.status_code == 200
+    assert "x" in response.json()
+
+    # Check that the mocks were called as expected
+    get_doc_mock.assert_called_once_with("users", "test_uid")
+    create_video_doc_mock.assert_called()
+    add_video_to_user_mock.assert_called()
+    upload_file_mock.assert_called()
+    # compress_video_mock.assert_called()
+    # Add more checks for other mocks
 
 
-def mock_upload_file_to_cloud_storage(file_path, destination_path):
-  # Mock upload logic, simply pass for the test
-  pass
-
-
-def mock_firestore_client():
-  # Mock firestore client methods used in your endpoint
-  pass
-
-
-def test_hello_world():
-  response = client.get("/")
-  assert response.status_code == 200
-  assert response.json() == {"message": "Hello World"}
-
-
-@patch('app.main.upload_file_to_cloud_storage', side_effect=mock_upload_file_to_cloud_storage)
-@patch('app.main.firestore.Client', side_effect=mock_firestore_client)
-@patch('app.main.credentials.Certificate')
-@patch('app.main.firebase_admin.initialize_app')
-def test_detect_pose(upload_mock, firestore_mock, credentials_mock, mock_initialize_app):
-  # Error if no video passed
-  res = client.post("/pose/")
-  assert res.status_code == 422
-
-  # testing_video = "running-front-test.mp4"
-  # temp_videos_dir = "temp_videos"
-  # os.makedirs(temp_videos_dir, exist_ok=True)
-  # test_video_file = open(f"static/{testing_video}", "rb")
-
-  # res = client.post("/pose/", files={"video_file": (testing_video, test_video_file, "video/mp4")}, data={"uid": "test", "view": "front"})
-
-  # assert res.status_code == 200
-  # res_json = res.json()
-  # for key in ["x", "y", "z", "presence", "visibility"]:
-  #   assert key in res_json
-  #   assert len(res_json[key]) > 0
-
-  # # Delete every file in temp_videos_dir
-  # for file_name in os.listdir(temp_videos_dir):
-  #   file_path = os.path.join(temp_videos_dir, file_name)
-  #   if os.path.isfile(file_path):
-  #     os.remove(file_path)
+# Add more test cases for different scenarios (invalid view, missing user ID, non-existent user, etc.)
