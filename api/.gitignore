@@ -9,4 +9,6 @@ bin/
 lib/
 include/
 .env
-firebase_admin/
+firebase_admin/*
+temp_graphs/*
+temp_videos/*
