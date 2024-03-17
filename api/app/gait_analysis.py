@@ -87,6 +87,10 @@ class GaitAnalysis:
     base_options = python.BaseOptions(model_asset_path=model_asset_path)
     options = vision.PoseLandmarkerOptions(
         base_options=base_options,
+        # The defaults are 0.5 but i wrote them out if we ever want custom values
+        min_pose_detection_confidence=0.5,
+        min_pose_presence_confidence=0.5,
+        min_tracking_confidence=0.5,
         output_segmentation_masks=True,
         running_mode=VisionRunningMode.VIDEO
     )
@@ -107,11 +111,14 @@ class GaitAnalysis:
       frame_times.append(frame_timestamp)
       # Calculates pose detection for that frame
       image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
-      detection_result = detector.detect_for_video(image, frame_timestamp)
-      # Annotates results on video and writes to output
-      annotated_frame = GaitAnalysis.draw_landmarks_on_image(frame, detection_result)
-      out.write(annotated_frame)
-      frame_positions.append(detection_result.pose_landmarks[0])
+      try:
+        detection_result = detector.detect_for_video(image, frame_timestamp)
+        # Annotates results on video and writes to output
+        annotated_frame = GaitAnalysis.draw_landmarks_on_image(frame, detection_result)
+        out.write(annotated_frame)
+        frame_positions.append(detection_result.pose_landmarks[0])
+      except:
+        pass
     video.release()
     out.release()
     cv2.destroyAllWindows()
