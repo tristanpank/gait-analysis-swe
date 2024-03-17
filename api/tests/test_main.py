@@ -1,10 +1,14 @@
 from fastapi.testclient import TestClient
 from unittest.mock import patch
-from app.main import app
 import os
-import matplotlib
+import matplotlib.pyplot as plt
 import os
+import pytest
 os.environ["TESTING"] = "True"
+
+
+
+from app.main import app
 
 
 client = TestClient(app)
