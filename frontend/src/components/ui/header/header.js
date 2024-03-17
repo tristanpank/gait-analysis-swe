@@ -113,7 +113,7 @@ const Header = (props) => {
     const headerColor = color ? "bg-gradient-to-tr text-white from-[#37e6ff] to-[#10cbfab6]" : "bg-white text-black border-b"
 
     return (
-        <header className={"flex z-[10] fixed top-0 w-screen p-0 m-0 border-box " + headerColor}>
+        <header data-testid="Header" className={"flex z-[10] fixed top-0 w-screen p-0 m-0 border-box " + headerColor}>
             <div className="flex items-center w-full ">
                 <h1 className="px-2 py-4 mr-5 font-semibold text-2xl">Gait Analysis</h1>
                 { user && user.uid &&
