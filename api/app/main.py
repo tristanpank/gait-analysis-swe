@@ -23,7 +23,7 @@ def initialize_firebase():
   db = firestore.Client()
   return db
 
-if os.environ["TESTING"] == False:
+if os.environ.get("TESTING") != "True":
   db = initialize_firebase()
 
 

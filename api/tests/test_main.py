@@ -4,7 +4,7 @@ from app.main import app
 import os
 import matplotlib
 import os
-os.environ["TESTING"] = True
+os.environ["TESTING"] = "True"
 
 
 client = TestClient(app)
