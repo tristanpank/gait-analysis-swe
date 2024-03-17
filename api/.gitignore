@@ -11,4 +11,6 @@ include/
 .env
 firebase_admin/*
 temp_graphs/*
+!temp_graphs/.gitkeep
 temp_videos/*
+!temp_videos/.gitkeep
