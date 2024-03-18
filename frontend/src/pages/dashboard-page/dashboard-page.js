@@ -19,9 +19,11 @@ const Dashboard = (props) => {
 
   useEffect(() => {
     getAllVideos(user).then((videosArray) => {
-      setVideoArray(videosArray.reverse());
-      setVideoUploaded(false);
-      console.log("test");
+      if (Array.isArray(videosArray)) {
+        setVideoArray(videosArray.reverse());
+        setVideoUploaded(false);
+        console.log("test");
+      }
     })
   }, [user, videoUploaded])
   
