@@ -237,3 +237,5 @@ class GaitAnalysis:
     else:
       direction = "Front"
     return direction
+  
+  

@@ -145,6 +145,9 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   # Export pose data as JSON
   pose_data = gait_analysis.export_frames_json()
 
+  # Overwrite view with calculated view"
+  view = gait_analysis.calculate_direction()
+
   video_ref = create_video_doc({
     "pose_data": pose_data,
     "uid": uid,
@@ -175,7 +178,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   injury_data = make_injury_collection(video_ref)
 
   # If the view is "front", calculate and upload the crossover graph
-  if view == "front":
+  if view == "Front" or view == "Back":
     crossover_path = get_crossover_graph(gait_analysis)
     upload_file_to_cloud_storage(crossover_path, f"users/{uid}/videos/{video_ref.id}/graphs/crossover.png")
     os.remove(crossover_path)
@@ -186,7 +189,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     })
 
   # Calculates and adds cadence if video is side view
-  if view == "side":
+  if view == "Right" or view == "Left":
     gait_analysis.calculate_cadence()
     update_doc(video_ref, {
       "cadence": gait_analysis.avg_cadence
