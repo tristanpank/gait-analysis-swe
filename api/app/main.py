@@ -195,6 +195,11 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
       "cadence": gait_analysis.avg_cadence
     })
 
+    gait_analysis.calculate_heel_strike_score()
+    update_doc(video_ref, {
+      "heel_strike_score": gait_analysis.calculate_heel_strike_score()
+    })
+
 
   # Update video document with graph names
   update_doc(video_ref, {

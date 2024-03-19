@@ -252,19 +252,40 @@ class GaitAnalysis:
 
     heel_strike_count = 0
     total_strike_count = 0
-    for i in range(min(len(heel_valleys), len(foot_valleys))):
-      temp = foot_valleys[i] - heel_valleys[i]
+    foot_offset = 0
+    heel_offset = 0
+    minimum = min(len(heel_valleys), len(foot_valleys))
+    i = 0
+    while i < minimum:
+      # Heel offsets help get the calculation back on track if the peaks are not aligned
+      if i + foot_offset >= len(foot_valleys) or i + heel_offset >= len(heel_valleys):
+        break
+      temp = foot_valleys[i + foot_offset] - heel_valleys[i + heel_offset]
       if temp > -5 and temp < 5:
         heel_strike_count += temp
         total_strike_count += 1
+        i += 1
+      elif temp >= 5:
+        heel_offset += 1
+      else:
+        foot_offset += 1
 
-    heel_strike_score = 90
+    heel_strike_score = 99
+    if total_strike_count == 0:
+      return 0
     if heel_strike_count > 0:
       heel_strike_score -= (heel_strike_count/total_strike_count*10)
+      heel_strike_score = heel_strike_score * heel_strike_score / 90
+      if heel_strike_score > 99:
+        heel_strike_score = 99
     else:
-      heel_strike_score -= (heel_strike_count/total_strike_count)
+      heel_strike_score -= (heel_strike_count/total_strike_count*0.1)
     
-    # Big gain for reduction in heel strike, small gain for forefoot strike
+    # Arbitrary values are used to make the calculation seem good
+    # We could always curve this to make it higher or lower
+    # Downside is that slow running will have a poor score
+    # Downside is that high frame rate will have a poor score
+    # Downside is that using frame minima says little about overstriding
     return heel_strike_score
 
 
