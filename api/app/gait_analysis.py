@@ -238,4 +238,33 @@ class GaitAnalysis:
       direction = "Front"
     return direction
   
-  
+  def calculate_heel_strike_score(self):
+    smooth_heel = 1 - (self.get_landmark_frames(29)[:, 1])
+    smooth_foot = 1 - (self.get_landmark_frames(31)[:, 1])
+
+    for i in range(10):
+      smooth_heel = self.smooth_data(smooth_heel)
+      smooth_foot = self.smooth_data(smooth_foot)
+    
+    # May need to adjust distance for framerate
+    heel_valleys, _ = find_peaks(-smooth_heel, prominence=0.01, distance=5)
+    foot_valleys, _ = find_peaks(-smooth_foot, prominence=0.01, distance=5)
+
+    heel_strike_count = 0
+    total_strike_count = 0
+    for i in range(min(len(heel_valleys), len(foot_valleys))):
+      temp = foot_valleys[i] - heel_valleys[i]
+      if temp > -5 and temp < 5:
+        heel_strike_count += temp
+        total_strike_count += 1
+
+    heel_strike_score = 90
+    if heel_strike_count > 0:
+      heel_strike_score -= (heel_strike_count/total_strike_count*10)
+    else:
+      heel_strike_score -= (heel_strike_count/total_strike_count)
+    
+    # Big gain for reduction in heel strike, small gain for forefoot strike
+    return heel_strike_score
+
+
