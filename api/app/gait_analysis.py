@@ -219,3 +219,21 @@ class GaitAnalysis:
     plt.clf()
     # Returns path
     return path
+  
+  def calculate_direction(self):
+    left_ear = self.get_landmark_frames(0)[:,0] - self.get_landmark_frames(7)[:,0]
+    right_ear = self.get_landmark_frames(0)[:,0] - self.get_landmark_frames(8)[:,0]
+    ears = left_ear + right_ear
+    left_avg = np.mean(left_ear)
+    right_avg= np.mean(right_ear)
+    average = np.mean(ears)
+    direction = ""
+    if average < right_avg and average < left_avg:
+      direction = "Left"
+    elif average > left_avg and average > right_avg:
+      direction = "Right"
+    elif average > right_avg and average < left_avg:
+      direction = "Back"
+    else:
+      direction = "Front"
+    return direction
