@@ -8,6 +8,7 @@ import Skeleton from 'src/components/skeleton/skeleton';
 import { getAllGraphs, getInjuryGraphs, getInjuryData } from "../../firebase/db.js";
 import { GlobalStateContext } from 'src/components/react/GlobalStateProvider.js';
 import DeleteButton from './DeleteButton.jsx';
+import InjuryDisplay from './InjuryDisplay.jsx';
 
 function VideoPage(props) {
     const { user, setUser } = props;
@@ -145,9 +146,8 @@ function VideoPage(props) {
                         <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
                     )}
                     <div className='grid grid-cols-2'>
-                        <div className='flex flex-col text-center'>
-                            <div className='text-2xl'>Leg Crossover</div>
-                            {(injuryData["crossover"]) &&  <img src={injuryData["crossover"].url} />}
+                        <div className='flex flex-col'>
+                            <InjuryDisplay injuryData={injuryData} />
                         </div>
                     </div>
 
