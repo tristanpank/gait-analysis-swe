@@ -179,10 +179,16 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     crossover_path = get_crossover_graph(gait_analysis)
     upload_file_to_cloud_storage(crossover_path, f"users/{uid}/videos/{video_ref.id}/graphs/crossover.png")
     os.remove(crossover_path)
+    crossover_data = gait_analysis.calculate_leg_crossover()
     add_doc(injury_data, {
       "name": "crossover",
       "graph": "crossover.png",
-    
+      "left_peaks_values": crossover_data["left_peaks_values"],
+      "right_peaks_values": crossover_data["right_peaks_values"],
+      "left_max": crossover_data["left_max"],
+      "right_max": crossover_data["right_max"],
+      "left_avg": crossover_data["left_avg"],
+      "right_avg": crossover_data["right_avg"]
     })
 
   # Calculates and adds cadence if video is side view
