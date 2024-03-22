@@ -331,68 +331,51 @@ class GaitAnalysis:
     left_avg = np.mean(left_ear)
     right_avg= np.mean(right_ear)
     average = np.mean(ears)
-    direction = ""
+    self.direction = ""
     if average < right_avg and average < left_avg:
-      direction = "Left"
+      self.direction = "Left"
     elif average > left_avg and average > right_avg:
-      direction = "Right"
+      self.direction = "Right"
     elif average > right_avg and average < left_avg:
-      direction = "Back"
+      self.direction = "Back"
     else:
-      direction = "Front"
-    return direction
+      self.direction = "Front"
+    return self.direction
 
   def calculate_heel_strike_score(self):
     if self.heel_strike_score != 0:
       return self.heel_strike_score
-    smooth_heel = 1 - (self.get_landmark_frames(29)[:, 1])
-    smooth_foot = 1 - (self.get_landmark_frames(31)[:, 1])
+    # Calculate angles of both feet and ground
+    ground_vector = np.array([[-1, 0]])
+    left_foot_ground_angle = -180 + self.angle(self.get_landmark_frames(31) - self.get_landmark_frames(27), ground_vector[:, ::-1])
+    right_foot_ground_angle = -180 + self.angle(self.get_landmark_frames(32) - self.get_landmark_frames(28), ground_vector[:, ::-1])
 
-    for i in range(10):
-      smooth_heel = self.smooth_data(smooth_heel)
-      smooth_foot = self.smooth_data(smooth_foot)
+    # Adjust distance between peaks to video framerate, although distance should be double this but it worked well without doubling becuse data is unsmoothed
+    distance = 0
+    for i in range(len(self.frames)):
+      if (distance + 1) * self.time_between_frames / 1000 <= 0.2:
+        distance += 1
+    left_foot_ground_peaks = find_peaks(left_foot_ground_angle, distance=distance)[0]
+    right_foot_ground_peaks = find_peaks(right_foot_ground_angle, distance=distance)[0]
 
-    # May need to adjust distance for framerate
-    heel_valleys, _ = find_peaks(-smooth_heel, prominence=0.01, distance=5)
-    foot_valleys, _ = find_peaks(-smooth_foot, prominence=0.01, distance=5)
+    # Combine feet and remove outliers, bounding between -5 and 5 helps with next step
+    heel_strike_angles = np.concatenate((left_foot_ground_angle[left_foot_ground_peaks], right_foot_ground_angle[right_foot_ground_peaks]))
+    bad_frames = np.where(heel_strike_angles < -5)
+    heel_strike_angles = np.delete(heel_strike_angles, bad_frames, axis=0)
+    bad_frames = np.where(heel_strike_angles > 5)
+    heel_strike_angles = np.delete(heel_strike_angles, bad_frames, axis=0)
 
-    heel_strike_count = 0
-    total_strike_count = 0
-    foot_offset = 0
-    heel_offset = 0
-    minimum = min(len(heel_valleys), len(foot_valleys))
-    i = 0
-    while i < minimum:
-      # Heel offsets help get the calculation back on track if the peaks are not aligned
-      if i + foot_offset >= len(foot_valleys) or i + heel_offset >= len(heel_valleys):
-        break
-      temp = foot_valleys[i + foot_offset] - heel_valleys[i + heel_offset]
-      if temp > -5 and temp < 5:
-        heel_strike_count += temp
-        total_strike_count += 1
-        i += 1
-      elif temp >= 5:
-        heel_offset += 1
-      else:
-        foot_offset += 1
-
-    heel_strike_score = 99
-    if total_strike_count == 0:
-      return 0
-    if heel_strike_count > 0:
-      heel_strike_score -= (heel_strike_count/total_strike_count*10)
-      heel_strike_score = heel_strike_score * heel_strike_score / 90
-      if heel_strike_score > 99:
-        heel_strike_score = 99
+    # Adjust data to result in a value between 0 and 100
+    hss = (np.mean(heel_strike_angles) + 5) / 10
+    if hss > 0.5:
+      # Greater than 95% is superb, so forefoot strike
+      hss = 95 + 5 * (hss - 0.5) / (1 - 0.5)
+    elif hss > 0.3:
+      # Greater than 85% is good, so small heel strike
+      hss = 85 + 15 * (hss - 0.3) / (0.5 - 0.3)
     else:
-      heel_strike_score -= (heel_strike_count/total_strike_count*0.1)
-
-    # Arbitrary values are used to make the calculation seem good
-    # We could always curve this to make it higher or lower
-    # Downside is that slow running will have a poor score
-    # Downside is that high frame rate will have a poor score
-    # Downside is that using frame minima says little about overstriding
-    self.heel_strike_score = int(heel_strike_score)
+      hss = 85 / 0.3 * hss
+    self.heel_strike_score = int(hss)
     return
   
   def remove_bad_mediapipe_frames(self):
@@ -430,5 +413,4 @@ class GaitAnalysis:
       self.outliers_removed += len(bad_frames[0])
       self.bad_frames_detected += self.outliers_removed
       self.frames = np.delete(self.frames, bad_frames, axis=0)
-
     return
