@@ -84,7 +84,7 @@ function VideoPage(props) {
             // const graphs = getAllGraphs(user, vid).then((graphs) => console.log(graphs));
 
             
-            getVideoData(vid).then((videoData) => {
+            getVideoData(user, vid).then((videoData) => {
               const graphs = getAllGraphs(user, vid, videoData).then((graphs) => setGraphs(graphs));
             //   const injuryGraphs = getInjuryGraphs(user, vid, videoData).then((injuryGraphs) => setInjuryGraphs(injuryGraphs));
               setvideoData(videoData)

@@ -93,11 +93,15 @@ export async function getUserVideo(user, vid) {
   return url;
 }
 
-export async function getVideoData(vid) {
+export async function getVideoData(user, vid) {
   const video = await getDoc(doc(db,"videos", vid))
   try {
     if (video.exists()) {
       const data = await video.data();
+      if (data.uid !== user.uid) {
+        console.error("User does not have permission to view this video");
+        return undefined;
+      }
       return data;
     } else {
       return undefined;
