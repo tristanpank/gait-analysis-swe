@@ -37,6 +37,10 @@ function calculateTimeText(time) {
 
 }
 
+async function generateThumbnail(url) {
+  return;
+}
+
 const VideoCard = (props) => {
     const { user, vid } = props
     const [path, setPath] = useState("");
@@ -78,18 +82,27 @@ const VideoCard = (props) => {
         }
     };
 
-
-    return (
+    if (!videoData.view) {
+      console.log("test");
+      return (
+        <div></div>
+      )
+    } else {
+      return (
         <div onClick={() => {navigate(`./${vid}`)}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
           className="px-3 p-2 flex flex-col items-center">
-            <video muted loop ref={videoRef} key={path} className='object-cover max-w-[50%] max-h-[15%] rounded-xl'>
-                <source src={path} type="video/mp4"></source>
-            </video>
+            <h1>{videoData.view.charAt(0).toUpperCase() + videoData.view.slice(1)} Video</h1>
             <div>
               {(videoData) && calculateTimeText(videoData.timestamp)}
             </div>
+            <video muted loop ref={videoRef} key={path} className='object-cover max-w-[50%] max-h-[30%] rounded-xl'>
+                <source src={path} type="video/mp4"></source>
+            </video>
+            
         </div>
     )
+    }
+    
 }
  
 export default VideoCard
