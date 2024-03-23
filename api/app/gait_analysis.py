@@ -209,13 +209,13 @@ class GaitAnalysis:
     left_peaks, _ = find_peaks(left_crossover, distance=10)
     right_peaks, _ = find_peaks(right_crossover, distance=10)
 
-    right_peaks_values = [right_crossover[peak] for peak in right_peaks]
-    left_peaks_values = [left_crossover[peak] for peak in left_peaks]
+    right_peaks_values = [round(right_crossover[peak], 2) for peak in right_peaks]
+    left_peaks_values = [round(left_crossover[peak], 2) for peak in left_peaks]
 
-    right_max = max(right_peaks_values)
-    left_max = max(left_peaks_values)
-    right_avg = np.average(right_peaks_values)
-    left_avg = np.average(left_peaks_values)
+    right_max = round(max(right_peaks_values), 2)
+    left_max = round(max(left_peaks_values), 2)
+    right_avg = round(np.average(right_peaks_values), 2)
+    left_avg = round(np.average(left_peaks_values), 2)
 
     data = {
         "left_crossover": left_crossover,
