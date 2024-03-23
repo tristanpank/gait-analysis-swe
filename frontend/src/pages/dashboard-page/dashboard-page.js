@@ -22,7 +22,7 @@ const Dashboard = (props) => {
       if (Array.isArray(videosArray)) {
         setVideoArray(videosArray.reverse());
         setVideoUploaded(false);
-        console.log("test");
+        console.log(videosArray);
       }
     })
   }, [user, videoUploaded])
