@@ -43,9 +43,7 @@ jobs:
         run: | 
           cd frontend
           npm install
-      
-      
-      
+
       - name: Install Python dependencies
         run: |
           cd api
