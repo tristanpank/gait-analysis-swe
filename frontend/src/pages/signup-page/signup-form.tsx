@@ -26,6 +26,14 @@ export function SignupForm(props) {
     
     if (password != confirmPassword) {
         setSignUpError('Passwords do not match.')
+    } else if (password == ''){
+        setSignUpError('Please provide a password.')
+    } else if (confirmPassword == ''){
+        setSignUpError('Please confirm your password.')
+    } else if (firstName == '' || lastName == ''){
+        setSignUpError('First or last name is missing.')
+    } else if (firstName.length > 100 || lastName.length > 100){
+        setSignUpError('First or last name is too long.')
     } else {
         const displayName = firstName + ' ' + lastName;
         const user = await createAccountEmailPassword(email, password, displayName)
@@ -36,6 +44,8 @@ export function SignupForm(props) {
                 setSignUpError('An account already exists with this email, please log in.');
             } else if (error.code === 'auth/weak-password') {
                 setSignUpError('Password should be at least 6 characters.');
+            } else if (error.code === 'auth/invalid-email'){
+                setSignUpError('Please provide a valid email address.')
             } else {
                 setSignUpError('Error while creating account.');
             }
