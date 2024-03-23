@@ -18,14 +18,22 @@ class GaitAnalysis:
   outliers_removed = 0
   lower_bound = 0
   upper_bound = 0
+  pace = 0
+  stride_length = 0
+  height = 69
+  # If mp height from eyes to feet is not accurate, change this value
+  offset = 0
+  aspect_ratio = 16 / 9.
 
-  def __init__(self, input_path="", output_path="", landmarker_path="./landmarkers/pose_landmarker.task", data=None):
+  def __init__(self, input_path="", output_path="", landmarker_path="./landmarkers/pose_landmarker.task", data=None, height=69, aspect_ratio=16/9.):
     if data:
       self.frames = self.convert_str_to_numpy_with_python(data)
     else:
       landmark_frames = self.get_pose_array(input_path, output_path, landmarker_path)
       self.frames = self.convert_landmark_frames_to_numpy(landmark_frames)
       self.remove_bad_mediapipe_frames()
+      self.height = height
+      self.aspect_ratio = aspect_ratio
 
   @staticmethod
   def convert_landmark_frames_to_numpy(frames):
@@ -414,3 +422,73 @@ class GaitAnalysis:
       self.bad_frames_detected += self.outliers_removed
       self.frames = np.delete(self.frames, bad_frames, axis=0)
     return
+  
+  def calculate_pace(self):
+    if self.pace != 0:
+      return self.pace
+    
+    left_eye = self.get_landmark_frames(1)
+    right_eye = self.get_landmark_frames(2)
+    left_shoulder = self.get_landmark_frames(11)
+    right_shoulder = self.get_landmark_frames(12)
+    left_hip = self.get_landmark_frames(23)
+    right_hip = self.get_landmark_frames(24)
+    left_knee = self.get_landmark_frames(25)
+    right_knee = self.get_landmark_frames(26)
+    left_ankle = self.get_landmark_frames(27)
+    right_ankle = self.get_landmark_frames(28)
+
+    avg_eyes = (left_eye + right_eye) / 2
+    avg_shoulders = (left_shoulder + right_shoulder) / 2
+    avg_hip = (left_hip + right_hip) / 2
+    left_hip_foot_diff = left_hip[:, 0] - left_ankle[:, 0]
+    right_hip_foot_diff = right_hip[:, 0] - right_ankle[:, 0]
+    framerate = 1 / self.time_between_frames * 1000
+
+    def calculate_distance(first, second):
+      output = []
+      for i in range(min(len(first), len(second))):
+        sum = 0
+        for j in range(min(len(first[i]), len(second[i]))):
+          if j == 0:
+            sum += (16/9. * (first[i][j] - second[i][j])) ** 2
+          else:
+            sum += (first[i][j] - second[i][j]) ** 2
+        output.append(sum ** 0.5)
+      return np.array(output)
+
+    window_height = calculate_distance(avg_eyes, avg_shoulders) + calculate_distance(avg_shoulders, avg_hip) + (calculate_distance(left_hip, left_knee) + calculate_distance(right_hip, right_knee)) / 2 + (calculate_distance(left_knee, left_ankle) + calculate_distance(right_knee, right_ankle)) / 2
+    screen_height = (self.height - self.offset) / np.mean(window_height)
+
+    distance = 0
+    window_length = 0
+    for i in range(len(window_height)):
+      if (distance + 1) * self.time_between_frames / 1000 <= 0.2:
+        distance += 1
+      if (window_length + 1) * self.time_between_frames / 1000 <= 1.5 * 0.33333333:
+          window_length += 1
+    if window_length % 2 == 0:
+      window_length += 1
+
+    left_running_mph = np.diff(left_hip_foot_diff) * framerate * self.aspect_ratio * screen_height / 63360 * 3600
+    right_running_mph = -np.diff(right_hip_foot_diff) * framerate * self.aspect_ratio * screen_height / 63360 * 3600
+    left_running_mph = self.smooth_data(left_running_mph, window_length=window_length)
+    right_running_mph = self.smooth_data(right_running_mph, window_length=window_length)
+    left_foot_speed_mph = find_peaks(left_running_mph, prominence=0.5, distance = distance * 2)[0]
+    right_foot_speed_mph = find_peaks(right_running_mph, prominence=0.5, distance = distance * 2)[0]
+    foot_speed_mph = np.concatenate((left_running_mph[left_foot_speed_mph], right_running_mph[right_foot_speed_mph]))
+    if len(foot_speed_mph) > 2:
+        Q1 = np.percentile(foot_speed_mph, 25)
+        Q3 = np.percentile(foot_speed_mph, 75)
+        IQR = Q3 - Q1
+
+        # Define bounds for outliers
+        lower_bound = Q1
+        upper_bound = Q3 + 1.5 * IQR
+
+        # Filter out outliers and calculate mean
+        foot_speed_mph = foot_speed_mph[(foot_speed_mph >= lower_bound) & (foot_speed_mph <= upper_bound)]
+    running_pace = 1 / foot_speed_mph * 60
+    self.pace = np.mean(running_pace)
+    self.stride_length = np.mean(foot_speed_mph) * 5280 / 60 / self.calculate_cadence()
+    return self.pace
