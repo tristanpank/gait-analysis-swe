@@ -11,19 +11,30 @@ function calculateTimeText(time) {
   }
   const now = Timestamp.now().toMillis();
   const uploadTime = time.seconds * 1000 + time.nanoseconds / 1000000;
-  const diff = now - uploadTime;
+
+  const nowDate = new Date(now);
+  const uploadDate = new Date(uploadTime);
+ 
+  const uploadDay = uploadDate.getDate();
+  const uploadMonth = uploadDate.getMonth();
+  const uploadYear = uploadDate.getFullYear();
+
+  const nowDay = nowDate.getDate();
+  const nowMonth = nowDate.getMonth();
+  const nowYear = nowDate.getFullYear();
 
   let timeText = "";
-  if (diff < 60000) {
-    timeText = "Just now";
-  } else if (diff < 3600000) {
-    timeText = `${Math.floor(diff / 60000)} minutes ago`;
-  } else if (diff < 86400000) {
-    timeText = `${Math.floor(diff / 3600000)} hours ago`;
-  } else {
-    timeText = `${Math.floor(diff / 86400000)} days ago`;
+  if (uploadDay === nowDay && uploadMonth === nowMonth && uploadYear === nowYear) {
+    timeText = `Today at ${uploadDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+  }
+  else if (uploadDay === nowDay - 1 && uploadMonth === nowMonth && uploadYear === nowYear) {
+    timeText = `Yesterday at ${uploadDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
+  }
+  else {
+    timeText = `${uploadDate.toLocaleDateString()} at ${uploadDate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}`;
   }
   return timeText;
+
 }
 
 const VideoCard = (props) => {
@@ -69,7 +80,8 @@ const VideoCard = (props) => {
 
 
     return (
-        <div onClick={() => {navigate(`./${vid}`)}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} className="video-container px-3 p-2">
+        <div onClick={() => {navigate(`./${vid}`)}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
+          className="px-3 p-2 flex flex-col items-center">
             <video muted loop ref={videoRef} key={path} className='object-cover max-w-[50%] max-h-[15%] rounded-xl'>
                 <source src={path} type="video/mp4"></source>
             </video>
