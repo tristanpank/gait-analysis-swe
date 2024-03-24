@@ -137,6 +137,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   compressed_path = add_filename_extension(pose_path, "-compressed.mp4")
     
   # Perform gait analysis on the video
+  # TODO implement use of video aspect ratio and runner height
   gait_analysis = GaitAnalysis(input_path=file_path, output_path=pose_path, landmarker_path="./landmarkers/pose_landmarker.task")
   
   # Compress the pose video
@@ -188,18 +189,47 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     
     })
 
-  # Calculates and adds cadence if video is side view
-  if view == "Right" or view == "Left":
-    gait_analysis.calculate_cadence()
+  # Calculates if video is side view
+  if view == "right" or view == "left":
     update_doc(video_ref, {
       "cadence": gait_analysis.avg_cadence
     })
 
-    gait_analysis.calculate_heel_strike_score()
     update_doc(video_ref, {
-      "heel_strike_score": gait_analysis.calculate_heel_strike_score()
+      "heel_strike_angle": gait_analysis.heel_strike_angle
     })
 
+    update_doc(video_ref, {
+      "pace": gait_analysis.pace
+    })
+
+    update_doc(video_ref, {
+      "stride_length": gait_analysis.stride_length
+    })
+
+    update_doc(video_ref, {
+      "heel_strike_angle": gait_analysis.heel_strike_angle 
+    })
+    
+    update_doc(video_ref, {
+      "shin_strike_angle": gait_analysis.shin_strike_angle
+    })
+
+    update_doc(video_ref, {
+      "knee_strike_angle": gait_analysis.knee_strike_angle
+    })
+
+    update_doc(video_ref, {
+      "knee_flexion_angle": gait_analysis.knee_flexion_angle
+    })
+
+    update_doc(video_ref, {
+      "forward_tilt_angle": gait_analysis.forward_tilt_angle
+    })
+
+    update_doc(video_ref, {
+      "elbow_angle": gait_analysis.elbow_angle
+    })
 
   # Update video document with graph names
   update_doc(video_ref, {

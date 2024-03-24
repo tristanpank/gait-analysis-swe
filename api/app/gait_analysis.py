@@ -40,7 +40,7 @@ class GaitAnalysis:
   #TODO
   forward_tilt_angle = 0
   #TODO Probably 70-110 is ideal, but conflicting views
-  avg_elbow_angle = 0
+  elbow_angle = 0
   #TODO We should find a stat for knee drive
   #TODO We should find a stat for arm swing
   #TODO We should find a stat for heel lift
@@ -203,11 +203,13 @@ class GaitAnalysis:
   
   def perform_calculations(self):
     # Calculate all stats
-    self.calculate_cadence()
     self.calculate_direction()
-    self.calculate_pace()
-    self.calculate_heel_strike_angle()
-    self.calculate_leg_crossover()
+    if self.direction == "front" or self.direction == "back":
+      self.calculate_leg_crossover()
+    else:
+      self.calculate_cadence()
+      self.calculate_pace()
+      self.calculate_heel_strike_angle()
     return
 
   # Timeit took around 5ms per frame
@@ -383,13 +385,13 @@ class GaitAnalysis:
     # Determine the direction based on the average distance between the ears and the nose
     self.direction = ""
     if average < right_avg and average < left_avg:
-      self.direction = "Left"
+      self.direction = "left"
     elif average > left_avg and average > right_avg:
-      self.direction = "Right"
+      self.direction = "right"
     elif average > right_avg and average < left_avg:
-      self.direction = "Back"
+      self.direction = "back"
     else:
-      self.direction = "Front"
+      self.direction = "front"
     return self.direction
 
   def calculate_heel_strike_angle(self):
