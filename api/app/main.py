@@ -143,6 +143,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   compressed_path = add_filename_extension(pose_path, "-compressed.mp4")
     
   # Perform gait analysis on the video
+  # TODO implement use of video aspect ratio and runner height
   gait_analysis = GaitAnalysis(input_path=file_path, output_path=pose_path, landmarker_path="./landmarkers/pose_landmarker.task")
   
   # Compress the pose video
@@ -150,6 +151,9 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
 
   # Export pose data as JSON
   pose_data = gait_analysis.export_frames_json()
+
+  # Overwrite view with calculated view"
+  view = gait_analysis.calculate_direction()
 
   video_ref = create_video_doc({
     "pose_data": pose_data,
@@ -182,7 +186,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   injury_data = make_injury_collection(video_ref)
 
   # If the view is "front", calculate and upload the crossover graph
-  if view == "front":
+  if view == "Front" or view == "Back":
     crossover_path = get_crossover_graph(gait_analysis)
     upload_file_to_cloud_storage(crossover_path, f"users/{uid}/videos/{video_ref.id}/graphs/crossover.png")
     os.remove(crossover_path)
@@ -198,13 +202,47 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
       "right_avg": crossover_data["right_avg"]
     })
 
-  # Calculates and adds cadence if video is side view
-  if view == "side":
-    gait_analysis.calculate_cadence()
+  # Calculates if video is side view
+  if view == "right" or view == "left":
     update_doc(video_ref, {
       "cadence": gait_analysis.avg_cadence
     })
 
+    update_doc(video_ref, {
+      "heel_strike_angle": gait_analysis.heel_strike_angle
+    })
+
+    update_doc(video_ref, {
+      "pace": gait_analysis.pace
+    })
+
+    update_doc(video_ref, {
+      "stride_length": gait_analysis.stride_length
+    })
+
+    update_doc(video_ref, {
+      "heel_strike_angle": gait_analysis.heel_strike_angle 
+    })
+    
+    update_doc(video_ref, {
+      "shin_strike_angle": gait_analysis.shin_strike_angle
+    })
+
+    update_doc(video_ref, {
+      "knee_strike_angle": gait_analysis.knee_strike_angle
+    })
+
+    update_doc(video_ref, {
+      "knee_flexion_angle": gait_analysis.knee_flexion_angle
+    })
+
+    update_doc(video_ref, {
+      "forward_tilt_angle": gait_analysis.forward_tilt_angle
+    })
+
+    update_doc(video_ref, {
+      "elbow_angle": gait_analysis.elbow_angle
+    })
 
   # Update video document with graph names
   update_doc(video_ref, {
