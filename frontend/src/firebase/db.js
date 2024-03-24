@@ -93,11 +93,15 @@ export async function getUserVideo(user, vid) {
   return url;
 }
 
-export async function getVideoData(vid) {
+export async function getVideoData(user, vid) {
   const video = await getDoc(doc(db,"videos", vid))
   try {
     if (video.exists()) {
       const data = await video.data();
+      if (data.uid !== user.uid) {
+        console.error("User does not have permission to view this video");
+        return undefined;
+      }
       return data;
     } else {
       return undefined;
@@ -106,6 +110,12 @@ export async function getVideoData(vid) {
     console.error(error);
     return error
   }
+}
+
+export async function getUserVideoThumbnail(user, vid) {
+  const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/thumbnail.jpg`)
+  const url = await getDownloadURL(videoRef);
+  return url;
 }
 
 export async function setUserPFP(user, file) {

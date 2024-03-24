@@ -356,8 +356,31 @@ class GaitAnalysis:
     left_crossover[left_crossover < 0] = 0
     right_crossover[right_crossover < 0] = 0
 
-    # Return the left and right crossover percentages
-    return left_crossover, right_crossover
+    # Find the crossover peaks and calculate the max and average crossover
+    left_peaks, _ = find_peaks(left_crossover, distance=10)
+    right_peaks, _ = find_peaks(right_crossover, distance=10)
+
+    right_peaks_values = [round(right_crossover[peak], 2) for peak in right_peaks]
+    left_peaks_values = [round(left_crossover[peak], 2) for peak in left_peaks]
+
+    right_max = round(max(right_peaks_values), 2)
+    left_max = round(max(left_peaks_values), 2)
+    right_avg = round(np.average(right_peaks_values), 2)
+    left_avg = round(np.average(left_peaks_values), 2)
+
+    data = {
+        "left_crossover": left_crossover,
+        "right_crossover": right_crossover,
+        "right_peaks_values": right_peaks_values,
+        "left_peaks_values": left_peaks_values,
+        "right_max": right_max,
+        "left_max": left_max,
+        "right_avg": right_avg,
+        "left_avg": left_avg
+    }
+
+    # Return the crossover data
+    return data
 
 
   def calculate_graph(self, first, middle, last):

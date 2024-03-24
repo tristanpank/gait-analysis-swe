@@ -6,7 +6,7 @@ import { HomeParallax } from './home-parallax.js';
 const Home = () => {
 
   return (
-    <div>
+    <div data-testid = "Home">
       <Header />
       <HomeParallax />
     </div>

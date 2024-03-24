@@ -93,6 +93,12 @@ def add_doc(collection, data):
 def compress_video(input_path, output_path):
   clip = VideoFileClip(input_path)
   clip.write_videofile(output_path)
+  clip.save_frame(output_path.replace(".mp4", ".jpg"), t=clip.duration / 2)
+  clip.close()
+
+def generate_thumbnail(input_path, output_path):
+  clip = VideoFileClip(input_path)
+  clip.save_frame(output_path, t=clip.duration / 2)
   clip.close()
 
 @app.post("/pose/")
@@ -161,6 +167,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
 
   # Upload the compressed video to cloud storage
   upload_file_to_cloud_storage(compressed_path, f"users/{uid}/videos/{video_ref.id}/pose.mp4")
+  upload_file_to_cloud_storage(compressed_path.replace(".mp4", ".jpg"), f"users/{uid}/videos/{video_ref.id}/thumbnail.jpg")
 
   # Calculate all graphs
   graph_paths = get_all_graphs(gait_analysis)
@@ -183,10 +190,16 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     crossover_path = get_crossover_graph(gait_analysis)
     upload_file_to_cloud_storage(crossover_path, f"users/{uid}/videos/{video_ref.id}/graphs/crossover.png")
     os.remove(crossover_path)
+    crossover_data = gait_analysis.calculate_leg_crossover()
     add_doc(injury_data, {
       "name": "crossover",
       "graph": "crossover.png",
-    
+      "left_peaks_values": crossover_data["left_peaks_values"],
+      "right_peaks_values": crossover_data["right_peaks_values"],
+      "left_max": crossover_data["left_max"],
+      "right_max": crossover_data["right_max"],
+      "left_avg": crossover_data["left_avg"],
+      "right_avg": crossover_data["right_avg"]
     })
 
   # Calculates if video is side view
@@ -247,6 +260,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   os.remove(file_path)
   os.remove(pose_path)
   os.remove(compressed_path)
+  os.remove(compressed_path.replace(".mp4", ".jpg"))
 
   # Return the pose data as JSON response
   return JSONResponse(content=pose_data, media_type="application/json")

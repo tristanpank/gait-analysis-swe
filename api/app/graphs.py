@@ -18,7 +18,9 @@ def get_all_graphs(gait_analysis):
     return paths
 
 def get_crossover_graph(gait_analysis):
-    left, right = gait_analysis.calculate_leg_crossover()
+    data = gait_analysis.calculate_leg_crossover()
+    left = data["left_crossover"]
+    right = data["right_crossover"]
     plt.plot(left, label="Left Crossover")
     plt.plot(right, label="Right Crossover")
     plt.xlabel("Frames")

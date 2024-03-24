@@ -33,7 +33,7 @@ Then enter the app directory and run the live server
 
 ```shell
 cd app
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 To run our API test cases enter the `tests/` directory and run pytest
