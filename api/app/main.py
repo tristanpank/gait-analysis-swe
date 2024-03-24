@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI, UploadFile, File
-from gait_analysis import GaitAnalysis
-from graphs import get_all_graphs, get_crossover_graph
+from .gait_analysis import GaitAnalysis
+from .graphs import get_all_graphs, get_crossover_graph
 from moviepy.editor import VideoFileClip
 from fastapi.responses import JSONResponse
 import firebase_admin
