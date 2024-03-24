@@ -11,19 +11,39 @@ from scipy.signal import find_peaks, savgol_filter
 class GaitAnalysis:
   frames = np.array([])
   time_between_frames = 0
-  avg_cadence = 0
-  heel_strike_score = 0
-  direction = ""
+  # Removal of bad frames due to head below foot
   bad_frames_detected = 0
   outliers_removed = 0
   lower_bound = 0
   upper_bound = 0
+  # Cadence in steps per minute (Range 100 to 300)
+  avg_cadence = 0
+  # Left, Right, Front, Back
+  direction = ""
+  # Pace in minutes per mile (Range 4 to 20)
   pace = 0
+  # Stride length in feet
   stride_length = 0
+  # Avg male height in inches
   height = 69
-  # If mp height from eyes to feet is not accurate, change this value
-  offset = 0
+  # 10% of height is a arbitrary offset for height not accounted for from eyes - ankles distance
+  offset = 6.9
   aspect_ratio = 16 / 9.
+  # 0 is ideal, negative is heel strike, positive is forefoot strike (Range -5 to 5)
+  heel_strike_angle = 0
+  # < 10 degress is ideal
+  shin_strike_angle = 0
+  #TODO < 160 degrees is ideal
+  knee_strike_angle = 0
+  #TODO < 140 degrees is ideal
+  knee_flexion_angle = 0
+  #TODO
+  forward_tilt_angle = 0
+  #TODO Probably 70-110 is ideal, but conflicting views
+  avg_elbow_angle = 0
+  #TODO We should find a stat for knee drive
+  #TODO We should find a stat for arm swing
+  #TODO We should find a stat for heel lift
 
   def __init__(self, input_path="", output_path="", landmarker_path="./landmarkers/pose_landmarker.task", data=None, height=69, aspect_ratio=16/9.):
     if data:
@@ -33,7 +53,9 @@ class GaitAnalysis:
       self.frames = self.convert_landmark_frames_to_numpy(landmark_frames)
       self.remove_bad_mediapipe_frames()
       self.height = height
+      self.offset = height * 0.1
       self.aspect_ratio = aspect_ratio
+      self.perform_calculations()
 
   @staticmethod
   def convert_landmark_frames_to_numpy(frames):
@@ -169,6 +191,7 @@ class GaitAnalysis:
     return self.angle(start_mid, mid_end)
 
   def smooth_data(self, data, window_length=15, polyorder=3):
+    # Ensure window length is odd and less than data length
     if window_length > len(data):
       if len(data) % 2 == 0:
         window_length = len(data) - 1
@@ -177,6 +200,15 @@ class GaitAnalysis:
     if window_length < 3:
       return data
     return savgol_filter(data, window_length=window_length, polyorder=polyorder)
+  
+  def perform_calculations(self):
+    # Calculate all stats
+    self.calculate_cadence()
+    self.calculate_direction()
+    self.calculate_pace()
+    self.calculate_heel_strike_angle()
+    self.calculate_leg_crossover()
+    return
 
   # Timeit took around 5ms per frame
   def calculate_cadence(self):
@@ -190,6 +222,8 @@ class GaitAnalysis:
     right_smooth_toe = self.get_landmark_frames(32)[:, 1]
     left_smooth_ankle = self.get_landmark_frames(27)[:, 1]
     right_smooth_ankle = self.get_landmark_frames(28)[:, 1]
+
+    # Determine distance between peaks and window length based on framerate
     distance = 0
     window_length = 0
     for i in range(len(left_smooth_heel)):
@@ -198,6 +232,7 @@ class GaitAnalysis:
       if (window_length + 1) * self.time_between_frames / 1000 <= 1.5 * 0.33333333:
         window_length += 1
 
+    # Smooth data to remove noise
     for i in range(1):
       left_smooth_heel = self.smooth_data(left_smooth_heel, window_length=window_length)
       right_smooth_heel = self.smooth_data(right_smooth_heel, window_length=window_length)
@@ -207,7 +242,7 @@ class GaitAnalysis:
       right_smooth_ankle = self.smooth_data(right_smooth_ankle, window_length=window_length)
 
     # Uses sklearn to find peaks
-    # Calculates periods as diff between minimum
+    # Calculates periods as diff between local extrema
     left_peaks_heel = find_peaks(left_smooth_heel, prominence=0.01, distance=distance)[0]
     right_peaks_heel = find_peaks(right_smooth_heel, prominence=0.01, distance=distance)[0]
     left_valleys_heel = find_peaks(-left_smooth_heel, prominence=0.01, distance=distance)[0]
@@ -220,7 +255,6 @@ class GaitAnalysis:
     right_peaks_ankle = find_peaks(right_smooth_ankle, prominence=0.01, distance=distance)[0]
     left_valleys_ankle = find_peaks(-left_smooth_ankle, prominence=0.01, distance=distance)[0]
     right_valleys_ankle = find_peaks(-right_smooth_ankle, prominence=0.01, distance=distance)[0]
-
     all_peaks_heel = np.sort(np.concatenate((left_peaks_heel, right_peaks_heel)))
     all_valleys_heel = np.sort(np.concatenate((left_valleys_heel, right_valleys_heel)))
     all_peaks_toe = np.sort(np.concatenate((left_peaks_toe, right_peaks_toe)))
@@ -265,15 +299,19 @@ class GaitAnalysis:
     all_periods_ankle = np.concatenate((all_periods_ankle, 0.5 * right_peak_periods_ankle[:]))
     all_periods_ankle = np.concatenate((all_periods_ankle, 0.5 * right_valley_periods_ankle[:]))
 
+    # Combine all periods
     all_periods = np.concatenate((all_periods_heel, all_periods_toe))
     all_periods = np.concatenate((all_periods, all_periods_ankle))
+
     # Converts periods from frames to seconds
     step_time = all_periods * (self.time_between_frames / 1000.)
+
     # Calculates steps per min
     # Filters spm > 300 due to mediapipe outliers
     cadence = 60. / step_time[step_time != 0]
     cadence = cadence[(cadence >= 100) & (cadence <= 300)]
     cadence.sort()
+
     # Calculate Q1, Q3, and IQR
     if len(cadence) > 2:
       Q1 = np.percentile(cadence, 25)
@@ -286,6 +324,7 @@ class GaitAnalysis:
 
       # Filter out outliers and calculate mean
       cadence = cadence[(cadence >= lower_bound) & (cadence <= upper_bound)]
+      
     self.avg_cadence = np.mean(cadence)
     return self.avg_cadence
 
@@ -333,12 +372,15 @@ class GaitAnalysis:
   def calculate_direction(self):
     if self.direction != "":
       return self.direction
+    # Calculate the distance between the ears and the nose
     left_ear = self.get_landmark_frames(0)[:,0] - self.get_landmark_frames(7)[:,0]
     right_ear = self.get_landmark_frames(0)[:,0] - self.get_landmark_frames(8)[:,0]
     ears = left_ear + right_ear
     left_avg = np.mean(left_ear)
     right_avg= np.mean(right_ear)
     average = np.mean(ears)
+
+    # Determine the direction based on the average distance between the ears and the nose
     self.direction = ""
     if average < right_avg and average < left_avg:
       self.direction = "Left"
@@ -350,15 +392,15 @@ class GaitAnalysis:
       self.direction = "Front"
     return self.direction
 
-  def calculate_heel_strike_score(self):
-    if self.heel_strike_score != 0:
-      return self.heel_strike_score
+  def calculate_heel_strike_angle(self):
+    if self.heel_strike_angle != 0:
+      return self.heel_strike_angle
     # Calculate angles of both feet and ground
     ground_vector = np.array([[-1, 0]])
     left_foot_ground_angle = -180 + self.angle(self.get_landmark_frames(31) - self.get_landmark_frames(27), ground_vector[:, ::-1])
     right_foot_ground_angle = -180 + self.angle(self.get_landmark_frames(32) - self.get_landmark_frames(28), ground_vector[:, ::-1])
 
-    # Adjust distance between peaks to video framerate, although distance should be double this but it worked well without doubling becuse data is unsmoothed
+    # Adjust distance between peaks to video framerate, although distance should be double this but it worked well without doubling because data is unsmoothed
     distance = 0
     for i in range(len(self.frames)):
       if (distance + 1) * self.time_between_frames / 1000 <= 0.2:
@@ -374,17 +416,17 @@ class GaitAnalysis:
     heel_strike_angles = np.delete(heel_strike_angles, bad_frames, axis=0)
 
     # Adjust data to result in a value between 0 and 100
-    hss = (np.mean(heel_strike_angles) + 5) / 10
-    if hss > 0.5:
-      # Greater than 95% is superb, so forefoot strike
-      hss = 95 + 5 * (hss - 0.5) / (1 - 0.5)
-    elif hss > 0.3:
-      # Greater than 85% is good, so small heel strike
-      hss = 85 + 15 * (hss - 0.3) / (0.5 - 0.3)
-    else:
-      hss = 85 / 0.3 * hss
-    self.heel_strike_score = int(hss)
-    return
+    # hss = (np.mean(heel_strike_angles) + 5) / 10
+    # if hss > 0.5:
+    #   # Greater than 95% is superb, so forefoot strike
+    #   hss = 95 + 5 * (hss - 0.5) / (1 - 0.5)
+    # elif hss > 0.3:
+    #   # Greater than 85% is good, so small heel strike
+    #   hss = 85 + 15 * (hss - 0.3) / (0.5 - 0.3)
+    # else:
+    #   hss = 85 / 0.3 * hss
+    self.heel_strike_angle = np.mean(heel_strike_angles)
+    return self.heel_strike_angle
   
   def remove_bad_mediapipe_frames(self):
     # Remove frames where the head is below the foot
@@ -425,7 +467,7 @@ class GaitAnalysis:
   
   def calculate_pace(self):
     if self.pace != 0:
-      return self.pace
+      return self.pace, self.stride_length
     
     left_eye = self.get_landmark_frames(1)
     right_eye = self.get_landmark_frames(2)
@@ -445,6 +487,7 @@ class GaitAnalysis:
     right_hip_foot_diff = right_hip[:, 0] - right_ankle[:, 0]
     framerate = 1 / self.time_between_frames * 1000
 
+    # Define function to calculate distance between two points
     def calculate_distance(first, second):
       output = []
       for i in range(min(len(first), len(second))):
@@ -457,9 +500,12 @@ class GaitAnalysis:
         output.append(sum ** 0.5)
       return np.array(output)
 
+    # Calculate the window_height of runner (fraction of runner height to screen height)
+    # Calculate screen_height in feet, this can be used to convert mediapipe values to feet
     window_height = calculate_distance(avg_eyes, avg_shoulders) + calculate_distance(avg_shoulders, avg_hip) + (calculate_distance(left_hip, left_knee) + calculate_distance(right_hip, right_knee)) / 2 + (calculate_distance(left_knee, left_ankle) + calculate_distance(right_knee, right_ankle)) / 2
-    screen_height = (self.height - self.offset) / np.mean(window_height)
+    screen_height = (self.height - self.offset) / np.median(window_height)
 
+    # Determine distance between peaks and window length based on framerate
     distance = 0
     window_length = 0
     for i in range(len(window_height)):
@@ -470,6 +516,8 @@ class GaitAnalysis:
     if window_length % 2 == 0:
       window_length += 1
 
+    # Derivative of hip to foot distance is the speed of the foot
+    # TODO Consider using x and y distance not just x
     left_running_mph = np.diff(left_hip_foot_diff) * framerate * self.aspect_ratio * screen_height / 63360 * 3600
     right_running_mph = -np.diff(right_hip_foot_diff) * framerate * self.aspect_ratio * screen_height / 63360 * 3600
     left_running_mph = self.smooth_data(left_running_mph, window_length=window_length)
@@ -477,18 +525,22 @@ class GaitAnalysis:
     left_foot_speed_mph = find_peaks(left_running_mph, prominence=0.5, distance = distance * 2)[0]
     right_foot_speed_mph = find_peaks(right_running_mph, prominence=0.5, distance = distance * 2)[0]
     foot_speed_mph = np.concatenate((left_running_mph[left_foot_speed_mph], right_running_mph[right_foot_speed_mph]))
-    if len(foot_speed_mph) > 2:
-        Q1 = np.percentile(foot_speed_mph, 25)
-        Q3 = np.percentile(foot_speed_mph, 75)
-        IQR = Q3 - Q1
-
-        # Define bounds for outliers
-        lower_bound = Q1
-        upper_bound = Q3 + 1.5 * IQR
-
+    if len(foot_speed_mph) > 0:
+        # Define bounds for outliers                    
+        # Filter pace to between 4 and 20 min/mile
+        lower_bound = 3
+        upper_bound = 15
+                  
         # Filter out outliers and calculate mean
         foot_speed_mph = foot_speed_mph[(foot_speed_mph >= lower_bound) & (foot_speed_mph <= upper_bound)]
     running_pace = 1 / foot_speed_mph * 60
     self.pace = np.mean(running_pace)
     self.stride_length = np.mean(foot_speed_mph) * 5280 / 60 / self.calculate_cadence()
-    return self.pace
+    return self.pace, self.stride_length
+
+  def calculate_knee_flexion(self):
+    """ 
+    Less flexion results higher shock at the ankle, tibia and knee leading to common injuries such as PFPS, Tibial stress fractures etc.,
+    At initial contact the angle between the hip, knee and ankle should be < 160 degrees and at mid stance that angle should reduce to <140 degrees.      
+    """
+    return 0
