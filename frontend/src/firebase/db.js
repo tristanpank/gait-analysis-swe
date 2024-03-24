@@ -112,6 +112,12 @@ export async function getVideoData(user, vid) {
   }
 }
 
+export async function getUserVideoThumbnail(user, vid) {
+  const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/thumbnail.jpg`)
+  const url = await getDownloadURL(videoRef);
+  return url;
+}
+
 export async function setUserPFP(user, file) {
   const pfpRef = ref(storage, `users/${user.uid}/pfp/pfp`);
   
