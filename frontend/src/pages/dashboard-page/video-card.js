@@ -1,5 +1,5 @@
 import React from 'react';
-import { getUserVideo, getVideoData} from '../../firebase/db.js'
+import { getUserVideo, getVideoData, getUserVideoThumbnail } from '../../firebase/db.js'
 import { useState, useEffect, useRef } from 'react';
 import { Timestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
@@ -37,9 +37,6 @@ function calculateTimeText(time) {
 
 }
 
-async function generateThumbnail(url) {
-  return;
-}
 
 const VideoCard = (props) => {
     const { user, vid } = props
@@ -50,7 +47,7 @@ const VideoCard = (props) => {
 
     useEffect(() => {
         const fetchVideo = async () => {
-            const url = await getUserVideo(user, vid);
+            const url = await getUserVideoThumbnail(user, vid);
             setPath(url);
         };
         if (user){
@@ -95,9 +92,7 @@ const VideoCard = (props) => {
             <div>
               {(videoData) && calculateTimeText(videoData.timestamp)}
             </div>
-            <video muted loop ref={videoRef} key={path} className='object-cover max-w-[50%] max-h-[30%] rounded-xl'>
-                <source src={path} type="video/mp4"></source>
-            </video>
+            <img src={path} alt='user-video' className='w-[50%]'></img>
             
         </div>
     )
