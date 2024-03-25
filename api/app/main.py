@@ -186,7 +186,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   injury_data = make_injury_collection(video_ref)
 
   # If the view is "front", calculate and upload the crossover graph
-  if view == "Front" or view == "Back":
+  if view == "front" or view == "back":
     crossover_path = get_crossover_graph(gait_analysis)
     upload_file_to_cloud_storage(crossover_path, f"users/{uid}/videos/{video_ref.id}/graphs/crossover.png")
     os.remove(crossover_path)
