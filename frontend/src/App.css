@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.clickable-circle {
+    transition: r 0.3s ease;
+}
+
+.clickable-circle:hover {
+    r: 2%;
+    fill: cyan;
+}

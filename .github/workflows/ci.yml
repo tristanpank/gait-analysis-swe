@@ -2,16 +2,38 @@ name: CI
 
 on: 
   push: 
-    branches: [ main ]
+    branches: 
+      - 'main'
   pull_request:
-    branches: [ main ]
-
+    branches: 
+      - '*'
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
   
     steps:
       - uses: actions/checkout@v2
+
+      - name: Set up Python Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11'
+
+      - name: Setup npm cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -21,21 +43,28 @@ jobs:
         run: | 
           cd frontend
           npm install
-      
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.11'
-      
+
       - name: Install Python dependencies
         run: |
           cd api
           pip install -r requirements.txt
       
-      - name: Run tests
+      - name: Run python tests
         run: |
           cd api/tests
           python -m pytest
+      
+      - name: Run frontend tests
+        env:
+          REACT_APP_FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+          REACT_APP_FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+          REACT_APP_FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+          REACT_APP_FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+          REACT_APP_FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+          REACT_APP_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+        run: |
+          cd frontend
+          npm test
 
       
       
