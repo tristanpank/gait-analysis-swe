@@ -24,14 +24,14 @@ export function SignupForm(props) {
     e.preventDefault()
     console.log("Form submitted");
     
-    if (password != confirmPassword) {
+    if (firstName == '' || lastName == '' ) {
+        setSignUpError('First or last name is missing.')
+    } else if (password != confirmPassword){
         setSignUpError('Passwords do not match.')
     } else if (password == ''){
         setSignUpError('Please provide a password.')
     } else if (confirmPassword == ''){
         setSignUpError('Please confirm your password.')
-    } else if (firstName == '' || lastName == ''){
-        setSignUpError('First or last name is missing.')
     } else if (firstName.length > 100 || lastName.length > 100){
         setSignUpError('First or last name is too long.')
     } else {
@@ -111,7 +111,7 @@ export function SignupForm(props) {
         </div>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="email">Email Address</Label>
-          <Input id="email" placeholder="projectmayhem@fc.com" type="email" onChange={handleSetEmail}/>
+          <Input id="email" placeholder="projectmayhem@fc.com" type="text" onChange={handleSetEmail}/>
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
           <Label htmlFor="password">Password</Label>
