@@ -63,6 +63,18 @@ export async function getAllGraphs(user, vid, videoData) {
   const urls = {};
   // console.log(videoData);
   const graphNames = videoData.graphs;
+  const numToGraph = {
+    11: "Left Shoulder",
+    12: "Right Shoulder",
+    13: "Left Elbow",
+    14: "Right Elbow",
+    23: "Left Hip",
+    24: "Right Hip",
+    25: "Left Knee",
+    26: "Right Knee",
+    27: "Left Ankle",
+    28: "Right Ankle",
+  }
   
   // console.log(graphNames);
   for (const graph of graphNames) {
