@@ -3,6 +3,7 @@ import { getUserVideo, getVideoData, getUserVideoThumbnail } from '../../firebas
 import { useState, useEffect, useRef } from 'react';
 import { Timestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { Button } from "../../shadcn/components/ui/button.jsx";
 
 
 function calculateTimeText(time) {
@@ -35,6 +36,17 @@ function calculateTimeText(time) {
   }
   return timeText;
 
+}
+
+function calculatePaceText(time) {
+  if (!time) {
+    return "";
+  }
+
+  const minutes = Math.floor(time);
+  const seconds = Math.round((time - minutes) * 60);
+
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
 
 
@@ -86,14 +98,19 @@ const VideoCard = (props) => {
       )
     } else {
       return (
-        <div onClick={() => {navigate(`./${vid}`)}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
+        <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
           className="px-3 p-2 flex flex-col items-center">
             <h1>{videoData.view.charAt(0).toUpperCase() + videoData.view.slice(1)} Video</h1>
             <div>
               {(videoData) && calculateTimeText(videoData.timestamp)}
             </div>
             <img src={path} alt='user-video' className='w-[50%]'></img>
-            
+            <div className=''>
+              {(videoData.cadence) && <div>Cadence: {Math.round(videoData.cadence)} spm</div>}
+              {(videoData.pace) && <div>Pace: {calculatePaceText(videoData.pace)}</div>}
+              {(videoData.stride_length) && <div>Stride Length: {videoData.stride_length.toFixed(2)}</div>}
+            </div>
+            <Button variant="outline" size="default" className="bg-blue-300 hover:bg-blue-500 " onClick={() => {navigate(`./${vid}`)}}>More Insights</Button>
         </div>
     )
     }
