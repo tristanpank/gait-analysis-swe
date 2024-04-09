@@ -9,6 +9,7 @@ import { getAllGraphs, getInjuryGraphs, getInjuryData } from "../../firebase/db.
 import { GlobalStateContext } from 'src/components/react/GlobalStateProvider.js';
 import DeleteButton from './DeleteButton.jsx';
 import InjuryDisplay from './InjuryDisplay.jsx';
+import AngleDisplay from './AngleDisplay.jsx';
 import { Accordion } from '@mui/material';
 import { AccordionDetails } from '@mui/material';
 import { AccordionSummary } from '@mui/material';
@@ -32,18 +33,7 @@ function VideoPage(props) {
     const [graphs, setGraphs] = useState({});
     const [injuryData, setInjuryData] = useState({});
     const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
-    const numToGraph = {
-      11: "Left Shoulder",
-      12: "Right Shoulder",
-      13: "Left Elbow",
-      14: "Right Elbow",
-      23: "Left Hip",
-      24: "Right Hip",
-      25: "Left Knee",
-      26: "Right Knee",
-      27: "Left Ankle",
-      28: "Right Ankle",
-    }
+
     
     useEffect(() => {
         const video = document.getElementById('video');
@@ -158,28 +148,11 @@ function VideoPage(props) {
                     <video id='video' className="pt-20 w-11/12 m-auto" ref={videoRef} muted loop controls key={videoPath}>
                         <source src={videoPath} type="video/mp4"></source>
                     </video>
-                    <button onClick={handleDelete}>Delete</button>
                     <DeleteButton user={user} vid={vid} />
                     {/* {skeletonExists && (
                         <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
                     )} */}
-                    <div>
-                      {Object.keys(graphs).map((key, index) => {
-                        return (
-                          <Accordion key={index}>
-                            <AccordionSummary
-                              expandIcon={<ArrowDropDownIcon />}
-                              aria-controls="panel1a-content"
-                              id="panel1a-header">
-                              <Typography>{numToGraph[key]}</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                              <img src={graphs[key]} alt="graph" className="w-[50%]" />
-                            </AccordionDetails>
-                          </Accordion>
-                        )
-                      })}
-                    </div>
+                    <AngleDisplay graphs={graphs} />
                     <div className='grid grid-cols-2'>
                         <div className='flex flex-col'>
                             <InjuryDisplay injuryData={injuryData} />
