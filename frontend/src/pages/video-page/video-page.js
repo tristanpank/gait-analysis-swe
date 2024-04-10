@@ -10,12 +10,7 @@ import { GlobalStateContext } from 'src/components/react/GlobalStateProvider.js'
 import DeleteButton from './DeleteButton.jsx';
 import InjuryDisplay from './InjuryDisplay.jsx';
 import AngleDisplay from './AngleDisplay.jsx';
-import { Accordion } from '@mui/material';
-import { AccordionDetails } from '@mui/material';
-import { AccordionSummary } from '@mui/material';
-import Typography from '@mui/material/Typography';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import BasicData from './BasicData.jsx';
 
 function VideoPage(props) {
     const { user, setUser } = props;
@@ -143,7 +138,7 @@ function VideoPage(props) {
         <div>
             <Header user={user} setUser={setUser} ></Header>
             {videoExists && (
-                <div>
+                <div className='flex flex-col items-center'>
 
                     <video id='video' className="pt-20 w-11/12 m-auto" ref={videoRef} muted loop controls key={videoPath}>
                         <source src={videoPath} type="video/mp4"></source>
@@ -152,6 +147,7 @@ function VideoPage(props) {
                     {/* {skeletonExists && (
                         <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
                     )} */}
+                    <BasicData videoData={videoData} />
                     <AngleDisplay graphs={graphs} />
                     <div className='grid grid-cols-2'>
                         <div className='flex flex-col'>
