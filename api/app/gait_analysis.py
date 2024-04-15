@@ -206,6 +206,8 @@ class GaitAnalysis:
     self.calculate_direction()
     if self.direction == "front" or self.direction == "back":
       self.calculate_leg_crossover()
+      self.calculate_cadence()
+
     else:
       self.calculate_cadence()
       self.calculate_pace()
