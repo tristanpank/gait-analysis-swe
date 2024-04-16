@@ -7,6 +7,7 @@ from mediapipe.tasks.python import vision
 from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
 from scipy.signal import find_peaks, savgol_filter
+import scipy.stats as stats
 
 class GaitAnalysis:
   frames = np.array([])
@@ -26,6 +27,8 @@ class GaitAnalysis:
   stride_length = 0
   # Avg male height in inches
   height = 69
+  screen_height = 0
+  vertical_oscillation = 0
   # 10% of height is a arbitrary offset for height not accounted for from eyes - ankles distance
   offset = 6.9
   aspect_ratio = 16 / 9.
@@ -210,6 +213,7 @@ class GaitAnalysis:
       self.calculate_cadence()
       self.calculate_pace()
       self.calculate_heel_strike_angle()
+      self.calculate_vertical_oscillation()
     return
 
   # Timeit took around 5ms per frame
@@ -529,6 +533,7 @@ class GaitAnalysis:
     # Calculate screen_height in feet, this can be used to convert mediapipe values to feet
     window_height = calculate_distance(avg_eyes, avg_shoulders) + calculate_distance(avg_shoulders, avg_hip) + (calculate_distance(left_hip, left_knee) + calculate_distance(right_hip, right_knee)) / 2 + (calculate_distance(left_knee, left_ankle) + calculate_distance(right_knee, right_ankle)) / 2
     screen_height = (self.height - self.offset) / np.median(window_height)
+    self.screen_height = screen_height
 
     # Determine distance between peaks and window length based on framerate
     distance = 0
@@ -569,3 +574,78 @@ class GaitAnalysis:
     At initial contact the angle between the hip, knee and ankle should be < 160 degrees and at mid stance that angle should reduce to <140 degrees.      
     """
     return 0
+
+  def calculate_vertical_oscillation(self):
+    # Get landmarks
+    left_eye = self.get_landmark_frames(1)
+    right_eye = self.get_landmark_frames(2)
+    left_shoulder = self.get_landmark_frames(11)
+    right_shoulder = self.get_landmark_frames(12)
+    left_hip = self.get_landmark_frames(23)
+    right_hip = self.get_landmark_frames(24)
+    avg_eyes = (left_eye + right_eye) / 2
+    avg_shoulders = (left_shoulder + right_shoulder) / 2
+    avg_hip = (left_hip + right_hip) / 2
+    # Calculate linear regression
+    slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(avg_eyes))], avg_eyes[:, 1])
+    avg_eyes = avg_eyes[:, 1] - ([slope * i for i in range(len(avg_eyes))] + intercept)
+    slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(avg_shoulders))], avg_shoulders[:, 1])
+    avg_shoulders = avg_shoulders[:, 1] - ([slope * i for i in range(len(avg_shoulders))] + intercept)
+    slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(avg_hip))], avg_hip[:, 1])
+    avg_hip = avg_hip[:, 1] - ([slope * i for i in range(len(avg_hip))] + intercept)
+    # plt.plot(avg_eyes)
+    # plt.plot(avg_shoulders)
+    # plt.plot(avg_hip)
+    # plt.show()
+    total = np.concatenate((avg_eyes, avg_shoulders, avg_hip))
+    amplitude = np.percentile(total, 90) - np.percentile(total, 10)
+    self.vertical_oscillation = amplitude * self.screen_height
+    return self.vertical_oscillation
+    # distance = int(math.floor(60 / self.avg_cadence / self.time_between_frames * 1000) * 0.90)
+    # print(distance)
+    # avg_eye_peaks = find_peaks(avg_eyes[:, 1], distance=distance)[0]
+    # avg_shoulder_peaks = find_peaks(avg_shoulders[:, 1], distance=distance)[0]
+    # avg_hip_peaks = find_peaks(avg_hip[:, 1], distance=distance)[0]
+    # avg_eye_valleys = find_peaks(-avg_eyes[:, 1], distance=distance)[0]
+    # avg_shoulder_valleys = find_peaks(-avg_shoulders[:, 1], distance=distance)[0]
+    # avg_hip_valleys = find_peaks(-avg_hip[:, 1], distance=distance)[0]
+    # plt.plot(avg_eye_peaks, avg_eyes[:, 1][avg_eye_peaks], "x")
+    # plt.plot(avg_shoulder_peaks, avg_shoulders[:, 1][avg_shoulder_peaks], "x")
+    # plt.plot(avg_hip_peaks, avg_hip[:, 1][avg_hip_peaks], "x")
+    # plt.plot(avg_eye_valleys, avg_eyes[:, 1][avg_eye_valleys], "x")
+    # plt.plot(avg_shoulder_valleys, avg_shoulders[:, 1][avg_shoulder_valleys], "x")
+    # plt.plot(avg_hip_valleys, avg_hip[:, 1][avg_hip_valleys], "x")
+    # plt.show()
+    # Calculate avg max and min heights
+    # avg_eye_max = np.sum(avg_eyes[avg_eye_peaks])
+    # avg_shoulder_max = np.sum(avg_shoulders[avg_shoulder_peaks])
+    # avg_hip_max = np.sum(avg_hip[avg_hip_peaks])
+    # avg_eye_min = np.sum(avg_eyes[avg_eye_valleys])
+    # avg_shoulder_min = np.sum(avg_shoulders[avg_shoulder_valleys])
+    # avg_hip_min = np.sum(avg_hip[avg_hip_valleys])
+    # # Calculate avg vertical oscillation using avg weighted by number of peaks and valleys (for robustness)
+    # # Remove values in case of missing complement values
+    # if avg_eye_max == 0 or avg_eye_min == 0:
+    #   avg_eye_max = 0
+    #   avg_eye_min = 0
+    #   avg_eye_peaks = []
+    #   avg_eye_valleys = []
+    # if avg_shoulder_max == 0 or avg_shoulder_min == 0:
+    #   avg_shoulder_max = 0
+    #   avg_shoulder_min = 0
+    #   avg_shoulder_peaks = []
+    #   avg_shoulder_valleys = []
+    # if avg_hip_max == 0 or avg_hip_min == 0:
+    #   avg_hip_max = 0
+    #   avg_hip_min = 0
+    #   avg_hip_peaks = []
+    #   avg_hip_valleys = []
+    # avg_eye_diff = avg_eye_max - avg_eye_min
+    # avg_shoulder_diff = avg_shoulder_max - avg_shoulder_min
+    # avg_hip_diff = avg_hip_max - avg_hip_min
+    # print(avg_eye_diff, avg_shoulder_diff, avg_hip_diff)
+    avg_vertical_oscillation = 0
+    # avg_vertical_oscillation = (avg_eye_diff + avg_shoulder_diff + avg_hip_diff) / 3 / (len(avg_eye_peaks) + len(avg_shoulder_peaks) + len(avg_hip_peaks) + len(avg_eye_valleys) + len(avg_shoulder_valleys) + len(avg_hip_valleys))
+    self.vertical_oscillation = avg_vertical_oscillation * self.screen_height
+    return avg_vertical_oscillation
+
