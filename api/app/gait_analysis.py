@@ -6,7 +6,7 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
-from scipy.signal import find_peaks, savgol_filter
+from scipy.signal import find_peaks, savgol_filter, butter, filtfilt
 import scipy.stats as stats
 
 class GaitAnalysis:
@@ -204,6 +204,18 @@ class GaitAnalysis:
       return data
     return savgol_filter(data, window_length=window_length, polyorder=polyorder)
   
+  # Function to design a Butterworth low-pass filter and apply it
+  def lowpass_filter(self, data, cutoff=5, fs=0, order=5):
+      if fs == 0:
+        fs = 1000 / self.time_between_frames  # sample rate, Hz
+      # cutoff = 5  # desired cutoff frequency of the filter, Hz
+      nyq = 0.5 * fs  # Nyquist Frequency
+      normal_cutoff = cutoff / nyq
+      # Get the filter coefficients
+      b, a = butter(order, normal_cutoff, btype='low', analog=False)
+      y = filtfilt(b, a, data)
+      return y
+  
   def perform_calculations(self):
     # Calculate all stats
     self.calculate_direction()
@@ -390,7 +402,7 @@ class GaitAnalysis:
 
 
   def calculate_graph(self, first, middle, last):
-    angle = 180 - self.smooth_data(self.get_angle(first, middle, last))
+    angle = 180 - self.lowpass_filter(self.get_angle(first, middle, last))
     plt.plot(angle)
     plt.xlabel("Frames")
     plt.ylabel("Angle")
