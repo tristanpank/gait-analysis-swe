@@ -36,9 +36,9 @@ class GaitAnalysis:
   heel_strike_angle = 0
   # < 10 degress is ideal
   shin_strike_angle = 0
-  #TODO < 160 degrees is ideal
-  knee_strike_angle = 0
-  #TODO < 140 degrees is ideal
+  # < 160 degrees is ideal
+  max_knee_flexion_angle = 0
+  # < 140 degrees is ideal
   knee_flexion_angle = 0
   #TODO
   forward_tilt_angle = 0
@@ -191,6 +191,10 @@ class GaitAnalysis:
 
     start_mid = mid_frames - start_frames
     mid_end = end_frames - mid_frames
+    
+    # Account for aspect ratio
+    start_mid[:, 0] *= self.aspect_ratio
+    mid_end[:, 0] *= self.aspect_ratio
     return self.angle(start_mid, mid_end)
 
   def smooth_data(self, data, window_length=15, polyorder=3):
@@ -228,6 +232,7 @@ class GaitAnalysis:
       self.calculate_pace()
       self.calculate_heel_strike_angle()
       self.calculate_vertical_oscillation()
+      self.calculate_knee_flexion()
     return
 
   # Timeit took around 5ms per frame
@@ -587,7 +592,15 @@ class GaitAnalysis:
     Less flexion results higher shock at the ankle, tibia and knee leading to common injuries such as PFPS, Tibial stress fractures etc.,
     At initial contact the angle between the hip, knee and ankle should be < 160 degrees and at mid stance that angle should reduce to <140 degrees.      
     """
-    return 0
+    left_hip_knee_angle = 180 - self.get_angle(23, 25, 27)
+    right_hip_knee_angle = 180 - self.get_angle(24, 26, 28)
+    all_knee_angles = np.concatenate((left_hip_knee_angle, right_hip_knee_angle))
+    knee_flexion_angle_50th_percentile = np.percentile(all_knee_angles, 50)
+    knee_flexion_angle_90th_percentile = np.percentile(all_knee_angles, 90)
+
+    self.max_knee_flexion_angle = knee_flexion_angle_90th_percentile
+    self.knee_flexion_angle = knee_flexion_angle_50th_percentile
+    return self.max_knee_flexion_angle, self.knee_flexion_angle
 
   def calculate_vertical_oscillation(self):
     # Get landmarks

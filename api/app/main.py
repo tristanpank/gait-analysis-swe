@@ -233,7 +233,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     })
 
     update_doc(video_ref, {
-      "knee_strike_angle": gait_analysis.knee_strike_angle
+      "max_knee_flexion_angle": gait_analysis.max_knee_flexion_angle
     })
 
     update_doc(video_ref, {
