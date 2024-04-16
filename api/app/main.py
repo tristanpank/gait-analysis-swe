@@ -201,6 +201,10 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
       "left_avg": crossover_data["left_avg"],
       "right_avg": crossover_data["right_avg"]
     })
+    update_doc(video_ref, {
+      "cadence": gait_analysis.avg_cadence
+    })
+    
 
   # Calculates if video is side view
   if view == "right" or view == "left":

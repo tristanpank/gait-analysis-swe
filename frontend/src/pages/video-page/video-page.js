@@ -9,6 +9,8 @@ import { getAllGraphs, getInjuryGraphs, getInjuryData } from "../../firebase/db.
 import { GlobalStateContext } from 'src/components/react/GlobalStateProvider.js';
 import DeleteButton from './DeleteButton.jsx';
 import InjuryDisplay from './InjuryDisplay.jsx';
+import AngleDisplay from './AngleDisplay.jsx';
+import BasicData from './BasicData.jsx';
 
 function VideoPage(props) {
     const { user, setUser } = props;
@@ -26,6 +28,7 @@ function VideoPage(props) {
     const [graphs, setGraphs] = useState({});
     const [injuryData, setInjuryData] = useState({});
     const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
+
     
     useEffect(() => {
         const video = document.getElementById('video');
@@ -85,6 +88,7 @@ function VideoPage(props) {
 
             
             getVideoData(user, vid).then((videoData) => {
+              console.log("test rerender");
               const graphs = getAllGraphs(user, vid, videoData).then((graphs) => setGraphs(graphs));
             //   const injuryGraphs = getInjuryGraphs(user, vid, videoData).then((injuryGraphs) => setInjuryGraphs(injuryGraphs));
               setvideoData(videoData)
@@ -130,21 +134,21 @@ function VideoPage(props) {
             navigate('/dashboard');
         }
     }
-
     return (
         <div>
             <Header user={user} setUser={setUser} ></Header>
             {videoExists && (
-                <div>
+                <div className='flex flex-col items-center'>
 
                     <video id='video' className="pt-20 w-11/12 m-auto" ref={videoRef} muted loop controls key={videoPath}>
                         <source src={videoPath} type="video/mp4"></source>
                     </video>
-                    <button onClick={handleDelete}>Delete</button>
                     <DeleteButton user={user} vid={vid} />
-                    {skeletonExists && (
+                    {/* {skeletonExists && (
                         <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
-                    )}
+                    )} */}
+                    <BasicData videoData={videoData} />
+                    <AngleDisplay graphs={graphs} />
                     <div className='grid grid-cols-2'>
                         <div className='flex flex-col'>
                             <InjuryDisplay injuryData={injuryData} />
@@ -152,6 +156,7 @@ function VideoPage(props) {
                     </div>
 
                 </div>
+
             )}
             {!videoExists && (
                 <h1>This Video doesn't exist</h1>
