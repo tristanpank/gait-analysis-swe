@@ -48,7 +48,7 @@ class GaitAnalysis:
   #TODO We should find a stat for arm swing
   #TODO We should find a stat for heel lift
 
-  def __init__(self, input_path="", output_path="", landmarker_path="./landmarkers/pose_landmarker.task", data=None, height=69, aspect_ratio=16/9.):
+  def __init__(self, input_path="", output_path="", landmarker_path="./app/landmarkers/pose_landmarker.task", data=None, height=69, aspect_ratio=16/9.):
     if data:
       self.frames = self.convert_str_to_numpy_with_python(data)
     else:
