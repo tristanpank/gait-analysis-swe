@@ -40,14 +40,8 @@ class GaitAnalysis:
   max_knee_flexion_angle = 0
   # < 140 degrees is ideal
   knee_flexion_angle = 0
+  # < 90 degrees is ideal
   shin_strike_angle = 0
-  #TODO
-  forward_tilt_angle = 0
-  #TODO Probably 70-110 is ideal, but conflicting views
-  elbow_angle = 0
-  #TODO We should find a stat for knee drive
-  #TODO We should find a stat for arm swing
-  #TODO We should find a stat for heel lift
 
   def __init__(self, input_path="", output_path="", landmarker_path="./app/landmarkers/pose_landmarker.task", data=None, height=69, aspect_ratio=16/9.):
     if data:
@@ -57,7 +51,6 @@ class GaitAnalysis:
       self.frames = self.convert_landmark_frames_to_numpy(landmark_frames)
       self.remove_bad_mediapipe_frames()
       self.height = height
-      self.offset = height * 0.1
       self.aspect_ratio = aspect_ratio
       self.perform_calculations()
 

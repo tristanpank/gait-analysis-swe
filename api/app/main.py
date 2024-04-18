@@ -240,14 +240,6 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
       "knee_flexion_angle": gait_analysis.knee_flexion_angle
     })
 
-    update_doc(video_ref, {
-      "forward_tilt_angle": gait_analysis.forward_tilt_angle
-    })
-
-    update_doc(video_ref, {
-      "elbow_angle": gait_analysis.elbow_angle
-    })
-
   # Update video document with graph names
   update_doc(video_ref, {
     "graphs": graph_names
