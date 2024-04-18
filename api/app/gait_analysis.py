@@ -40,6 +40,7 @@ class GaitAnalysis:
   max_knee_flexion_angle = 0
   # < 140 degrees is ideal
   knee_flexion_angle = 0
+  shin_strike_angle = 0
   #TODO
   forward_tilt_angle = 0
   #TODO Probably 70-110 is ideal, but conflicting views
@@ -226,6 +227,7 @@ class GaitAnalysis:
     if self.direction == "front" or self.direction == "back":
       self.calculate_leg_crossover()
       self.calculate_cadence()
+      # Can't add vertical oscillation until we move height calculation outside of pace
 
     else:
       self.calculate_cadence()
@@ -233,6 +235,7 @@ class GaitAnalysis:
       self.calculate_heel_strike_angle()
       self.calculate_vertical_oscillation()
       self.calculate_knee_flexion()
+      self.calculate_shin_strike_angle()
     return
 
   # Timeit took around 5ms per frame
@@ -628,4 +631,29 @@ class GaitAnalysis:
     amplitude = np.percentile(total, 90) - np.percentile(total, 10)
     self.vertical_oscillation = amplitude * self.screen_height
     return self.vertical_oscillation
+  
+  def calculate_shin_strike_angle(self):
+    left_knee = self.get_landmark_frames(25)
+    right_knee = self.get_landmark_frames(26)
+    left_ankle = self.get_landmark_frames(27)
+    right_ankle = self.get_landmark_frames(28)
+    left_knee[:, 0] *= self.aspect_ratio
+    right_knee[:, 0] *= self.aspect_ratio
+    left_ankle[:, 0] *= self.aspect_ratio
+    right_ankle[:, 0] *= self.aspect_ratio
+
+    if self.direction == "left":
+      left_shin_ground_angle = 180 - self.angle(left_knee - left_ankle, np.array([[1, 0]]))
+      right_shin_ground_angle = 180 - self.angle(right_knee - right_ankle, np.array([[1, 0]]))
+    elif self.direction == "right":
+      left_shin_ground_angle = self.angle(left_knee - left_ankle, np.array([[1, 0]]))
+      right_shin_ground_angle = self.angle(right_knee - right_ankle, np.array([[1, 0]]))
+    else:
+      return 0
+
+    all_shin_angles = np.concatenate((left_shin_ground_angle, right_shin_ground_angle))
+    all_shin_angles = self.lowpass_filter(all_shin_angles)
+    self.shin_strike_angle = np.percentile(all_shin_angles, 95)
+    
+    return self.shin_strike_angle
 
