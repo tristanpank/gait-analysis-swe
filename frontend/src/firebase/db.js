@@ -210,7 +210,7 @@ export async function getUserHeight(user) {
       const data = await docSnap.data();
       return parseInt(data.height);
     } else {
-      return 0;
+      return 69;
     }
   } catch (error) {
     console.error(error);

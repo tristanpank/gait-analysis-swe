@@ -102,7 +102,7 @@ def generate_thumbnail(input_path, output_path):
   clip.close()
 
 @app.post("/pose/")
-async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), view: str = Form("")):
+async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), view: str = Form(""), height: int = Form(69)):
   """
   Detects the pose in a video file and saves the pose data.
 
@@ -144,7 +144,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     
   # Perform gait analysis on the video
   # TODO implement use of video aspect ratio and runner height
-  gait_analysis = GaitAnalysis(input_path=file_path, output_path=pose_path, landmarker_path="./landmarkers/pose_landmarker.task")
+  gait_analysis = GaitAnalysis(input_path=file_path, output_path=pose_path, landmarker_path="./landmarkers/pose_landmarker.task", height=height)
   
   # Compress the pose video
   compress_video(pose_path, compressed_path)
@@ -233,19 +233,11 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     })
 
     update_doc(video_ref, {
-      "knee_strike_angle": gait_analysis.knee_strike_angle
+      "max_knee_flexion_angle": gait_analysis.max_knee_flexion_angle
     })
 
     update_doc(video_ref, {
       "knee_flexion_angle": gait_analysis.knee_flexion_angle
-    })
-
-    update_doc(video_ref, {
-      "forward_tilt_angle": gait_analysis.forward_tilt_angle
-    })
-
-    update_doc(video_ref, {
-      "elbow_angle": gait_analysis.elbow_angle
     })
 
   # Update video document with graph names

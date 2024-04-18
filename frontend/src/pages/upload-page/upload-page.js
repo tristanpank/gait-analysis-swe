@@ -11,6 +11,7 @@ import { Button } from "../../shadcn/components/ui/button";
 import Header from "src/components/ui/header/header";
 import { useToast } from "../../shadcn/components/ui/use-toast";
 import { GlobalStateContext } from "src/components/react/GlobalStateProvider";
+import { getUserHeight } from "src/firebase/db";
 
 export default function UploadPage(props) {
   const { user, setUser } = props;
@@ -24,9 +25,11 @@ export default function UploadPage(props) {
     const fileInput = document.getElementById("video");
     const file = fileInput.files[0];
     const formData = new FormData();
+    const height = await getUserHeight(user);
     formData.append("video_file", file);
     formData.append("view", view);
     formData.append("uid", user.uid);
+    formData.append("height", height);
 
     // Make axios post request with formData
     const axios_config = {
