@@ -144,7 +144,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     
   # Perform gait analysis on the video
   # TODO implement use of video aspect ratio and runner height
-  gait_analysis = GaitAnalysis(input_path=file_path, output_path=pose_path, landmarker_path="./app/landmarkers/pose_landmarker.task")
+  gait_analysis = GaitAnalysis(input_path=file_path, output_path=pose_path, landmarker_path="./landmarkers/pose_landmarker.task")
   
   # Compress the pose video
   compress_video(pose_path, compressed_path)

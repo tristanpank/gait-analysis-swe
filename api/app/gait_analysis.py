@@ -43,7 +43,7 @@ class GaitAnalysis:
   # < 90 degrees is ideal
   shin_strike_angle = 0
 
-  def __init__(self, input_path="", output_path="", landmarker_path="./app/landmarkers/pose_landmarker.task", data=None, height=69, aspect_ratio=16/9.):
+  def __init__(self, input_path="", output_path="", landmarker_path="./landmarkers/pose_landmarker.task", data=None, height=69, aspect_ratio=16/9.):
     if data:
       self.frames = self.convert_str_to_numpy_with_python(data)
     else:
