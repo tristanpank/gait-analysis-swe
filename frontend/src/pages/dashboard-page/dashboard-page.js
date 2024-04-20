@@ -38,16 +38,16 @@ const Dashboard = (props) => {
       </div>;
 
   return (
-    <div className="bg-slate-100 min-h-screen">
-      <Header user={user} setUser={setUser} color={false}></Header>
-      <div className="mt-16 flex flex-row">
-        <div className='flex justify-center px-3 md:px-0 md:w-[40rem] m-auto'>
-          <div className='divide-y-[1px]'>
-              {content}
+      <div className="bg-slate-100 min-h-screen">
+        <Header user={user} setUser={setUser} color={false}></Header>
+        <div className="pt-16 flex flex-row">
+          <div className='flex justify-center px-3 md:px-0 md:w-[40rem] m-auto'>
+            <div className='divide-y-[1px]'>
+                {content}
+            </div>
           </div>
         </div>
       </div>
-    </div>
   )
 }
 
