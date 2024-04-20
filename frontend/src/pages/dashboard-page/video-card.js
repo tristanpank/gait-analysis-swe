@@ -99,18 +99,20 @@ const VideoCard = (props) => {
     } else {
       return (
         <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
-          className="px-3 p-2 flex flex-col items-center">
-            <h1>{videoData.view.charAt(0).toUpperCase() + videoData.view.slice(1)} Video</h1>
-            <div>
-              {(videoData) && calculateTimeText(videoData.timestamp)}
+          className="p-3 flex flex-col">
+            <div className="flex flex-row">
+              <div>
+                <h1 className="text-lg font-semibold">{videoData.view.charAt(0).toUpperCase() + videoData.view.slice(1)} Video</h1>
+                <div className='text-sm text-slate-500'>
+                  {(videoData) && calculateTimeText(videoData.timestamp)}
+                  {(videoData.cadence) && <div>Cadence: {Math.round(videoData.cadence)} spm</div>}
+                  {(videoData.pace) && <div>Pace: {calculatePaceText(videoData.pace)}</div>}
+                  {(videoData.stride_length) && <div>Stride Length: {videoData.stride_length.toFixed(2)}</div>}
+                </div>
+              </div>
+              <img src={path} alt='user-video' className='w-[50%] mx-auto rounded-sm'></img>
             </div>
-            <img src={path} alt='user-video' className='w-[50%]'></img>
-            <div className=''>
-              {(videoData.cadence) && <div>Cadence: {Math.round(videoData.cadence)} spm</div>}
-              {(videoData.pace) && <div>Pace: {calculatePaceText(videoData.pace)}</div>}
-              {(videoData.stride_length) && <div>Stride Length: {videoData.stride_length.toFixed(2)}</div>}
-            </div>
-            <Button variant="outline" size="default" className="bg-blue-300 hover:bg-blue-500 " onClick={() => {navigate(`./${vid}`)}}>More Insights</Button>
+            <Button variant="outline" size="default" className="bg-blue-300 hover:bg-blue-500 mt-3 text-md" onClick={() => {navigate(`./${vid}`)}}>More Insights</Button>
         </div>
     )
     }

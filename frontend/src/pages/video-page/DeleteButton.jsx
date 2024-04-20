@@ -26,7 +26,7 @@ export default function DeleteButton(props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Delete</Button>
+        <Button variant="outline">Delete Video</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

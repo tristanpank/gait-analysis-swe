@@ -16,60 +16,13 @@ function VideoPage(props) {
     const { user, setUser } = props;
     const [videoPath, setVideoPath] = useState("");
     const [videoExists, setVideoExists] = useState(false);
-    const [skeletonExists, setSkeletonExists] = useState(false);
     let { vid } = useParams();
     const navigate = useNavigate();
     const videoRef = useRef(null);
-    const [landmarks, setLandmarks] = useState([]);
-    const [count, setCount] = useState(0);
-    const [frames, setFrames] = useState(0);
     const [videoData, setvideoData] = useState(undefined);
-    const [paused, setPaused] = useState(false);
     const [graphs, setGraphs] = useState({});
     const [injuryData, setInjuryData] = useState({});
     const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
-
-    
-    useEffect(() => {
-        const video = document.getElementById('video');
-        
-
-        if (video) {
-            video.addEventListener('timeupdate', () => {
-                setCount(Math.floor(video.currentTime * 30));
-            });
-            video.addEventListener('pause', () => { setPaused(true); }  );
-            video.addEventListener('play', () => { setPaused(false); }  );
-        }
-    
-        // Cleanup function
-        return () => {
-          if (video) {
-            video.removeEventListener('timeupdate', () => {
-                setCount(Math.floor(video.currentTime * 30));
-            });
-            video.removeEventListener('pause', () => { setPaused(true); }  );   
-            video.removeEventListener('play', () => { setPaused(false); }  );
-          }
-        };
-    }, [videoData]);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (!paused) {
-                setCount(prevCount => {
-                    if (prevCount >= frames - 1) {
-                        return 0;
-                    } else {
-                        return prevCount + 1;
-                    }
-                });
-            }
-        }, 33);
-    
-        // Clear interval on component unmount
-        return () => clearInterval(interval);
-    }, [frames, paused]);
     
     useEffect(() => {
         if (vid === undefined) {
@@ -102,27 +55,8 @@ function VideoPage(props) {
     }, [user, vid]);
 
     useEffect(() => {
-        const getPoseLandmarks = (videoData) => {
-            if (videoData.pose_data.x.split(';')[count] === undefined) {
-                return;
-            }
-            const x = videoData.pose_data.x.split(';')[count].split(',');
-            const y = videoData.pose_data.y.split(';')[count].split(',');
-            setLandmarks([x, y]);
-            setFrames(videoData.pose_data.x.split(';').length);
-            setSkeletonExists(true);
-        }
-        if (videoData !== undefined) {
-            getPoseLandmarks(videoData);
-        }
-    }, [videoData, count]);
-
-
-
-    useEffect(() => {
         if (videoRef.current) {
             videoRef.current.play().catch(error => console.error("Error attempting to play", error));
-            setCount(0);
         }
     }, [videoPath]);
 
@@ -134,20 +68,23 @@ function VideoPage(props) {
             navigate('/dashboard');
         }
     }
+    
     return (
         <div>
             <Header user={user} setUser={setUser} ></Header>
             {videoExists && (
-                <div className='flex flex-col items-center'>
-
-                    <video id='video' className="pt-20 w-11/12 m-auto" ref={videoRef} muted loop controls key={videoPath}>
-                        <source src={videoPath} type="video/mp4"></source>
-                    </video>
-                    <DeleteButton user={user} vid={vid} />
-                    {/* {skeletonExists && (
-                        <Skeleton landmarks={landmarks} graphs={graphs} ></Skeleton>
-                    )} */}
-                    <BasicData videoData={videoData} />
+                <div className='flex flex-col items-center mt-16 pt-5'>
+                    <div className='flex flex-row'>
+                        <video id='video' className="max-w-[40rem] m-auto" ref={videoRef} muted loop controls key={videoPath}>
+                            <source src={videoPath} type="video/mp4"></source>
+                        </video>
+                        <div className='flex flex-col'>
+                            <BasicData videoData={videoData} />
+                            <div className='p-5'>
+                                <DeleteButton user={user} vid={vid} />
+                            </div>
+                        </div>
+                    </div>
                     <AngleDisplay graphs={graphs} />
                     <div className='grid grid-cols-2'>
                         <div className='flex flex-col'>

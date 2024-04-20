@@ -27,27 +27,27 @@ const Dashboard = (props) => {
     })
   }, [user, videoUploaded])
   
-  const content = Array.isArray(videoArray) ? videoArray.map((vid, index) => (
-    <div key={index}><VideoCard user={user} vid={vid}></VideoCard></div>
-  )) : null;
+  const content = Array.isArray(videoArray) && videoArray.length > 0 
+    ? videoArray.map((vid, index) => (
+      <div key={index} className="bg-white rounded-md my-2">
+        <VideoCard user={user} vid={vid}></VideoCard>
+      </div>
+    )) 
+    : <div className="my-2 text-center w-[40rem]">
+        <h1 className="text-lg font-semibold"> You Haven't Uploaded Any Videos</h1>
+      </div>;
 
   return (
-    <div className=" bg-gradient-to-r from-[#5392b5] to-[#2b5981e3] min-h-[100dvh]">
-      <Header user={user} setUser={setUser} color={true}></Header>
-      <div className="mt-15 pt-20">
-        <button className="w-full h-20" onClick={handleClick}>
-          <div className='mx-5 py-7 h-full border'>Upload a video</div>
-        </button>
-        <div className='flex justify-center h-screen'>
-          <div className='bg-white md:max-w-[40%] mt-5 p-5 divide-y-[1px]'>
-              {content}
+      <div className="bg-slate-100 min-h-screen">
+        <Header user={user} setUser={setUser} color={false}></Header>
+        <div className="pt-16 flex flex-row">
+          <div className='flex justify-center px-3 md:px-0 md:w-[40rem] m-auto'>
+            <div className='divide-y-[1px]'>
+                {content}
+            </div>
           </div>
-          {/* <div className="hidden md:block w-0 bg-white md:my-5 md:p-5 md:w-full text-black">Heyyy</div> */}
         </div>
-        
-        
       </div>
-    </div>
   )
 }
 
