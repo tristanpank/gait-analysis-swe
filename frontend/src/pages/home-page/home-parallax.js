@@ -7,7 +7,7 @@ export function HomeParallax() {
   const title = "UF Gait Analysis";
   const body = (
     <div data-testid="Parallax">
-      <p className="mb-5"> A platform that analyzes running form for student athletes at UF, making the resources of expensive labs available for everyday runners": "A platform that analyzes running form for student athletes at UF, making the resources of expensive labs available for everyday runners</p>
+      <p className="mb-5"> A platform that analyzes running form for student athletes at UF, making the resources of expensive labs available for everyday runners.</p>
       <LoginButton />
     </div>
   )
