@@ -208,6 +208,10 @@ export async function getUserHeight(user) {
     
     if (docSnap.exists()) {
       const data = await docSnap.data();
+      const height = parseInt(data.height);
+      if (isNaN(height) || height === null || height === undefined) {
+        return 69;
+      }
       return parseInt(data.height);
     } else {
       return 69;
