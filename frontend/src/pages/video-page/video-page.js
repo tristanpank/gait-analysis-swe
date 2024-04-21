@@ -45,6 +45,7 @@ function VideoPage(props) {
               const graphs = getAllGraphs(user, vid, videoData).then((graphs) => setGraphs(graphs));
             //   const injuryGraphs = getInjuryGraphs(user, vid, videoData).then((injuryGraphs) => setInjuryGraphs(injuryGraphs));
               setvideoData(videoData)
+              console.log(videoData)
               getInjuryData(user, vid).then((injuryData) => {
                 console.log(injuryData);
                 setInjuryData(injuryData);
@@ -85,13 +86,8 @@ function VideoPage(props) {
                             </div>
                         </div>
                     </div>
+                    <InjuryDisplay injuryData={injuryData} videoData={videoData}/>
                     <AngleDisplay graphs={graphs} />
-                    <div className='grid grid-cols-2'>
-                        <div className='flex flex-col items-center w-screen'>
-                            <InjuryDisplay injuryData={injuryData} />
-                        </div>
-                    </div>
-
                 </div>
 
             )}
