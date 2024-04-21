@@ -73,9 +73,9 @@ function VideoPage(props) {
         <div>
             <Header user={user} setUser={setUser} ></Header>
             {videoExists && (
-                <div className='flex flex-col items-center mt-16 pt-5'>
-                    <div className='flex flex-row'>
-                        <video id='video' className="max-w-[40rem] m-auto" ref={videoRef} muted loop controls key={videoPath}>
+                <div className='flex flex-col items-center mt-16 pt-5 bg-slate-100 min-h-screen gap-5'>
+                    <div className='md:flex flex-row justify-center'>
+                        <video id='video' className="md:max-w-[40rem] m-auto" ref={videoRef} muted loop controls key={videoPath}>
                             <source src={videoPath} type="video/mp4"></source>
                         </video>
                         <div className='flex flex-col'>
@@ -87,7 +87,7 @@ function VideoPage(props) {
                     </div>
                     <AngleDisplay graphs={graphs} />
                     <div className='grid grid-cols-2'>
-                        <div className='flex flex-col'>
+                        <div className='flex flex-col items-center w-screen'>
                             <InjuryDisplay injuryData={injuryData} />
                         </div>
                     </div>

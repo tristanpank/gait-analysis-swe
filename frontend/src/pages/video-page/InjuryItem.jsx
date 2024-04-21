@@ -6,7 +6,7 @@ function generateInjuryDescription(injury) {
     let avgCrossover = leftLarger ? injury.left_avg : injury.right_avg;
     let maxCrossover = leftLarger ? injury.left_max : injury.right_max;
     return (
-      <div>
+      <div className="px-4 py-4">
         <h3 className="text-xl font-bold">Leg Crossover</h3>
         <img src={injury.url} />
         <li>Average Left Leg Crossover: {injury.left_avg}%</li>

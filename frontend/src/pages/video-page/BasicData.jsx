@@ -18,13 +18,13 @@ export default function BasicData(props) {
   }
   // videoData.cadence = 160;
   return (
-    <div className="flex flex-col px-4 w-[50%]">
+    <div className="flex flex-col px-4">
       <h1 className="text-2xl font-bold">Basic Data</h1>
       <div className='text-slate-500'>
         {(videoData.cadence) && 
         <div>
           <p className="w-full">Cadence: {Math.round(videoData.cadence)}</p>
-          {(videoData.cadence < 170 || videoData.cadence > 190) ? <p className="font-bold text-red-600 text-center w-full">Warning: Cadence is not in the optimal range of 170-190 spm
+          {(videoData.cadence < 170 || videoData.cadence > 190) ? <p className="font-bold text-red-600 text-center">Warning: Cadence is not in the optimal range of 170-190 spm
           A cadence outside of this range can lead to injuries and ineffeciency in your form.</p> :
           <p className="font-bold text-green-600 w-full">Your cadence is in the optimal range of 170-190 spm.</p>}
         </div>}
@@ -34,7 +34,7 @@ export default function BasicData(props) {
         </div>}
         {(videoData.stride_length) &&
         <div>
-          <p>Pace: {videoData.stride_length.toFixed(2)}</p>
+          <p>Stride Length: {videoData.stride_length.toFixed(2)} ft</p>
         </div>
         }
       </div>

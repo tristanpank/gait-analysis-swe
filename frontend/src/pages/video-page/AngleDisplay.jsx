@@ -40,9 +40,9 @@ export default function AngleDisplay(props) {
   }, [graphs])
   
   return (
-    <div className='flex flex-col items-center px-4'>
+    <div className='flex flex-col items-center px-4 justify-center md:w-2/3 rounded-md bg-white py-4'>
       <h1 className="text-2xl font-bold">Angle Data</h1>
-      <p>Listed below all of the data for each major body angle. 
+      <p className='pb-2'>For in depth analytics of every major angle over the course of the uploaded video use the dropdown below.
         Click on the dropdown to see the graph of the angle over time.
       </p>
       {accordion && accordion}

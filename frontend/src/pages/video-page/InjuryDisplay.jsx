@@ -7,7 +7,7 @@ export default function InjuryDisplay(props) {
   const {injuryData} = props;
 
   return (
-    <div className="flex flex-col items-center w-screen">
+    <div className="flex flex-col items-center md:w-2/3 rounded-md bg-white">
       <h1 className="text-2xl font-bold">Injury Data</h1>
       {Object.keys(injuryData).map((key) => {
         return (
