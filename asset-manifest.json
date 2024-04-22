@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/gait-analysis-swe/static/css/main.36ab0759.css",
-    "main.js": "/gait-analysis-swe/static/js/main.4ecab2cf.js",
+    "main.js": "/gait-analysis-swe/static/js/main.cd4cbb6e.js",
     "static/js/453.d855a71b.chunk.js": "/gait-analysis-swe/static/js/453.d855a71b.chunk.js",
     "index.html": "/gait-analysis-swe/index.html",
     "main.36ab0759.css.map": "/gait-analysis-swe/static/css/main.36ab0759.css.map",
-    "main.4ecab2cf.js.map": "/gait-analysis-swe/static/js/main.4ecab2cf.js.map",
+    "main.cd4cbb6e.js.map": "/gait-analysis-swe/static/js/main.cd4cbb6e.js.map",
     "453.d855a71b.chunk.js.map": "/gait-analysis-swe/static/js/453.d855a71b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.36ab0759.css",
-    "static/js/main.4ecab2cf.js"
+    "static/js/main.cd4cbb6e.js"
   ]
 }
