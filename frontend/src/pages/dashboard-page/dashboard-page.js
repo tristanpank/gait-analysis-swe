@@ -56,8 +56,8 @@ const Dashboard = (props) => {
   return (
       <div className="flex justify-center bg-slate-100 h-screen">
         <Header user={user} setUser={setUser} color={false} setInches={setInches} setFeet={setFeet}></Header>
-        <div className="overflow-hidden pt-16 flex">
-          <div className="overflow-hidden content-center w-96 hidden xl:block">
+        <div className="overflow-auto mt-16 flex w-screen">
+          <div className="overflow-hidden content-center max-w-96 w-1/4 hidden xl:block absolute left-16 top-96">
             <div className='flex flex-col items-center text-wrap rounded-md bg-white p-5 mr-20'>
               <div className="flex justify-center">
                 <ProfileIcon user={user} setUser={setUser} size={80}/>
@@ -75,12 +75,12 @@ const Dashboard = (props) => {
               </div>
             </div>
           </div>
-          <div className='overflow-auto h-full flex justify-center px-3 md:px-0 md:w-[40rem] m-auto'>
+          <div className='h-full flex justify-center px-3 md:px-0 md:w-[40rem] m-auto'>
             <div className='divide-y-[1px]'>
                 {content}
             </div>
           </div>
-          <div className="overflow-hidden content-center w-96 hidden xl:block">
+          <div className="overflow-hidden content-center w-1/4 max-w-96 hidden xl:block absolute right-16 top-96">
             <div className='flex flex-col items-center text-wrap rounded-md bg-white p-5 ml-20'>
               <div className="flex justify-center">
                 <ProfileIcon user={user} setUser={setUser} size={80}/>
