@@ -7,11 +7,15 @@ import { getAllVideos } from '../../firebase/db.js'
 import Skeleton from '../../components/skeleton/skeleton.js'
 import { GlobalStateContext } from '../../components/react/GlobalStateProvider.js'
 import ProfileIcon from '../../components/ui/header/ProfileIcon.jsx'
+import { getUserHeight } from '../../firebase/db.js'
 
 const Dashboard = (props) => {
   const { user, setUser, email, loggedIn, setLoggedIn} = props
   const navigate = useNavigate()
   const [videoArray, setVideoArray] = useState([]);
+  const [totalHeight, setTotalHeight] = useState(null);
+  const [inches, setInches] = useState(null);
+  const [feet, setFeet] = useState(null);
   const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
 
   function handleClick (e) {
@@ -28,6 +32,16 @@ const Dashboard = (props) => {
       }
     })
   }, [user, videoUploaded])
+
+  useEffect(() => {
+    getUserHeight(user).then((totalHeight) => {
+      if (Number.isInteger(totalHeight)) {
+        setTotalHeight(totalHeight);
+        console.log(totalHeight);
+        setInches(totalHeight % 12);
+        setFeet(Math.floor(totalHeight / 12));
+    }});
+  }, [user, inches, feet])
   
   const content = Array.isArray(videoArray) && videoArray.length > 0 
     ? videoArray.map((vid, index) => (
@@ -41,7 +55,7 @@ const Dashboard = (props) => {
 
   return (
       <div className="flex justify-center bg-slate-100 min-h-screen">
-        <Header user={user} setUser={setUser} color={false}></Header>
+        <Header user={user} setUser={setUser} color={false} setInches={setInches} setFeet={setFeet}></Header>
         <div className="pt-16 flex space-x-20">
           <div className="content-center w-96 hidden xl:block">
             <div className='flex flex-col justify-center items-center text-wrap rounded-md bg-white p-5'>
@@ -51,6 +65,11 @@ const Dashboard = (props) => {
               <div className="text-center text-2xl font-semibold">
                 {user.displayName}
               </div>
+              {Number.isInteger(totalHeight) &&
+                <div className="text-center">
+                  Height: {feet}' {inches}"
+                </div>
+              }
               <div className="text-center">
                 Videos uploaded: {content.length}
               </div>
