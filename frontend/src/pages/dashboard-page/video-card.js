@@ -107,7 +107,7 @@ const VideoCard = (props) => {
                   {(videoData) && calculateTimeText(videoData.timestamp)}
                   {(videoData.cadence) && <div>Cadence: {Math.round(videoData.cadence)} spm</div>}
                   {(videoData.pace) && <div>Pace: {calculatePaceText(videoData.pace)}</div>}
-                  {(videoData.stride_length) && <div>Stride Length: {videoData.stride_length.toFixed(2)}</div>}
+                  {(videoData.stride_length) && <div>Stride Length: {videoData.stride_length.toFixed(2)} ft</div>}
                 </div>
               </div>
               <img src={path} alt='user-video' className='w-[50%] mx-auto rounded-sm'></img>
