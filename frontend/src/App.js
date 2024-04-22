@@ -21,8 +21,9 @@ function App() {
   const [user, setUser] = useState({});
 
   useEffect(() => {
+    console.log("test app use effect");
     onAuthStateChanged(auth, (currUser) => {
-      act(() => {
+        console.log(currUser);
         if (currUser) {
           setLoggedIn(true);
           setUser(currUser);
@@ -30,10 +31,25 @@ function App() {
           setLoggedIn(false);
           setUser({});
         }
-      
-      })
     });
   }, []);
+
+  // useEffect(() => {
+  //   console.log("test app use effect");
+  //   const unsubscribe = onAuthStateChanged(auth, (currUser) => {
+  //     console.log(currUser);
+  //     if (currUser) {
+  //       setLoggedIn(true);
+  //       setUser(currUser);
+  //     } else {
+  //       setLoggedIn(false);
+  //       setUser({});
+  //     }
+  //   });
+
+  //   // Cleanup subscription on unmount
+  //   return () => unsubscribe();
+  // }, []);
 
   return (
     <div data-testid="App">
