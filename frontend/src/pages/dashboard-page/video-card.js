@@ -58,21 +58,21 @@ const VideoCard = (props) => {
     const navigate = useNavigate();
 
     useEffect(() => {
+      if (user.uid) {
+        console.log(user)
         const fetchVideo = async () => {
+            console.log("url updated")
             const url = await getUserVideoThumbnail(user, vid);
             setPath(url);
         };
-        if (user){
-            fetchVideo();
-            getVideoData(user, vid).then((data) => {
-                setVideoData(data);
-                console.log(data);
-            }).catch((error) => {
-                console.error(error);
-            });
-
-        };
-        
+        fetchVideo();
+        getVideoData(user, vid).then((data) => {
+            setVideoData(data);
+            console.log(data);
+        }).catch((error) => {
+            console.error(error);
+        });
+      };
     }, [user, vid]);
 
     const handleMouseEnter = async () => {
