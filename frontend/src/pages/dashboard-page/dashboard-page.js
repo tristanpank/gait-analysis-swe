@@ -54,12 +54,12 @@ const Dashboard = (props) => {
       </div>;
 
   return (
-      <div className="flex justify-center bg-slate-100 min-h-screen">
+      <div className="flex justify-center bg-slate-100 h-screen">
         <Header user={user} setUser={setUser} color={false} setInches={setInches} setFeet={setFeet}></Header>
-        <div className="pt-16 flex space-x-20">
-          <div className="content-center w-96 hidden xl:block">
-            <div className='flex flex-col justify-center items-center text-wrap rounded-md bg-white p-5'>
-              <div className="ml-10 flex justify-center">
+        <div className="overflow-hidden pt-16 flex">
+          <div className="overflow-hidden content-center w-96 hidden xl:block">
+            <div className='flex flex-col items-center text-wrap rounded-md bg-white p-5 mr-20'>
+              <div className="flex justify-center">
                 <ProfileIcon user={user} setUser={setUser} size={80}/>
               </div>
               <div className="text-center text-2xl font-semibold">
@@ -75,13 +75,28 @@ const Dashboard = (props) => {
               </div>
             </div>
           </div>
-          <div className='flex justify-center px-3 md:px-0 md:w-[40rem] m-auto'>
+          <div className='overflow-auto h-full flex justify-center px-3 md:px-0 md:w-[40rem] m-auto'>
             <div className='divide-y-[1px]'>
                 {content}
             </div>
           </div>
-          <div className="w-96 hidden xl:block rounded-md bg-white p-5">
-            test
+          <div className="overflow-hidden content-center w-96 hidden xl:block">
+            <div className='flex flex-col items-center text-wrap rounded-md bg-white p-5 ml-20'>
+              <div className="flex justify-center">
+                <ProfileIcon user={user} setUser={setUser} size={80}/>
+              </div>
+              <div className="text-center text-2xl font-semibold">
+                {user.displayName}
+              </div>
+              {Number.isInteger(totalHeight) &&
+                <div className="text-center">
+                  Height: {feet}' {inches}"
+                </div>
+              }
+              <div className="text-center">
+                Videos uploaded: {content.length}
+              </div>
+            </div>
           </div>
         </div>
       </div>

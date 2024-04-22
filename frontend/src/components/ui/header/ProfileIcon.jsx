@@ -19,10 +19,10 @@ const ProfileIcon = (props) => {
   return (
 
     <div>
-    {(user && user.photoURL === null) && <div style={{ width: `${size}px`, height: `${size}px` }} className="lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl">
+    {(user && user.photoURL === null) && <div style={{ width: `${size}px`, height: `${size}px` }} className="bg-green-700 text-white flex justify-center items-center rounded-full text-xl">
       {firstLetter}
       </div>}
-    {(user && user.photoURL != null) && <img style={{ width: `${size}px`, height: `${size}px` }} className="lg:mr-10 sm:mr-5 bg-green-700 text-white flex justify-center items-center rounded-full text-xl" 
+    {(user && user.photoURL != null) && <img style={{ width: `${size}px`, height: `${size}px` }} className="bg-green-700 text-white flex justify-center items-center rounded-full text-xl" 
       src={user.photoURL}/>}
     </div>
 
