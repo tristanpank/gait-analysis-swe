@@ -57,21 +57,35 @@ const Dashboard = (props) => {
       <div className="flex justify-center bg-slate-100 h-screen">
         <Header user={user} setUser={setUser} color={false} setInches={setInches} setFeet={setFeet}></Header>
         <div className="overflow-auto mt-16 flex w-screen">
-          <div className="overflow-hidden content-center max-w-96 w-1/4 hidden xl:block absolute left-16 top-96">
-            <div className='flex flex-col items-center text-wrap rounded-md bg-white p-5 mr-20'>
-              <div className="flex justify-center">
-                <ProfileIcon user={user} setUser={setUser} size={80}/>
-              </div>
-              <div className="text-center text-2xl font-semibold">
-                {user.displayName}
-              </div>
-              {Number.isInteger(totalHeight) &&
-                <div className="text-center">
-                  Height: {feet}' {inches}"
+          <div>
+            <div className="overflow-hidden content-center max-w-96 w-1/4 hidden xl:block absolute left-10 top-1/4">
+              <div className='flex flex-col items-center text-wrap rounded-md bg-white p-5 mr-20'>
+                <div className="flex justify-center">
+                  <ProfileIcon user={user} setUser={setUser} size={80}/>
                 </div>
-              }
-              <div className="text-center">
-                Videos uploaded: {content.length}
+                <div className="text-center text-2xl font-semibold">
+                  {user.displayName}
+                </div>
+                {Number.isInteger(totalHeight) &&
+                  <div className="text-center">
+                    Height: {feet}' {inches}"
+                  </div>
+                }
+                <div className="text-center">
+                  Videos uploaded: {content.length}
+                </div>
+              </div>
+            </div>
+            <div className="overflow-hidden content-center max-w-96 w-1/4 hidden xl:block absolute left-10 top-1/2">
+              <div className='flex flex-col items-center text-pretty rounded-md bg-white p-5 mr-20'>
+                <div className='font-semibold text-lg w-full mb-3'>
+                  Dashboard
+                </div>
+                <div>
+                  Here you can see a summary of your analyzed running <span className='text-blue-600 font-semibold'>videos</span>. 
+                  These can be used to improve your <span className='text-blue-600 font-semibold'>performance</span> and reduce your risk of injury. 
+                  Click on the <span className='text-blue-600 font-semibold'>More Insights</span> button on a video to learn more about your running form.
+                </div>
               </div>
             </div>
           </div>
