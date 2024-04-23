@@ -4,7 +4,7 @@ import { HeroParallax } from "../../components/ui/hero-parallax.tsx";
 import LoginButton from "./login-button.js";
 
 
-const image1 = require("./images/image1.jpg");
+const image1 = require("./images/image1.jpeg");
 const image2 = require("./images/image2.jpeg");
 const image3 = require("./images/image3.jpeg");
 const image4 = require("./images/image4.jpeg");
