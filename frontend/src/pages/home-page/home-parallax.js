@@ -3,6 +3,23 @@ import React from "react";
 import { HeroParallax } from "../../components/ui/hero-parallax.tsx";
 import LoginButton from "./login-button.js";
 
+
+const image1 = require("./images/image1.jpeg");
+const image2 = require("./images/image2.jpeg");
+const image3 = require("./images/image3.jpeg");
+const image4 = require("./images/image4.jpeg");
+const image5 = require("./images/image5.jpeg");
+const image6 = require("./images/image6.jpeg");
+const image7 = require("./images/image7.jpeg");
+const image8 = require("./images/image8.jpeg");
+const image9 = require("./images/image9.jpeg");
+const image10 = require("./images/image10.jpeg");
+const image11 = require("./images/image11.jpeg");
+const image12 = require("./images/image12.jpeg");
+const image13 = require("./images/image13.jpeg");
+const image14 = require("./images/image14.jpeg");
+const image15 = require("./images/image15.jpeg");
+
 export function HomeParallax() {
   const title = "UF Gait Analysis";
   const body = (
@@ -15,80 +32,82 @@ export function HomeParallax() {
 
   return <HeroParallax products={products} title={title} body={body} />;
 }
+
+
 export const products = [
   {
     title: "1",
     thumbnail:
-      "https://images.pexels.com/photos/34514/spot-runs-start-la.jpg",
+      image1
   },
   {
     title: "2",
     thumbnail:
-      "https://images.pexels.com/photos/5687446/pexels-photo-5687446.jpeg",
+      image2
   },
   {
     title: "3",
     thumbnail:
-      "https://images.pexels.com/photos/5655118/pexels-photo-5655118.jpeg",
+    image3
   },
   {
     title: "4",
     thumbnail:
-      "https://images.pexels.com/photos/18331253/pexels-photo-18331253/free-photo-of-runner-on-a-track-with-his-arms-raised-a-gesture-of-victory.jpeg",
+    image4,
   },
   {
     title: "5",
     thumbnail:
-      "https://images.pexels.com/photos/2284163/pexels-photo-2284163.jpeg",
+      image5,
   },
   {
     title: "6",
     thumbnail:
-      "https://images.pexels.com/photos/1571938/pexels-photo-1571938.jpeg",
+      image6,
   },
   {
     title: "7",
     thumbnail:
-      "https://images.pexels.com/photos/1555351/pexels-photo-1555351.jpeg",
+      image7,
   },
   {
     title: "8",
     thumbnail:
-      "https://images.pexels.com/photos/2168292/pexels-photo-2168292.jpeg",
+      image8,
   },
   {
     title: "9",
     thumbnail:
-      "https://images.pexels.com/photos/2886982/pexels-photo-2886982.jpeg",
+      image9,
   },
   {
     title: "10",
     thumbnail:
-      "https://images.pexels.com/photos/2600354/pexels-photo-2600354.jpeg",
+      image10,
   },
   {
     title: "11",
     thumbnail:
-      "https://images.pexels.com/photos/2403471/pexels-photo-2403471.jpeg",
+      image11,
   },
   {
     title: "12",
     thumbnail:
-      "https://images.pexels.com/photos/2421558/pexels-photo-2421558.jpeg",
+      image12,
   },
   {
     title: "13",
     thumbnail:
-      "https://images.pexels.com/photos/2421563/pexels-photo-2421563.jpeg",
+      image13,
   },
   {
     title: "14",
     thumbnail:
-      "https://images.pexels.com/photos/2403516/pexels-photo-2403516.jpeg",
+      image14,
   },
   {
     title: "15",
     thumbnail:
-      "https://images.pexels.com/photos/2403052/pexels-photo-2403052.jpeg",
+      image15,
   },
 ];
