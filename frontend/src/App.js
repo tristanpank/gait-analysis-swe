@@ -20,10 +20,9 @@ function App() {
   const [email, setEmail] = useState('');
   const [user, setUser] = useState({});
 
+  // Uses firebase to retrieve current user
   useEffect(() => {
-    console.log("test app use effect");
     onAuthStateChanged(auth, (currUser) => {
-        console.log(currUser);
         if (currUser) {
           setLoggedIn(true);
           setUser(currUser);
@@ -34,23 +33,7 @@ function App() {
     });
   }, []);
 
-  // useEffect(() => {
-  //   console.log("test app use effect");
-  //   const unsubscribe = onAuthStateChanged(auth, (currUser) => {
-  //     console.log(currUser);
-  //     if (currUser) {
-  //       setLoggedIn(true);
-  //       setUser(currUser);
-  //     } else {
-  //       setLoggedIn(false);
-  //       setUser({});
-  //     }
-  //   });
-
-  //   // Cleanup subscription on unmount
-  //   return () => unsubscribe();
-  // }, []);
-
+  // Uses React Router to navigate between pages
   return (
     <div data-testid="App">
       <GlobalStateProvider>

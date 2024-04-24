@@ -18,31 +18,28 @@ const Dashboard = (props) => {
   const [feet, setFeet] = useState(null);
   const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
 
-  function handleClick (e) {
-    navigate('/upload');
-  }
-
+  // Gets all videos for a user on page load or when a video is finished uploading. 
   useEffect(() => {
     getAllVideos(user).then((videosArray) => {
       if (Array.isArray(videosArray)) {
         setVideoArray(videosArray.reverse());
         setVideoUploaded(false);
-        console.log(videosArray);
-        console.log(user)
       }
     })
   }, [user, videoUploaded])
 
+  // Gets the user's height on page load and when height changes
   useEffect(() => {
     getUserHeight(user).then((totalHeight) => {
       if (Number.isInteger(totalHeight)) {
         setTotalHeight(totalHeight);
-        console.log(totalHeight);
         setInches(totalHeight % 12);
         setFeet(Math.floor(totalHeight / 12));
     }});
   }, [user, inches, feet])
   
+  // Maps each video to a VideoCard component
+  // Displays message if no videos are uploaded
   const content = Array.isArray(videoArray) && videoArray.length > 0 
     ? videoArray.map((vid, index) => (
       <div key={index} className="bg-white rounded-md my-2">
@@ -53,6 +50,8 @@ const Dashboard = (props) => {
         <h1 className="text-lg font-semibold"> You Haven't Uploaded Any Videos</h1>
       </div>;
 
+  // Displays the Videos in a feed formData
+  // Has messages on the sides that explain the dashboard and basic user info. 
   return (
       <div className="flex justify-center bg-slate-100 h-screen">
         <Header user={user} setUser={setUser} color={false} setInches={setInches} setFeet={setFeet}></Header>

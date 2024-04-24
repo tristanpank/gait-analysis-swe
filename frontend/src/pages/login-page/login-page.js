@@ -4,6 +4,7 @@ import {BackgroundGradientAnimation } from '../../components/ui/background-gradi
 import Header from "../../components/ui/header/header.js"
 import { useNavigate } from 'react-router-dom'
 
+// Login page component that uses shadcn login form component over a background gradient
 const Login = (props) => {
   const {setLoggedIn, email, setEmail, setUser, user} = props
   const navigate = useNavigate();

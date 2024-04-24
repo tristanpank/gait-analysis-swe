@@ -3,8 +3,10 @@ import { useState } from "react";
 import { useEffect } from "react";
 import InjuryItem from "./InjuryItem";
 
+// Displays the injury data for the video
 export default function InjuryDisplay(props) {
   const {injuryData, videoData} = props;
+  // Loading message when data is not available yet
   if (!injuryData || !videoData) {
     return (
       <div>
@@ -13,6 +15,9 @@ export default function InjuryDisplay(props) {
     )
   }
 
+  // Uses overstriding and shin strike angle to determine if the user is overstriding if the view is left or right
+  // If the video is front displyas the injury collection data (leg crossover).
+  // Dynamically colors text based on whether results are good or bad. 
   return (
     <div className="flex flex-col items-center p-4 justify-center md:w-2/3 rounded-md bg-white">
       <h1 className="text-2xl font-bold text-center">Injury Data</h1>

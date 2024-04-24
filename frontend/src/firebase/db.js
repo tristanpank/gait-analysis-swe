@@ -7,8 +7,6 @@ import { getAuth, updateProfile } from "firebase/auth";
 
 /**
  * Sets user data in the database.
- * @param {Object} user - The user object containing user information.
- * @returns {Object|Error} - The user object if successful, otherwise an error object.
  */
 export async function setUserDB(user) {
   try {
@@ -35,6 +33,7 @@ export async function setUserDB(user) {
   }
 }
 
+// Gets the array of video IDs for a user
 export async function getAllVideos(user) {
   try {
     const userRef = doc(db, "users", user.uid);
@@ -52,16 +51,18 @@ export async function getAllVideos(user) {
   }
 }
 
+// Gets the graph for a specific graph name for a user/vid in cloud storage
 export async function getUserGraph(user, vid, graph) {
   const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs/${graph}`);
   const url = await getDownloadURL(graphRef);
   return url;
 }
 
+// Gets all the graphs for a user/vid in cloud storage
+// Returns an object with the graph number as the key and the url as the value
 export async function getAllGraphs(user, vid, videoData) {
   const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs`);
   const urls = {};
-  // console.log(videoData);
   const graphNames = videoData.graphs;
   const numToGraph = {
     11: "Left Shoulder",
@@ -76,7 +77,7 @@ export async function getAllGraphs(user, vid, videoData) {
     28: "Right Ankle",
   }
   
-  // console.log(graphNames);
+  
   for (const graph of graphNames) {
     const url = await getDownloadURL(ref(graphRef, graph));
     urls[Number(graph.slice(3, 5))] = url;
@@ -85,6 +86,8 @@ export async function getAllGraphs(user, vid, videoData) {
   return urls;
 }
 
+// Gets the injury data for a user/vid in cloud storage
+// Returns an object with the injury name as the key and the injury data as the value
 export async function getInjuryData(user, vid) {
   const graphRef = ref(storage, `users/${user.uid}/videos/${vid}/graphs`);
   const injuryCollection = collection(db, "videos", vid, "injury_data");
@@ -99,12 +102,14 @@ export async function getInjuryData(user, vid) {
   return injuries;
 }
 
+// Gets the video for a user/vid in cloud storage
 export async function getUserVideo(user, vid) {
   const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/pose.mp4`)
   const url = await getDownloadURL(videoRef);
   return url;
 }
 
+// Gets the video data for a user/vid in firestore
 export async function getVideoData(user, vid) {
   const video = await getDoc(doc(db,"videos", vid))
   try {
@@ -124,12 +129,14 @@ export async function getVideoData(user, vid) {
   }
 }
 
+// Gets the video thumbnail for a user/vid in cloud storage
 export async function getUserVideoThumbnail(user, vid) {
   const videoRef = ref(storage, `users/${user.uid}/videos/${vid}/thumbnail.jpg`)
   const url = await getDownloadURL(videoRef);
   return url;
 }
 
+// Changes the user's profile picture in firebase storage and auth
 export async function setUserPFP(user, file) {
   const pfpRef = ref(storage, `users/${user.uid}/pfp/pfp`);
   
@@ -150,6 +157,8 @@ export async function setUserPFP(user, file) {
   });
 }
 
+// Recursviely deletes all files for a storage ref
+// Used for deleting a directory
 export async function deleteFilesRecursively(storageRef) {
   const { items, prefixes } = await listAll(storageRef);
   for (const itemRef of items) {
@@ -160,6 +169,7 @@ export async function deleteFilesRecursively(storageRef) {
   }
 }
 
+// Deletes a video from the database and storage
 export async function deleteVideo(user, vid) {
   const videoRef = ref(storage, `users/${user.uid}/videos/${vid}`);
   const videoDoc = doc(db, "videos", vid);
@@ -167,6 +177,7 @@ export async function deleteVideo(user, vid) {
   const video = await getDoc(videoDoc);
   const userDoc = await getDoc(userRef);
   try {
+    // Deletes firebase doc of the video if vid belongs to user
     if (video.exists()) {
       if (video.data().uid !== user.uid) {
         console.error("User does not have permission to delete this video");
@@ -174,6 +185,7 @@ export async function deleteVideo(user, vid) {
       }
       await deleteDoc(videoDoc);
     }
+    // Deletes all video files/subdirectories in storage
     await deleteFilesRecursively(videoRef);
     await updateDoc(userRef, {
       videos: userDoc.data().videos.filter((video) => video !== vid)
@@ -185,6 +197,8 @@ export async function deleteVideo(user, vid) {
   }
 
 }
+
+// Sets the height of a user in their database entry
 export async function setUserHeight(user, height) {
   try {
     const userRef = doc(db, "users", user.uid);
@@ -201,6 +215,8 @@ export async function setUserHeight(user, height) {
   
 }
 
+// Retrieves the height of a user from their database entry
+// If no height is found, returns 69 (5'9" which is average height)
 export async function getUserHeight(user) {
   try {
     const userRef = doc(db, "users", user.uid);
@@ -222,6 +238,8 @@ export async function getUserHeight(user) {
   }
 }
 
+// Sets the display name of a user in their database entry
+// This is used for the user's name in the app
 export async function setUserDisplayName(user, name) {
   const auth = getAuth();
   updateProfile(auth.currentUser, {

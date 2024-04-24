@@ -7,13 +7,14 @@ import { deleteVideo } from "../../firebase/db";
 import { GlobalStateContext } from "src/components/react/GlobalStateProvider";
 import { Loader2 } from "lucide-react";
 
-
+// Wrapper component that uses shadcn delete button
 export default function DeleteButton(props) {
   const { user, vid } = props;
   const [ loading, setLoading ] = useState(false)
   const navigate = useNavigate();
   const { setVideoUploaded } = React.useContext(GlobalStateContext);
-
+  
+  // Deletest the video and redirects to dashboard on return.
   async function handleDelete() {
     setLoading(true)
     const result = await deleteVideo(user, vid);
@@ -47,10 +48,6 @@ export default function DeleteButton(props) {
               Please wait
             </Button>
           )}
-          {/* <DialogClose>
-            <Button variant="outline" >Cancel</Button>
-          </DialogClose>
-          <Button onClick={handleDelete}>Delete</Button> */}
         </div>
       </DialogContent>
     </Dialog>

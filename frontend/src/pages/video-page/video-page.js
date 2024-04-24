@@ -24,12 +24,13 @@ function VideoPage(props) {
     const [injuryData, setInjuryData] = useState({});
     const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
     
+    // Used to retrieve the video data and graphs for the video on load
     useEffect(() => {
         if (vid === undefined) {
             setVideoExists(false);
             return;
         } else if (user.uid === undefined) {
-            // navigate('/signup');
+            navigate('/signup');
         } else {    
             const fetchVideo = async () => {
                 const videoUrl = await getUserVideo(user, vid);
@@ -37,17 +38,10 @@ function VideoPage(props) {
                 setVideoExists(true)
             };
             fetchVideo();
-            // const graphs = getAllGraphs(user, vid).then((graphs) => console.log(graphs));
-
-            
             getVideoData(user, vid).then((videoData) => {
-              console.log("test rerender");
               const graphs = getAllGraphs(user, vid, videoData).then((graphs) => setGraphs(graphs));
-            //   const injuryGraphs = getInjuryGraphs(user, vid, videoData).then((injuryGraphs) => setInjuryGraphs(injuryGraphs));
               setvideoData(videoData)
-              console.log(videoData)
               getInjuryData(user, vid).then((injuryData) => {
-                console.log(injuryData);
                 setInjuryData(injuryData);
               });
             });
@@ -60,16 +54,8 @@ function VideoPage(props) {
             videoRef.current.play().catch(error => console.error("Error attempting to play", error));
         }
     }, [videoPath]);
-
-    async function handleDelete(e) {
-        e.preventDefault();
-        const response = await deleteVideo(user, vid);
-        if (response === true) {
-            setVideoUploaded(true);
-            navigate('/dashboard');
-        }
-    }
     
+    // If the video exists, displays the video along with the Data components
     return (
         <div>
             <Header user={user} setUser={setUser} ></Header>

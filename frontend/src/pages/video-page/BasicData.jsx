@@ -1,4 +1,5 @@
 
+// Converts the pace from just seconds to a more readable format
 function calculatePaceText(time) {
   if (!time) {
     return "";
@@ -10,13 +11,14 @@ function calculatePaceText(time) {
   return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 }
 
+// Displays the basic data of the video
 export default function BasicData(props) {
   const {videoData} = props;
 
   if (!videoData) {
     return null;
   }
-  // videoData.cadence = 160;
+  // Basic Data gives warnings for cadence if outside of optimal range. 
   return (
     <div className="flex flex-col px-4">
       <h1 className="text-2xl font-bold">Basic Data</h1>

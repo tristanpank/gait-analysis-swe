@@ -1,6 +1,7 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
 
+// Redirects user to Login Page
 function LoginButton() {
   const navigate = useNavigate();
 
