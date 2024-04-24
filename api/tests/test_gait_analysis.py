@@ -1,7 +1,7 @@
 from app.gait_analysis import GaitAnalysis
 import numpy as np
 
-
+# Tests the angle function in the GaitAnalysis class
 def test_angle():
   u = np.array([[1, 0]])
   v = np.array([[0, 1]])

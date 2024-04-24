@@ -1,7 +1,7 @@
 import os
 from fastapi import FastAPI, UploadFile, File
-from .gait_analysis import GaitAnalysis
-from .graphs import get_all_graphs, get_crossover_graph
+from app.gait_analysis import GaitAnalysis
+from app.graphs import get_all_graphs, get_crossover_graph
 from moviepy.editor import VideoFileClip
 from fastapi.responses import JSONResponse
 import firebase_admin
@@ -44,16 +44,7 @@ async def hello_world():
   return {"message": "Hello World"}
 
 def add_filename_extension(filename: str, extension: str):
-  """
-  Adds the given extension to the filename.
-
-  Args:
-    filename (str): The original filename.
-    extension (str): The extension to be added.
-
-  Returns:
-    str: The filename with the added extension.
-  """
+  # Adds the given extension to the filename.
   dot_idx = (filename[::-1].find(".") * -1) - 1
   return filename[:dot_idx] + extension
 
@@ -102,7 +93,7 @@ def generate_thumbnail(input_path, output_path):
   clip.close()
 
 @app.post("/pose/")
-async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), view: str = Form("")):
+async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), view: str = Form(""), height: int = Form(69)):
   """
   Detects the pose in a video file and saves the pose data.
 
@@ -144,7 +135,7 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     
   # Perform gait analysis on the video
   # TODO implement use of video aspect ratio and runner height
-  gait_analysis = GaitAnalysis(input_path=file_path, output_path=pose_path, landmarker_path="./landmarkers/pose_landmarker.task")
+  gait_analysis = GaitAnalysis(input_path=file_path, output_path=pose_path, landmarker_path="./landmarkers/pose_landmarker.task", height=height)
   
   # Compress the pose video
   compress_video(pose_path, compressed_path)
@@ -201,6 +192,10 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
       "left_avg": crossover_data["left_avg"],
       "right_avg": crossover_data["right_avg"]
     })
+    update_doc(video_ref, {
+      "cadence": gait_analysis.avg_cadence
+    })
+    
 
   # Calculates if video is side view
   if view == "right" or view == "left":
@@ -229,32 +224,17 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
     })
 
     update_doc(video_ref, {
-      "knee_strike_angle": gait_analysis.knee_strike_angle
+      "max_knee_flexion_angle": gait_analysis.max_knee_flexion_angle
     })
 
     update_doc(video_ref, {
       "knee_flexion_angle": gait_analysis.knee_flexion_angle
     })
 
-    update_doc(video_ref, {
-      "forward_tilt_angle": gait_analysis.forward_tilt_angle
-    })
-
-    update_doc(video_ref, {
-      "elbow_angle": gait_analysis.elbow_angle
-    })
-
   # Update video document with graph names
   update_doc(video_ref, {
     "graphs": graph_names
   })
-
-  # Update user document with pose data and upload status
-  # if uid != "test":
-  #   user_ref.update({
-  #     f'pose_data_{view}': pose_data,
-  #     f'{view}_uploaded': True,
-  #   })
   
 
   os.remove(file_path)

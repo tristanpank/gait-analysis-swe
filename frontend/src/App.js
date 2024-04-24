@@ -20,9 +20,9 @@ function App() {
   const [email, setEmail] = useState('');
   const [user, setUser] = useState({});
 
+  // Uses firebase to retrieve current user
   useEffect(() => {
     onAuthStateChanged(auth, (currUser) => {
-      act(() => {
         if (currUser) {
           setLoggedIn(true);
           setUser(currUser);
@@ -30,11 +30,10 @@ function App() {
           setLoggedIn(false);
           setUser({});
         }
-      
-      })
     });
   }, []);
 
+  // Uses React Router to navigate between pages
   return (
     <div data-testid="App">
       <GlobalStateProvider>

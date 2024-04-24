@@ -1,17 +1,22 @@
 import React from "react";
+import { useState } from "react";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle, DialogHeader, DialogClose } from "../../shadcn/components/ui/dialog";
 import { Button } from "../../shadcn/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { deleteVideo } from "../../firebase/db";
 import { GlobalStateContext } from "src/components/react/GlobalStateProvider";
+import { Loader2 } from "lucide-react";
 
-
+// Wrapper component that uses shadcn delete button
 export default function DeleteButton(props) {
   const { user, vid } = props;
+  const [ loading, setLoading ] = useState(false)
   const navigate = useNavigate();
   const { setVideoUploaded } = React.useContext(GlobalStateContext);
-
+  
+  // Deletest the video and redirects to dashboard on return.
   async function handleDelete() {
+    setLoading(true)
     const result = await deleteVideo(user, vid);
     if (result === true) {
       setVideoUploaded(true);
@@ -22,17 +27,27 @@ export default function DeleteButton(props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline">Delete</Button>
+        <Button variant="outline">Delete Video</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Are you sure you want to delete?</DialogTitle>
         </DialogHeader>
         <div className="flex justify-end space-x-2">
-          <DialogClose>
-            <Button variant="outline" >Cancel</Button>
-          </DialogClose>
-          <Button onClick={handleDelete}>Delete</Button>
+          {!loading && (
+            <div>
+              <DialogClose>
+                <Button variant="outline" >Cancel</Button>
+              </DialogClose>
+              <Button onClick={handleDelete}>Delete</Button>
+            </div>
+          )}
+          {loading && (
+            <Button disabled>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Please wait
+            </Button>
+          )}
         </div>
       </DialogContent>
     </Dialog>

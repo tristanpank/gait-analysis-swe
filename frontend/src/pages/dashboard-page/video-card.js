@@ -3,6 +3,7 @@ import { getUserVideo, getVideoData, getUserVideoThumbnail } from '../../firebas
 import { useState, useEffect, useRef } from 'react';
 import { Timestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
+import { Button } from "../../shadcn/components/ui/button.jsx";
 
 
 function calculateTimeText(time) {
@@ -37,6 +38,17 @@ function calculateTimeText(time) {
 
 }
 
+function calculatePaceText(time) {
+  if (!time) {
+    return "";
+  }
+
+  const minutes = Math.floor(time);
+  const seconds = Math.round((time - minutes) * 60);
+
+  return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
 
 const VideoCard = (props) => {
     const { user, vid } = props
@@ -46,21 +58,18 @@ const VideoCard = (props) => {
     const navigate = useNavigate();
 
     useEffect(() => {
+      if (user.uid) {
         const fetchVideo = async () => {
             const url = await getUserVideoThumbnail(user, vid);
             setPath(url);
         };
-        if (user){
-            fetchVideo();
-            getVideoData(user, vid).then((data) => {
-                setVideoData(data);
-                console.log(data);
-            }).catch((error) => {
-                console.error(error);
-            });
-
-        };
-        
+        fetchVideo();
+        getVideoData(user, vid).then((data) => {
+            setVideoData(data);
+        }).catch((error) => {
+            console.error(error);
+        });
+      };
     }, [user, vid]);
 
     const handleMouseEnter = async () => {
@@ -80,20 +89,26 @@ const VideoCard = (props) => {
     };
 
     if (!videoData.view) {
-      console.log("test");
       return (
         <div></div>
       )
     } else {
       return (
-        <div onClick={() => {navigate(`./${vid}`)}} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
-          className="px-3 p-2 flex flex-col items-center">
-            <h1>{videoData.view.charAt(0).toUpperCase() + videoData.view.slice(1)} Video</h1>
-            <div>
-              {(videoData) && calculateTimeText(videoData.timestamp)}
+        <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} 
+          className="p-3 flex flex-col">
+            <div className="flex flex-row">
+              <div>
+                <h1 className="text-lg font-semibold">{videoData.view.charAt(0).toUpperCase() + videoData.view.slice(1)} Video</h1>
+                <div className='text-sm text-slate-500'>
+                  {(videoData) && calculateTimeText(videoData.timestamp)}
+                  {(videoData.cadence) && <div>Cadence: {Math.round(videoData.cadence)} spm</div>}
+                  {(videoData.pace) && <div>Pace: {calculatePaceText(videoData.pace)}</div>}
+                  {(videoData.stride_length) && <div>Stride Length: {videoData.stride_length.toFixed(2)} ft</div>}
+                </div>
+              </div>
+              <img src={path} alt='user-video' className='w-[50%] mx-auto rounded-sm'></img>
             </div>
-            <img src={path} alt='user-video' className='w-[50%]'></img>
-            
+            <Button variant="outline" size="default" className="bg-blue-300 hover:bg-blue-500 mt-3 text-md" onClick={() => {navigate(`./${vid}`)}}>More Insights</Button>
         </div>
     )
     }

@@ -6,7 +6,8 @@ from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
 from mediapipe import solutions
 from mediapipe.framework.formats import landmark_pb2
-from scipy.signal import find_peaks, savgol_filter
+from scipy.signal import find_peaks, savgol_filter, butter, filtfilt
+import scipy.stats as stats
 
 class GaitAnalysis:
   frames = np.array([])
@@ -26,6 +27,8 @@ class GaitAnalysis:
   stride_length = 0
   # Avg male height in inches
   height = 69
+  screen_height = 0
+  vertical_oscillation = 0
   # 10% of height is a arbitrary offset for height not accounted for from eyes - ankles distance
   offset = 6.9
   aspect_ratio = 16 / 9.
@@ -33,17 +36,12 @@ class GaitAnalysis:
   heel_strike_angle = 0
   # < 10 degress is ideal
   shin_strike_angle = 0
-  #TODO < 160 degrees is ideal
-  knee_strike_angle = 0
-  #TODO < 140 degrees is ideal
+  # < 160 degrees is ideal
+  max_knee_flexion_angle = 0
+  # < 140 degrees is ideal
   knee_flexion_angle = 0
-  #TODO
-  forward_tilt_angle = 0
-  #TODO Probably 70-110 is ideal, but conflicting views
-  elbow_angle = 0
-  #TODO We should find a stat for knee drive
-  #TODO We should find a stat for arm swing
-  #TODO We should find a stat for heel lift
+  # < 90 degrees is ideal
+  shin_strike_angle = 0
 
   def __init__(self, input_path="", output_path="", landmarker_path="./landmarkers/pose_landmarker.task", data=None, height=69, aspect_ratio=16/9.):
     if data:
@@ -53,7 +51,6 @@ class GaitAnalysis:
       self.frames = self.convert_landmark_frames_to_numpy(landmark_frames)
       self.remove_bad_mediapipe_frames()
       self.height = height
-      self.offset = height * 0.1
       self.aspect_ratio = aspect_ratio
       self.perform_calculations()
 
@@ -188,6 +185,10 @@ class GaitAnalysis:
 
     start_mid = mid_frames - start_frames
     mid_end = end_frames - mid_frames
+    
+    # Account for aspect ratio
+    start_mid[:, 0] *= self.aspect_ratio
+    mid_end[:, 0] *= self.aspect_ratio
     return self.angle(start_mid, mid_end)
 
   def smooth_data(self, data, window_length=15, polyorder=3):
@@ -201,15 +202,33 @@ class GaitAnalysis:
       return data
     return savgol_filter(data, window_length=window_length, polyorder=polyorder)
   
+  # Function to design a Butterworth low-pass filter and apply it
+  def lowpass_filter(self, data, cutoff=5, fs=0, order=5):
+      if fs == 0:
+        fs = 1000 / self.time_between_frames  # sample rate, Hz
+      # cutoff = 5  # desired cutoff frequency of the filter, Hz
+      nyq = 0.5 * fs  # Nyquist Frequency
+      normal_cutoff = cutoff / nyq
+      # Get the filter coefficients
+      b, a = butter(order, normal_cutoff, btype='low', analog=False)
+      y = filtfilt(b, a, data)
+      return y
+  
   def perform_calculations(self):
     # Calculate all stats
     self.calculate_direction()
     if self.direction == "front" or self.direction == "back":
       self.calculate_leg_crossover()
+      self.calculate_cadence()
+      # Can't add vertical oscillation until we move height calculation outside of pace
+
     else:
       self.calculate_cadence()
       self.calculate_pace()
       self.calculate_heel_strike_angle()
+      self.calculate_vertical_oscillation()
+      self.calculate_knee_flexion()
+      self.calculate_shin_strike_angle()
     return
 
   # Timeit took around 5ms per frame
@@ -384,7 +403,7 @@ class GaitAnalysis:
 
 
   def calculate_graph(self, first, middle, last):
-    angle = 180 - self.smooth_data(self.get_angle(first, middle, last))
+    angle = 180 - self.lowpass_filter(self.get_angle(first, middle, last))
     plt.plot(angle)
     plt.xlabel("Frames")
     plt.ylabel("Angle")
@@ -529,6 +548,7 @@ class GaitAnalysis:
     # Calculate screen_height in feet, this can be used to convert mediapipe values to feet
     window_height = calculate_distance(avg_eyes, avg_shoulders) + calculate_distance(avg_shoulders, avg_hip) + (calculate_distance(left_hip, left_knee) + calculate_distance(right_hip, right_knee)) / 2 + (calculate_distance(left_knee, left_ankle) + calculate_distance(right_knee, right_ankle)) / 2
     screen_height = (self.height - self.offset) / np.median(window_height)
+    self.screen_height = screen_height
 
     # Determine distance between peaks and window length based on framerate
     distance = 0
@@ -568,4 +588,65 @@ class GaitAnalysis:
     Less flexion results higher shock at the ankle, tibia and knee leading to common injuries such as PFPS, Tibial stress fractures etc.,
     At initial contact the angle between the hip, knee and ankle should be < 160 degrees and at mid stance that angle should reduce to <140 degrees.      
     """
-    return 0
+    left_hip_knee_angle = 180 - self.get_angle(23, 25, 27)
+    right_hip_knee_angle = 180 - self.get_angle(24, 26, 28)
+    all_knee_angles = np.concatenate((left_hip_knee_angle, right_hip_knee_angle))
+    knee_flexion_angle_50th_percentile = np.percentile(all_knee_angles, 50)
+    knee_flexion_angle_90th_percentile = np.percentile(all_knee_angles, 90)
+
+    self.max_knee_flexion_angle = knee_flexion_angle_90th_percentile
+    self.knee_flexion_angle = knee_flexion_angle_50th_percentile
+    return self.max_knee_flexion_angle, self.knee_flexion_angle
+
+  def calculate_vertical_oscillation(self):
+    # Get landmarks
+    left_eye = self.get_landmark_frames(1)
+    right_eye = self.get_landmark_frames(2)
+    left_shoulder = self.get_landmark_frames(11)
+    right_shoulder = self.get_landmark_frames(12)
+    left_hip = self.get_landmark_frames(23)
+    right_hip = self.get_landmark_frames(24)
+    avg_eyes = (left_eye + right_eye) / 2
+    avg_shoulders = (left_shoulder + right_shoulder) / 2
+    avg_hip = (left_hip + right_hip) / 2
+    # Calculate linear regression
+    slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(avg_eyes))], avg_eyes[:, 1])
+    avg_eyes = avg_eyes[:, 1] - ([slope * i for i in range(len(avg_eyes))] + intercept)
+    slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(avg_shoulders))], avg_shoulders[:, 1])
+    avg_shoulders = avg_shoulders[:, 1] - ([slope * i for i in range(len(avg_shoulders))] + intercept)
+    slope, intercept, r_value, p_value, std_err = stats.linregress([i for i in range(len(avg_hip))], avg_hip[:, 1])
+    avg_hip = avg_hip[:, 1] - ([slope * i for i in range(len(avg_hip))] + intercept)
+    # plt.plot(avg_eyes)
+    # plt.plot(avg_shoulders)
+    # plt.plot(avg_hip)
+    # plt.show()
+    total = np.concatenate((avg_eyes, avg_shoulders, avg_hip))
+    amplitude = np.percentile(total, 90) - np.percentile(total, 10)
+    self.vertical_oscillation = amplitude * self.screen_height
+    return self.vertical_oscillation
+  
+  def calculate_shin_strike_angle(self):
+    left_knee = self.get_landmark_frames(25)
+    right_knee = self.get_landmark_frames(26)
+    left_ankle = self.get_landmark_frames(27)
+    right_ankle = self.get_landmark_frames(28)
+    left_knee[:, 0] *= self.aspect_ratio
+    right_knee[:, 0] *= self.aspect_ratio
+    left_ankle[:, 0] *= self.aspect_ratio
+    right_ankle[:, 0] *= self.aspect_ratio
+
+    if self.direction == "left":
+      left_shin_ground_angle = 180 - self.angle(left_knee - left_ankle, np.array([[1, 0]]))
+      right_shin_ground_angle = 180 - self.angle(right_knee - right_ankle, np.array([[1, 0]]))
+    elif self.direction == "right":
+      left_shin_ground_angle = self.angle(left_knee - left_ankle, np.array([[1, 0]]))
+      right_shin_ground_angle = self.angle(right_knee - right_ankle, np.array([[1, 0]]))
+    else:
+      return 0
+
+    all_shin_angles = np.concatenate((left_shin_ground_angle, right_shin_ground_angle))
+    all_shin_angles = self.lowpass_filter(all_shin_angles)
+    self.shin_strike_angle = np.percentile(all_shin_angles, 95)
+    
+    return self.shin_strike_angle
+
