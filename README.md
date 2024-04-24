@@ -29,10 +29,9 @@ Once all the virtual environment files are made and the command is finished runn
 pip install -r requirements.txt
 ```
 
-Then enter the app directory and run the live server
+Then run the live server
 
 ```shell
-cd app
 uvicorn app.main:app --reload
 ```
 
