@@ -35,7 +35,7 @@ import {
 } from "../../../shadcn/components/ui/navigation-menu"
 
 const Header = (props) => {
-    const { user, setUser, color, setInches, setFeet } = props
+    const { user, setUser, color, setInches, setFeet, setNameCard } = props
     const navigate = useNavigate();
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [uploadError, setUploadError] = useState(false);
@@ -48,7 +48,7 @@ const Header = (props) => {
     const [inputName, setInputName] = useState(null);
     const [name, setName] = useState(null);
 
-
+    // Get the user's height and name from firebase
     useEffect(() => {
         if (user) {
             getUserHeight(user).then((height) => {
@@ -58,6 +58,7 @@ const Header = (props) => {
         }
     }, [user]);
 
+    // Get the height in terms of feet and inches
     useEffect(() => {
         if (user) {
             getUserHeight(user).then((height) => {
@@ -70,12 +71,16 @@ const Header = (props) => {
                 setInches(inputHeightInches);
             }
             setInputName(user.displayName);
+            if (setNameCard) {
+                setNameCard(user.displayName);
+            }
             setIsEditingName(false);
             setIsEditingHeight(false);
         }
     }, [user, update]);
 
 
+    // Sign out the user
     const handleSignOut = async () => {
         signOutUser().then(() => {
             setUser({});
@@ -85,6 +90,7 @@ const Header = (props) => {
         });
     }
 
+    // Handle the profile picture upload
     const handleSubmit = async (e) => {
         e.preventDefault();
         const fileInput = document.getElementById("image");

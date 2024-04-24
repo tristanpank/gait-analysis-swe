@@ -16,6 +16,7 @@ const Dashboard = (props) => {
   const [totalHeight, setTotalHeight] = useState(null);
   const [inches, setInches] = useState(null);
   const [feet, setFeet] = useState(null);
+  const [nameCard, setNameCard] = useState(user.displayName);
   const { videoUploaded, setVideoUploaded } = React.useContext(GlobalStateContext);
 
   // Gets all videos for a user on page load or when a video is finished uploading. 
@@ -54,7 +55,7 @@ const Dashboard = (props) => {
   // Has messages on the sides that explain the dashboard and basic user info. 
   return (
       <div className="flex justify-center bg-slate-100 h-screen">
-        <Header user={user} setUser={setUser} color={false} setInches={setInches} setFeet={setFeet}></Header>
+        <Header user={user} setUser={setUser} color={false} setInches={setInches} setFeet={setFeet} setNameCard={setNameCard}></Header>
         <div className="overflow-auto mt-16 flex w-screen">
           <div>
             <div className="overflow-hidden content-center max-w-96 w-1/4 hidden xl:block absolute left-10 top-1/4">
@@ -63,7 +64,7 @@ const Dashboard = (props) => {
                   <ProfileIcon user={user} setUser={setUser} size={80}/>
                 </div>
                 <div className="text-center text-2xl font-semibold">
-                  {user.displayName}
+                  {nameCard}
                 </div>
                 {Number.isInteger(totalHeight) &&
                   <div className="text-center">
