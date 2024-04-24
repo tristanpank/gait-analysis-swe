@@ -4,9 +4,6 @@ import { setUserDB } from './db';
 
 /**
  * Sign in a user with email and password.
- * @param {string} email - The user's email.
- * @param {string} password - The user's password.
- * @returns {Promise<Object>} - A promise that resolves to the user object if successful, or an error object if unsuccessful.
  */
 const signInEmailPassword = async (email, password) => {
   try {
@@ -22,10 +19,6 @@ const signInEmailPassword = async (email, password) => {
 
 /**
  * Creates a new user account with the provided email and password.
- * 
- * @param {string} email - The email address for the new user.
- * @param {string} password - The password for the new user.
- * @returns {Promise<Object>} - A promise that resolves to the user object if the account creation is successful, or rejects with an error if there's an error.
  */
 const createAccountEmailPassword = async (email, password, displayName=null, photoURL=null) => {
   try {

@@ -1,6 +1,8 @@
 import React from "react";
 
+// Used for formatting the injury data for a specific injury
 function generateInjuryDescription(injury) {
+  // Displays crossover graphs and warning if crossover is too high
   if (injury.name === "crossover") {
     let leftLarger = injury.left_avg > injury.right_avg;
     let avgCrossover = leftLarger ? injury.left_avg : injury.right_avg;

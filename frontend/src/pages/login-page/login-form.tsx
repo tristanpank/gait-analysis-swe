@@ -7,7 +7,7 @@ import { cn } from "../../utils/cn.ts";
 import { IconBrandGithub, IconBrandGoogle } from "@tabler/icons-react";
 import { signInWithGoogle } from '../../firebase/auth.js'
 
-
+// Login Form that is imported from the shadcn library
 export function LoginForm(props) {
     const {setLoggedIn, email, setEmail, setUser} = props
     const [password, setPassword] = useState('')

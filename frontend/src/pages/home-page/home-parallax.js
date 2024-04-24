@@ -20,6 +20,7 @@ const image13 = require("./images/image13.jpeg");
 const image14 = require("./images/image14.jpeg");
 const image15 = require("./images/image15.jpeg");
 
+// Uses the acernity UI parralax component to display the home page with the images in the images folder. 
 export function HomeParallax() {
   const title = "UF Gait Analysis";
   const body = (

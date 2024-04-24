@@ -19,6 +19,8 @@ const numToGraph = {
   28: "Right Ankle",
 }
 
+// Uses the accordion from material UI to display the angle graphs
+// Utilizes the numToGraph object to display the correct name for the angle
 export default function AngleDisplay(props) {
   const {graphs} = props;
   const [accordion, setAccordion] = useState(false);

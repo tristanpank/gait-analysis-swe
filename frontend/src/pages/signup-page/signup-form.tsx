@@ -11,7 +11,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import {createAccountEmailPassword, signInWithGoogle} from '../../firebase/auth.js'
 
 
-
+// This is the signup form component that is imported from the shadcn library. 
 export function SignupForm(props) {
   const {setLoggedIn, email, setEmail, setUser} = props
   const [password, setPassword] = useState('');

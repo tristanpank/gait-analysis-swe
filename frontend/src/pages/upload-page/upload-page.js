@@ -20,6 +20,7 @@ export default function UploadPage(props) {
   const { toast } = useToast();
   const { setVideoUploaded } = React.useContext(GlobalStateContext);
 
+  // Makes the API request to the backend to upload the video
   const handleSubmit = async (e) => {
     e.preventDefault();
     const fileInput = document.getElementById("video");
@@ -41,8 +42,8 @@ export default function UploadPage(props) {
       data: formData
     }
 
+    // Displays toast when video is uploaded or if there is an error. 
     axios(axios_config).then((res) => {
-      console.log(res);
       toast({
         description: "Video uploaded successfully",
       })
@@ -57,6 +58,7 @@ export default function UploadPage(props) {
     toast({
       description: "Uploading video...",
     });
+    // Navigates to dashboard immediately after uploading. 
     navigate('/dashboard');
 
     // Reset the form
@@ -79,21 +81,8 @@ export default function UploadPage(props) {
         <CardContent >
           <form onSubmit={handleSubmit} className="">
             <div className="mb-5 block">
-              {/* <Label htmlFor="video" className="mb-2 block">Upload a video:</Label> */}
               <Input type="file" id="video" className="cursor-pointer" accept="video/*" />
             </div>
-            {/* <div className="mb-2 block">
-              <Label htmlFor="select" className="mb-2 block">Select a view:</Label>
-              <Select className="mb-2 block" id="select" onValueChange={(value) => setView(value)} >
-                <SelectTrigger >
-                  <SelectValue placeholder="Front" />
-                </SelectTrigger>
-                <SelectContent id="view">
-                  <SelectItem value="front"  >Front</SelectItem>
-                  <SelectItem value="side" >Side</SelectItem>
-                </SelectContent>
-              </Select>
-            </div> */}
             <Button type="submit" variant="default">Submit</Button>
           </form>
         </CardContent>

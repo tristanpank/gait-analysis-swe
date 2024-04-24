@@ -4,12 +4,13 @@ import { SignupForm } from './signup-form.tsx';
 import {BackgroundGradientAnimation } from '../../components/ui/background-gradient-animation.tsx';
 import Header from "../../components/ui/header/header.js"
 
-
+// Main signup page component
+// Uses the shadcn signup form component over a background gradient
 const Signup = (props) => {
     const {setLoggedIn, email, setEmail, setUser, user} = props
 
     const navigate = useNavigate();
-  
+    // Redirects user to dasbhoard if already logged in
     useEffect(() => {
         if (user.uid) {
         navigate('/dashboard');
