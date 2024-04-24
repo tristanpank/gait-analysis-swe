@@ -48,7 +48,7 @@ const Header = (props) => {
     const [inputName, setInputName] = useState(null);
     const [name, setName] = useState(null);
 
-
+    // Get the user's height and name from firebase
     useEffect(() => {
         if (user) {
             getUserHeight(user).then((height) => {
@@ -58,6 +58,7 @@ const Header = (props) => {
         }
     }, [user]);
 
+    // Get the height in terms of feet and inches
     useEffect(() => {
         if (user) {
             getUserHeight(user).then((height) => {
@@ -76,6 +77,7 @@ const Header = (props) => {
     }, [user, update]);
 
 
+    // Sign out the user
     const handleSignOut = async () => {
         signOutUser().then(() => {
             setUser({});
@@ -85,6 +87,7 @@ const Header = (props) => {
         });
     }
 
+    // Handle the profile picture upload
     const handleSubmit = async (e) => {
         e.preventDefault();
         const fileInput = document.getElementById("image");
