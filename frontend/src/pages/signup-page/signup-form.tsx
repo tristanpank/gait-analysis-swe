@@ -22,7 +22,6 @@ export function SignupForm(props) {
 
   const onSubmit = async (e) => {
     e.preventDefault()
-    console.log("Form submitted");
     
     if (firstName == '' || lastName == '' ) {
         setSignUpError('First or last name is missing.')

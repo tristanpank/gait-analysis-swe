@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+# Uses the gait_analysis object to generate the graphs
 def get_all_graphs(gait_analysis):
     angles_right_side = [
         [12, 14, 16], 
@@ -17,6 +18,7 @@ def get_all_graphs(gait_analysis):
         paths.append(path)
     return paths
 
+# Uses the gait_analysis object to generate the crossover graph from gait_analysis data
 def get_crossover_graph(gait_analysis):
     data = gait_analysis.calculate_leg_crossover()
     left = data["left_crossover"]

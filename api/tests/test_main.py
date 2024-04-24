@@ -47,8 +47,5 @@ def test_detect_pose_valid_request(upload_file_mock, add_doc_mock, make_injury_c
     create_video_doc_mock.assert_called()
     add_video_to_user_mock.assert_called()
     upload_file_mock.assert_called()
-    # compress_video_mock.assert_called()
-    # Add more checks for other mocks
 
 
-# Add more test cases for different scenarios (invalid view, missing user ID, non-existent user, etc.)

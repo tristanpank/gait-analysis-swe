@@ -10,7 +10,6 @@ const signInEmailPassword = async (email, password) => {
     // Sign in with email and password using the signInWithEmailAndPassword method
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    console.log(user);
     return user;
   } catch (error) {
     return error;
@@ -24,14 +23,12 @@ const createAccountEmailPassword = async (email, password, displayName=null, pho
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     let user = userCredential.user;
-    console.log(user);
     user = {
       ...user, 
       displayName: displayName,
       photoURL: photoURL
     }
     await setUserDB(user);
-    console.log(user);
     return user;
   } catch (error) {
     return error;
@@ -51,7 +48,6 @@ const signInWithGoogle = async () => {
     const user = userCredential.user;
     // Save the user to the database
     await setUserDB(user);
-    console.log(user);
     return user;
   } catch (error) {
     return error;

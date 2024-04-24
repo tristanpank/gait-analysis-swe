@@ -44,16 +44,7 @@ async def hello_world():
   return {"message": "Hello World"}
 
 def add_filename_extension(filename: str, extension: str):
-  """
-  Adds the given extension to the filename.
-
-  Args:
-    filename (str): The original filename.
-    extension (str): The extension to be added.
-
-  Returns:
-    str: The filename with the added extension.
-  """
+  # Adds the given extension to the filename.
   dot_idx = (filename[::-1].find(".") * -1) - 1
   return filename[:dot_idx] + extension
 
@@ -244,13 +235,6 @@ async def detect_pose(video_file: UploadFile = File(...), uid: str = Form(""), v
   update_doc(video_ref, {
     "graphs": graph_names
   })
-
-  # Update user document with pose data and upload status
-  # if uid != "test":
-  #   user_ref.update({
-  #     f'pose_data_{view}': pose_data,
-  #     f'{view}_uploaded': True,
-  #   })
   
 
   os.remove(file_path)

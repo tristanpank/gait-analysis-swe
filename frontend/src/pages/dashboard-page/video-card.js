@@ -59,16 +59,13 @@ const VideoCard = (props) => {
 
     useEffect(() => {
       if (user.uid) {
-        console.log(user)
         const fetchVideo = async () => {
-            console.log("url updated")
             const url = await getUserVideoThumbnail(user, vid);
             setPath(url);
         };
         fetchVideo();
         getVideoData(user, vid).then((data) => {
             setVideoData(data);
-            console.log(data);
         }).catch((error) => {
             console.error(error);
         });
@@ -92,7 +89,6 @@ const VideoCard = (props) => {
     };
 
     if (!videoData.view) {
-      console.log("test");
       return (
         <div></div>
       )

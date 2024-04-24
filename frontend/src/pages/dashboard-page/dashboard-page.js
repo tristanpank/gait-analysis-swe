@@ -24,8 +24,6 @@ const Dashboard = (props) => {
       if (Array.isArray(videosArray)) {
         setVideoArray(videosArray.reverse());
         setVideoUploaded(false);
-        console.log(videosArray);
-        console.log(user)
       }
     })
   }, [user, videoUploaded])
@@ -35,7 +33,6 @@ const Dashboard = (props) => {
     getUserHeight(user).then((totalHeight) => {
       if (Number.isInteger(totalHeight)) {
         setTotalHeight(totalHeight);
-        console.log(totalHeight);
         setInches(totalHeight % 12);
         setFeet(Math.floor(totalHeight / 12));
     }});
