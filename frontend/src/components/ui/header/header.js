@@ -35,7 +35,7 @@ import {
 } from "../../../shadcn/components/ui/navigation-menu"
 
 const Header = (props) => {
-    const { user, setUser, color, setInches, setFeet } = props
+    const { user, setUser, color, setInches, setFeet, setNameCard } = props
     const navigate = useNavigate();
     const [uploadSuccess, setUploadSuccess] = useState(false);
     const [uploadError, setUploadError] = useState(false);
@@ -71,6 +71,9 @@ const Header = (props) => {
                 setInches(inputHeightInches);
             }
             setInputName(user.displayName);
+            if (setNameCard) {
+                setNameCard(user.displayName);
+            }
             setIsEditingName(false);
             setIsEditingHeight(false);
         }
